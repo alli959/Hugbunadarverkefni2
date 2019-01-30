@@ -1,0 +1,145 @@
+html {
+    box-sizing: border-box;
+    overflow-x: hidden;
+    display: block;
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(255, 140, 0, 0.4) 100%);
+    font-size: 1.2em;
+}
+
+body{
+    background-color: transparent;
+}
+
+.score {
+    width: 150px;
+    height: 100px;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+    font-size: 110px;
+    background: black;
+    color: #FAAB00;
+    box-shadow: 0px 0px 0px 8px #A19B9A;
+    line-height: 100px;
+}
+
+.timer{
+    margin-bottom: 8px;
+    width:400px;
+    height:100px;
+    text-align: center;
+    font-size: 110px;
+    letter-spacing: 5px;
+    line-height: 100px;
+    color: #F72D00;
+    text-shadow: none;
+    background: black;
+    box-shadow: 0px 0px 0px 8px #A19B9A;
+}
+
+.container{
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    text-shadow: 2px 1px 4px #FFF;
+}
+
+.container__buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.container__home{
+    font-size: 36px;
+    margin-right: 150px;
+}
+
+.container__away{
+    font-size: 36px;
+    margin-left: 150px;
+}
+
+.setup {
+    background-color: gray;
+    color: black;
+}
+.stop {
+    background-color: red;
+    color: black;
+}
+
+.game {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.game__button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.button {
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid #D1D3D4;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+.game__twoButton {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.game__players {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.starter {
+    width: 100%;
+    color: white;
+    background-color: blue;
+}
+
+.bench {
+    width: 100%;
+    color: white;
+    background-color: green;
+}
+img {
+    zoom: 0.8;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.other {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.awayButton {
+    margin-left: 20px;
+}
+
+.end {
+    background-color: red;
+}
