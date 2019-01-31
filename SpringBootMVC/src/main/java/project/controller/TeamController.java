@@ -1,22 +1,29 @@
 package project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import project.persistence.entities.Team;
-import project.persistence.entities.User;
-import project.persistence.repositories.TeamRepository;
-import org.springframework.web.bind.annotation.RestController;
-
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+
+import project.persistence.entities.Team;
+import project.persistence.entities.User;
+import project.persistence.repositories.*;
+import project.controller.Toolkit;
+
 
 @RestController
 public class TeamController {
 
   @Autowired
   private TeamRepository teamRepository;
+  @Autowired
+  private UserRepository userRepository;
 
   public List<Team> listOfLongToTeams(List<Long> teamIds) {
     return teamIds
@@ -25,58 +32,34 @@ public class TeamController {
     .collect(Collectors.toList());
   }
 
+  // Done
   @RequestMapping(value = "/user/team", method = RequestMethod.GET)
-  public String createTeamGet(HttpSession session, Model model){
-    User loggedInUser = (User)session.getAttribute("login");
-    if(loggedInUser != null) {
-      model.addAttribute("msg", loggedInUser.getName());
-      model.addAttribute("createTeam", new Team());
-      model.addAttribute("teams", teamRepository.findAll());
-      return "team/Team";
-    }
-    session.setAttribute("error", "User must be logged in!");
-    return "redirect:/login";
-  }
-
-  @RequestMapping(value = "/user/team", method = RequestMethod.POST)
-  public String createTeamPost(
-  @ModelAttribute("createTeam")
-  Team team,
-  HttpSession session,
-  Model model
+  public Iterable<Team> createTeamGet(
+    @RequestHeader("Authorization") String basicAuthString
   ) {
-    User loggedInUser = (User)session.getAttribute("login");
-    if(loggedInUser != null) {
-      team.setUserOwner(loggedInUser.getUserName());
-      teamRepository.save(team);
-      model.addAttribute("msg", loggedInUser.getName());
-      model.addAttribute("teams", teamRepository.findAll());
-      model.addAttribute("createTeam", new Team());
-      return "team/Team";
-    }
-    session.setAttribute("error", "User must be logged in!");
-    return "redirect:/login";
+    String userName = Toolkit.getUserName(basicAuthString);
+    User user = userRepository.findById(userName).get();
+    return listOfLongToTeams(user.getTeamIds());
   }
 
+  // Done
+  @RequestMapping(value = "/user/createTeam", method = RequestMethod.GET)
+  public String createTeamPost(
+    @RequestHeader("Authorization") String basicAuthString,
+    @RequestParam String name
+  ) {
+    String userName = Toolkit.getUserName(basicAuthString);
+    Team team = new Team();
+    team.setName(name);
+    team.setUserOwner(userName);
+    return teamRepository.save(team).getName();
+  }
+
+  // Done
   @RequestMapping(value = "/user/team/{teamId}",  method = RequestMethod.GET)
-  public String teamGetFromName(
-  @PathVariable
-  Long teamId,
-  HttpSession session,
-  Model model
+  public Team getOneTeam(
+    @PathVariable Long teamId
   ){
-    User loggedInUser = (User)session.getAttribute("login");
-    if(loggedInUser != null) {
-      model.addAttribute("msg", loggedInUser.getName());
-      Team team = teamRepository.findById(teamId).get();
-      if(!team.getUserOwner().equals(loggedInUser.getUserName())){
-        model.addAttribute("Message","Team not owned by User");
-        return "Error";
-      }
-      model.addAttribute("players", team.getPlayers());
-      return "team/teamView";
-    }
-    session.setAttribute("error", "User must be logged in!");
-    return "redirect:/login";
+    return teamRepository.findById(teamId).get();
   }
 }

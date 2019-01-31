@@ -5,6 +5,7 @@ import javax.persistence.*;
 import static javax.persistence.GenerationType.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Player {
@@ -51,6 +52,10 @@ public class Player {
     public Long getTeamId() { return teamId;}
 
     public void setTeamId(Long teamId) {this.teamId =  teamId;}
+
+    public List<Long> getGamesPlayed() {
+      return gamesPlayed;
+    }
 
     public void setGamesPlayed(ArrayList<Long> gamesPlayed) { this.gamesPlayed = gamesPlayed; }
 

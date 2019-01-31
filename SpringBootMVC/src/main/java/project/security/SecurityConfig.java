@@ -20,9 +20,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authProvider);
         auth.inMemoryAuthentication()
-                .withUser("admin").password("admin").roles("ADMIN");
+                .withUser("admin").password("{noop}admin").roles("ADMIN");
         auth.inMemoryAuthentication()
-                .withUser("anonymous").password("anonymous").roles("ANON");
+                .withUser("anonymous").password("{noop}anonymous").roles("ANON");
     }
 
     @Override
@@ -36,8 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Allow all OPTIONS requests
                 .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
                 // Make sure newUser method is available also when not signed in
-                .antMatchers(HttpMethod.GET, "/database/userEnabled/*").authenticated()
-                .antMatchers(HttpMethod.GET, "/database/newUser*").hasAnyRole("ANON", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/database/user/*").authenticated()
+                .antMatchers(HttpMethod.GET, "/database/register*").hasAnyRole("ANON", "ADMIN")
                 .anyRequest().hasAnyRole("ADMIN", "ANON");
                 // Rest of the methods are only available to Username: admin, Password: admin
 
