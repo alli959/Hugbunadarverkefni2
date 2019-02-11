@@ -17,7 +17,8 @@ public class Player {
     private String name;
     private String playerPos;
     private Long teamId;
-    private ArrayList<Long> gamesPlayed;
+    @ElementCollection
+    private List<Long> gamesPlayed = new ArrayList<>();
 
     public Player() {
 
@@ -57,7 +58,7 @@ public class Player {
       return gamesPlayed;
     }
 
-    public void setGamesPlayed(ArrayList<Long> gamesPlayed) { this.gamesPlayed = gamesPlayed; }
+    public void setGamesPlayed(List<Long> gamesPlayed) { this.gamesPlayed = gamesPlayed; }
 
     public void addGamePlayed(Long gameId) {
       this.gamesPlayed.add(gameId);

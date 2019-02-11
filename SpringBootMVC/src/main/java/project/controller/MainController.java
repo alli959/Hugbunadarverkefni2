@@ -4,12 +4,13 @@ package project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+
 import project.persistence.entities.Game;
 import project.persistence.entities.GameEvent;
 import project.persistence.entities.User;
 import project.persistence.repositories.*;
-import project.controller.TeamController;
-import org.springframework.web.bind.annotation.RestController;
+import project.controller.Toolkit;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,12 +18,11 @@ import javax.servlet.http.HttpSession;
 public class MainController {
 
   @Autowired
-  private TeamController teamController;
-  @Autowired
   private TeamRepository teamRepository;
   @Autowired
   private GameRepository gameRepository;
 
+  // Unused
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   public String user(HttpSession session, Model model) {
     User loggedInUser = (User) session.getAttribute("login");
@@ -83,7 +83,7 @@ public class MainController {
     User loggedInUser = (User) session.getAttribute("login");
     if(loggedInUser != null) {
       model.addAttribute("msg", loggedInUser.getName());
-      model.addAttribute("teams", teamController.listOfLongToTeams(loggedInUser.getTeamIds()));
+      model.addAttribute("teams", Toolkit.idsToEntities(loggedInUser.getTeamIds(), teamRepository));
       Iterable<Game> games = gameRepository.findAll();
       for(Game game : games){
         gameRepository.delete(game);
@@ -104,7 +104,7 @@ public class MainController {
 
       model.addAttribute("msg", loggedInUser.getName());
 
-      /**
+      /*
       // Change to startingLineup
 
       List<Game> bench = gameRepository.getBench();

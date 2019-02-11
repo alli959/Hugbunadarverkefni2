@@ -33,8 +33,10 @@ public class GameEvent {
   public static final int FOUL = 2;
   public static final int ASSIST = 3;
   public static final int REBOUND = 4;
+  public static final int BLOCK = 5;
+  public static final int TURNOVER = 6;
 
-  public static final int N_GAME_EVENTS = 5;
+  public static final int N_GAME_EVENTS = 7;
 
   // Class data
   @Id
@@ -44,6 +46,40 @@ public class GameEvent {
   private int eventType;
   private int location;
   private long playerId;
+
+  public static int getLocationByName(String location) throws Exception {
+    switch (location) {
+      case "NONE": return NONE;
+      case "TOP": return TOP;
+      case "LEFT_WING": return LEFT_WING;
+      case "LEFT_CORNER": return LEFT_CORNER;
+      case "LEFT_SHORT": return LEFT_SHORT;
+      case "LEFT_TOP": return LEFT_TOP;
+      case "RIGHT_CORNER": return RIGHT_CORNER;
+      case "RIGHT_WING": return RIGHT_WING;
+      case "RIGHT_SHORT": return RIGHT_SHORT;
+      case "RIGHT_TOP": return RIGHT_TOP;
+      case "LAY_UP": return LAY_UP;
+      case "FREE_THROW": return FREE_THROW;
+      default: throw new Exception("Invallid location: " + location + " valid locations are "
+                   + "NONE, TOP, LEFT_CORNER, LEFT_WING, LEFT_TOP, LEFT_SHORT, RIGHT_CORNER"
+                   + "RIGHT_WING, RIGHT_SHORT, RIGHT_TOP, TOP, LAY_UP or FREE_THROW");
+    }
+  }
+
+  public static int getEventTypeByName(String type) throws Exception {
+    switch (type) {
+      case "HIT": return HIT;
+      case "MISS": return MISS;
+      case "ASSIST": return ASSIST;
+      case "FOUL": return FOUL;
+      case "REBOUND": return REBOUND;
+      case "BLOCK": return BLOCK;
+      case "TURNOVER": return TURNOVER;
+      default: throw new Exception("Invallid EventType: " + type + " valid eventTypes are "
+                   + "HIT, MISS, ASSIST, FOUL, REBOUND, BLOCK or TURNOVER");
+    }
+  }
 
   public GameEvent(int location, int eventType, int timeOfEvent, long playerId) {
     this.location = location;

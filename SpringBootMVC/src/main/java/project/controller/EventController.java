@@ -1,21 +1,35 @@
 package project.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.springframework.ui.Model;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import project.persistence.entities.Player;
-import project.persistence.entities.User;
-import project.service.*;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.controller.Toolkit;
+import project.persistence.entities.*;
+import project.persistence.repositories.*;
+import project.service.*;
 
-import javax.servlet.http.HttpSession;
-import java.util.List;
+/**
+
+  TODO
+  Make a game 
+  Add event to current game
+
+ **/
+
+
 
 @RestController
 public class EventController {
@@ -23,6 +37,65 @@ public class EventController {
   // Instance Variables
   StringManipulationService stringService;
 
+  @Autowired
+  GameRepository gameRepository;
+  @Autowired
+  UserRepository userRepository;
+  @Autowired
+  TeamRepository teamRepository;
+  @Autowired
+  PlayerRepository playerRepository;
+  @Autowired
+  GameEventRepository gameEventRepository;
+
+  // Can use this one to check if user has a game in process
+  @RequestMapping(value="/user/hasActiveGame", method=RequestMethod.GET)
+  public Boolean hasActiveGame(
+      @RequestHeader("Authorization") String basicAuthString
+  ) {
+    String userName = Toolkit.getUserName(basicAuthString);
+    User user = userRepository.findById(userName).get();
+    return (user.getCurrentGame() != null);
+  }
+
+  // Returns null if no game
+  @RequestMapping(value="/user/getActiveGame", method=RequestMethod.GET)
+  public Game getActiveGame(
+      @RequestHeader("Authorization") String basicAuthString
+  ) {
+    String userName = Toolkit.getUserName(basicAuthString);
+    User user = userRepository.findById(userName).get();
+    return user.getCurrentGame();
+  }
+
+  @RequestMapping(value="/user/createGame", method=RequestMethod.GET)
+  public Game createGame(
+      @RequestHeader("Authorization") String basicAuthString,
+      @RequestParam ArrayList<Long> bench,
+      @RequestParam ArrayList<Long> playing,
+      @RequestParam Long teamId,
+      @RequestParam(required=false) String stadiumName,
+      @RequestParam(required=false) Long timeOfGame
+  ) {
+    Game game = new Game();
+    List<Player> startingLineup = Toolkit.idsToEntities(playing, playerRepository);
+    List<Player> theRest = Toolkit.idsToEntities(bench, playerRepository);
+
+    game.setStartingLineup(startingLineup);
+    game.setBench(theRest);
+    game.setStadiumName(stadiumName);
+    game.setTimeOfGame(timeOfGame);
+
+    game = gameRepository.save(game);
+    for (Player player : game.getAllPlayers()) {
+      player.addGamePlayed(game.getId());
+      playerRepository.save(player);
+    }
+    System.out.println(1);
+    return game;
+  }
+
+  /*
   @RequestMapping(value = "/game", method = RequestMethod.GET)
   public String home(HttpSession session, Model model) {
     String action = (String) session.getAttribute("Action");
@@ -45,6 +118,7 @@ public class EventController {
     session.setAttribute("error", "User must be logged in!");
     return "redirect:/login";
   }
+  */
 
   // Breyta thessu yfir i method af 3 breytum
   // Location
@@ -52,6 +126,34 @@ public class EventController {
   // Time
   // PlayerId
 
+  // IMPORTANT!! 
+  // Make sure time is gametime + eventtime everytime
+  @RequestMapping(value="/user/addGameEvent")
+  public GameEvent addGameEvent (
+      @RequestHeader("Authorization") String basicAuthString,
+      @RequestParam(required=false) String location,
+      @RequestParam String eventType,
+      @RequestParam Long time,
+      @RequestParam(required=false) Long playerId
+  ) throws Exception {
+    String userName = Toolkit.getUserName(basicAuthString);
+    User user = userRepository.findById(userName).get();
+    Game currentGame = user.getCurrentGame();
+    Long timeOfEvent = currentGame.getTimeOfGame() + time;
+    GameEvent gameEvent = new GameEvent();
+    gameEvent.setLocation(GameEvent.getLocationByName(location));
+    gameEvent.setEventType(GameEvent.getEventTypeByName(eventType));
+    gameEvent.setTimeOfEvent(timeOfEvent);
+    if (playerId != null) {
+      gameEvent.setPlayerId(playerId);
+    }
+    gameEvent = gameEventRepository.save(gameEvent);
+    currentGame.addGameEvent(gameEvent);
+    gameRepository.save(currentGame);
+    return gameEvent;
+  }
+
+  // Unused
   @RequestMapping(value = "/game", method = RequestMethod.POST)
   public void ShotMade(@RequestBody String shotAction) throws JSONException, Exception {
 
@@ -60,14 +162,18 @@ public class EventController {
     //-------access the json object ---------//
     ////playerId, from, isHit, assist, rebound, subIn, subOut, turnover, other////
     JSONObject myObject = new JSONObject(shotAction);
-
     System.out.println(myObject.toString());
   }
 
   @RequestMapping(value = "/game/endgame", method = RequestMethod.GET)
-  public String endgame(HttpSession session, Model model) {
-
-    return "redirect:/user/stats";
+  public String endgame(
+      @RequestHeader("Authorization") String basicAuthString
+  ) {
+    String userName = Toolkit.getUserName(basicAuthString);
+    User user = userRepository.findById(userName).get();
+    user.setCurrentGame(null);
+    userRepository.save(user);
+    return "Success, game has been removed";
   }
 
 }
@@ -154,33 +260,33 @@ gameRepository.save(turnoverer);
 String foulText = myObject.get("other").toString();
 String foulIdText = myObject.get("playerId").toString();
 if(foulText.equals("Foul") && !turnoverIdText.equals("")){
-Long foulId = Long.parseLong(foulIdText);
-Game fouler = gameRepository.findByPlayerId(foulId);
-Long foul = Long.parseLong(fouler.getClass().getMethod("getFoul").invoke(fouler).toString());
-fouler.getClass().getMethod("setFoul", Long.class).invoke(fouler, foul += 1);
-gameRepository.save(fouler);
+  Long foulId = Long.parseLong(foulIdText);
+  Game fouler = gameRepository.findByPlayerId(foulId);
+  Long foul = Long.parseLong(fouler.getClass().getMethod("getFoul").invoke(fouler).toString());
+  fouler.getClass().getMethod("setFoul", Long.class).invoke(fouler, foul += 1);
+  gameRepository.save(fouler);
 }
 
 **/
 //----------Add substitutions --------//
 
 /* String subInText = myObject.get("subIn").toString();
-String subOutText = myObject.get("subOut").toString();
-if(!subInText.equals("") && !subOutText.equals("")){
-System.out.println("subOutText " +subOutText);
-System.out.println("subInText " +subInText);
+   String subOutText = myObject.get("subOut").toString();
+   if(!subInText.equals("") && !subOutText.equals("")){
+   System.out.println("subOutText " +subOutText);
+   System.out.println("subInText " +subInText);
 
 
-Long subInId = Long.parseLong(subInText);
-Long subOutId = Long.parseLong(subOutText);
+   Long subInId = Long.parseLong(subInText);
+   Long subOutId = Long.parseLong(subOutText);
 
 
 
-Game subIner = gameRepository.findByPlayerId(subInId);
-Game subOuter = gameRepository.findByPlayerId(subOutId);
-subIner.setBench(false);
-subOuter.setBench(true);
-gameRepository.save(subOuter);
-gameRepository.save(subIner);
-}
-*/
+   Game subIner = gameRepository.findByPlayerId(subInId);
+   Game subOuter = gameRepository.findByPlayerId(subOutId);
+   subIner.setBench(false);
+   subOuter.setBench(true);
+   gameRepository.save(subOuter);
+   gameRepository.save(subIner);
+   }
+   */

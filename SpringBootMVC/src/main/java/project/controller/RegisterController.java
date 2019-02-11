@@ -16,13 +16,17 @@ import project.persistence.repositories.UserRepository;;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class RegisterController {
   @Autowired
   private UserRepository userRepository;
 
-  // Done
+  // This method is allowed when the authentication header is set to
+  //    Username: anonymous
+  //    Password: anonymous
+  //
   @RequestMapping(value = "/register", method = RequestMethod.GET)
   public String createUser(
     @RequestParam String userName,
@@ -30,9 +34,10 @@ public class RegisterController {
     @RequestParam String name,
     @RequestParam String email
   ) {
-    if (!userRepository.findById(userName).isPresent())
+    if (userRepository.findById(userName).isPresent())
       return "User already exists bruh";
     User user = new User();
+    user.setUserName(userName);
     user.setEmail(email);
     user.setPassword(password);
     user.setName(name);
@@ -42,8 +47,8 @@ public class RegisterController {
     return uName;
   }
 
-  // Kinda done
-  @Deprecated // Eg aetla ekki ad nota thetta
+  // Eg aetla ekki ad nota thetta, functionid ad ofan virkar nogu vel
+  @Deprecated
   @RequestMapping(value = "/register", method = RequestMethod.POST)
   public String createUserPost(@ModelAttribute("createUser") User inputUser,
   Model model) {

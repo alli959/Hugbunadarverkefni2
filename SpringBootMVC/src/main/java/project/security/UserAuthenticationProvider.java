@@ -21,18 +21,19 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String userName = authentication.getName();
-        System.out.println("Something");
+        String password = authentication.getCredentials().toString();
+        System.out.println("Checking Authentication for " + userName + " and password " + password);
         Optional<User> check = userRepository.findById(userName);
         if (!check.isPresent()) return null;
         User user = check.get();
-        System.out.println("Something 2");
         if(authentication.getCredentials() == null) {
             if(user == null) System.out.println("User did not exist, was null. Lookup value: " + authentication.getName());
             else System.out.println("Credentials were null");
             return null;
         }
-        String password = authentication.getCredentials().toString();
         if(user.getPassword().equals(password)) {
+            System.out.println("User authenticated sending token for " + userName + ":" + password);
+
             return new UsernamePasswordAuthenticationToken(userName, password, new ArrayList<>());
         }
         System.out.println("Password incorrect, but user did exists");

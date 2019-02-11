@@ -1,8 +1,13 @@
 
 package project.controller;
 
+import org.springframework.data.repository.CrudRepository;
+
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.nio.charset.StandardCharsets;
+
 
 public class Toolkit {
   public static String decode(String authenticationHeaderText) {
@@ -17,5 +22,12 @@ public class Toolkit {
 
   public static String getPassword(String authenticationHeaderText) {
     return decode(authenticationHeaderText).split(":", 2)[1];
+  }
+
+  public static <Repository extends CrudRepository<Entity, Long> , Entity> List<Entity> idsToEntities(List<Long> teamIds, Repository repository) {
+    return teamIds
+      .stream()
+      .map(id -> repository.findById(id).get())
+      .collect(Collectors.toList());
   }
 }

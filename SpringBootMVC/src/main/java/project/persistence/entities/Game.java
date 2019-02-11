@@ -12,13 +12,13 @@ public class Game {
   private long id;
 
   @OneToMany
-  private List<GameEvent> gameEvents;
-  @OneToMany
-  private List<Player> players;
-  @OneToMany
-  private List<Player> startingLineup;
+  private List<GameEvent> gameEvents = new ArrayList<>();
+  @ManyToMany
+  private List<Player> bench = new ArrayList<>();
+  @ManyToMany
+  private List<Player> startingLineup = new ArrayList<>();
   private String stadiumName = "Not set";
-  private long timeOfGame;
+  private long timeOfGame = 0;
 
   public Game() { }
 
@@ -37,6 +37,13 @@ public class Game {
     for (GameEvent ge : gameEvents)
       stats[ge.getEventType()][ge.getLocation()]++;
     return stats;
+  }
+
+  public List<Player> getAllPlayers() {
+    List<Player> all = new ArrayList<>();
+    all.addAll(bench);
+    all.addAll(startingLineup);
+    return all;
   }
 
   public void addGameEvent(GameEvent gameEvent) {
@@ -71,16 +78,16 @@ public class Game {
     return gameEvents;
   }
 
-  public void setGameEvents(ArrayList<GameEvent> gameEvents) {
+  public void setGameEvents(List<GameEvent> gameEvents) {
     this.gameEvents = gameEvents;
   }
 
-  public List<Player> getPlayers() {
-    return players;
+  public List<Player> getBench() {
+    return bench;
   }
 
-  public void setPlayers(ArrayList<Player> players) {
-    this.players = players;
+  public void setBench(List<Player> bench) {
+    this.bench = bench;
   }
 
 
@@ -88,9 +95,8 @@ public class Game {
     return startingLineup;
   }
 
-  public void setStartingLineup(ArrayList<Player> startingLineup) {
+  public void setStartingLineup(List<Player> startingLineup) {
     this.startingLineup = startingLineup;
   }
-
 
 }
