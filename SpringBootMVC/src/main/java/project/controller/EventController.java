@@ -58,6 +58,19 @@ public class EventController {
     return (user.getCurrentGame() != null);
   }
 
+  @RequestMapping(value="/user/setActiveGame", method=RequestMethod.GET)
+  public String setActiveGame(
+      @RequestHeader("Authorization") String basicAuthString,
+      @RequestParam Long gameId
+  ) {
+    String userName = Toolkit.getUserName(basicAuthString);
+    User user = userRepository.findById(userName).get();
+    Game game = gameRepository.findById(gameId).get();
+    user.setCurrentGame(game);
+    userRepository.save(user);
+    return "Success";
+  }
+
   // Returns null if no game
   @RequestMapping(value="/user/getActiveGame", method=RequestMethod.GET)
   public Game getActiveGame(

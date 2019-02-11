@@ -42,10 +42,10 @@ public class GameEvent {
   @Id
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
-  private long timeOfEvent;
+  private Long timeOfEvent;
   private int eventType;
   private int location;
-  private long playerId;
+  private Long playerId;
 
   public static int getLocationByName(String location) throws Exception {
     switch (location) {
@@ -81,7 +81,7 @@ public class GameEvent {
     }
   }
 
-  public GameEvent(int location, int eventType, int timeOfEvent, long playerId) {
+  public GameEvent(int location, int eventType, Long timeOfEvent, Long playerId) {
     this.location = location;
     this.eventType = eventType;
     this.timeOfEvent = timeOfEvent;
@@ -101,27 +101,27 @@ public class GameEvent {
       location == RIGHT_CORNER;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
-  public long getTimeOfEvent() {
+  public Long getTimeOfEvent() {
     return timeOfEvent;
   }
 
-  public void setTimeOfEvent(long timeOfEvent) {
+  public void setTimeOfEvent(Long timeOfEvent) {
     this.timeOfEvent = timeOfEvent;
   }
 
-  public long getPlayerId() {
+  public Long getPlayerId() {
     return playerId;
   }
 
-  public void setPlayerId(long playerId) {
+  public void setPlayerId(Long playerId) {
     this.playerId = playerId;
   }
 
