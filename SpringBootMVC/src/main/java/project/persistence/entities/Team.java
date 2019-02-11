@@ -1,11 +1,12 @@
+
 package project.persistence.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
-
 import static javax.persistence.GenerationType.*;
 
 @Entity
-@Table(name = "team")
 public class Team {
 
     @Id
@@ -13,18 +14,19 @@ public class Team {
     private Long id;
     private String name;
     private String userOwner;
+    @OneToMany
+    private List<Player> players = new ArrayList<>();
 
-
-
-    public Team(){
-    }
+    public Team(){ }
 
     public Team(Long id, String name, String userOwner){
         this.id = id;
         this.name = name;
         this.userOwner = userOwner;
+    }
 
-        //this.player = player;
+    public void addPlayer(Player player) {
+      players.add(player);
     }
 
     public Long getId(){ return id; }
@@ -39,6 +41,14 @@ public class Team {
 
     public void setUserOwner(String userOwner) {this.userOwner = userOwner;}
 
+    public List<Player> getPlayers() {
+      return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+      this.players = players;
+    }
+
 
     //public Player getPlayer() {return player;}
 
@@ -48,7 +58,7 @@ public class Team {
     public String toString() {
         return String.format(
                 "Team [id=%s, name=%s, userOwner=%s]",
-                id, name, userOwner);
+                id, name, userOwner) + super.toString();
     }
 
 }

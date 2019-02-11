@@ -1,18 +1,13 @@
+
 package project.persistence.entities;
 
 import javax.persistence.*;
-import javax.validation.Validator;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import java.util.List;
-
-
 import static javax.persistence.GenerationType.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "player")
 public class Player {
 
     @Id
@@ -22,7 +17,8 @@ public class Player {
     private String name;
     private String playerPos;
     private Long teamId;
-
+    @ElementCollection
+    private List<Long> gamesPlayed = new ArrayList<>();
 
     public Player() {
 
@@ -58,16 +54,25 @@ public class Player {
 
     public void setTeamId(Long teamId) {this.teamId =  teamId;}
 
+    public List<Long> getGamesPlayed() {
+      return gamesPlayed;
+    }
+
+    public void setGamesPlayed(List<Long> gamesPlayed) { this.gamesPlayed = gamesPlayed; }
+
+    public void addGamePlayed(Long gameId) {
+      this.gamesPlayed.add(gameId);
+    }
+
+
 
     // This is for easier debug.
     @Override
     public String toString() {
         return String.format(
                 "Player[name=%s, playerPos=%s]",
-                name,playerPos);
+                name,playerPos) + super.toString();
     }
 
 
 }
-
-

@@ -1,229 +1,61 @@
+
 package project.persistence.entities;
+
+import project.persistence.entities.GameEvent;
+import project.persistence.entities.Calculator;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "PlayerStats")
 public class PlayerStats {
+  public PlayerStats() { }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String playerName;
-    private Long teamId;
-    private Long playerId;
-    private Long points;
-    private Long rebounds;
-    private Long assists;
-    private Long turnovers;
-    private Long blocks;
-    private Long steals;
-    private Long fouls;
-    private Long threePointHit;
-    private Long threePointMiss;
-    private Long twoPointHit;
-    private Long twoPointMiss;
-    private Long freeThrowHit;
-    private Long freeThrowMiss;
-    private String twoPointer;
-    private String threePointer;
-    private String freeThrow;
+  @Id
+  private long playerId;
 
+  private int blocks;
+  private int turnover;
+  private int miss;
+  private int hit;
+  private int assist;
+  private int rebound;
+  private int[] hitsByLocation;
+  private int[] missByLocation;
 
-    public PlayerStats() {
-    }
+  private int hits = 0;
 
-    public PlayerStats(Long id, String playerName, Long teamId, Long playerId, Long points, Long rebounds, Long assists, Long turnovers, Long blocks, Long steals, Long fouls, Long threePointHit, Long threePointMiss, Long twoPointHit, Long twoPointMiss, Long freeThrowHit, Long freeThrowMiss, String twoPointer, String threePointer, String freeThrow) {
-        this.id = id;
-        this.playerName = playerName;
-        this.teamId = teamId;
-        this.playerId = playerId;
-        this.points = points;
-        this.rebounds = rebounds;
-        this.assists = assists;
-        this.turnovers = turnovers;
-        this.blocks = blocks;
-        this.steals = steals;
-        this.fouls = fouls;
-        this.threePointHit = threePointHit;
-        this.threePointMiss = threePointMiss;
-        this.twoPointHit = twoPointHit;
-        this.twoPointMiss = twoPointMiss;
-        this.freeThrowHit = freeThrowHit;
-        this.freeThrowMiss = freeThrowMiss;
-        this.twoPointer = twoPointer;
-        this.threePointer = threePointer;
-        this.freeThrow = freeThrow;
-    }
+  // We use this constructor to get the raw data in and
+  // putting into readable form. That way it can be returned
+  // from the controller as JSON.
 
-    public Long getId() {
-        return id;
-    }
+  public void recalculateStats() {
+    this.hitsByLocation = data[GameEvent.HIT];
+    this.missByLocation = data[GameEvent.MISS];
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    int[] totals = Calculator.sumAll(data);
 
-    public Long getPlayerId() {
-        return playerId;
-    }
+    this.blocks = totals[GameEvent.BLOCK];
+    this.turnover = totals[GameEvent.TURNOVER];
+    this.miss = totals[GameEvent.MISS];
+    this.hit = totals[GameEvent.HIT];
+    this.assist = totals[GameEvent.ASSIST];
+    this.rebound = totals[GameEvent.REBOUND];
+  }
 
-    public void setPlayerId(Long playerId) {
-        this.playerId = playerId;
-    }
+  public PlayerStats(int[][] data, Long playerId)  {
+    this.playerId = playerId;
+    this.data = data;
+    recalculateStats();
+  }
 
-    public Long getPoints() {
-        return points != null ? points:0;
-    }
+  private int[][] data;
 
-    public void setPoints(Long points) {
-        this.points = points;
-    }
+  public int[][] getData() {
+    return data;
+  }
 
-    public Long getRebounds() {
-        return rebounds != null ? rebounds:0;
+  public void setData(int[][] data) {
+    this.data = data;
+  }
 
-    }
-
-    public void setRebounds(Long rebounds) {
-        this.rebounds = rebounds;
-    }
-
-    public Long getAssists() {
-        return assists != null ? assists:0;
-
-    }
-
-    public void setAssists(Long assists) {
-        this.assists = assists;
-    }
-
-    public Long getTurnovers() {
-        return turnovers != null ? turnovers:0;
-
-    }
-
-    public void setTurnovers(Long turnovers) {
-        this.turnovers = turnovers;
-    }
-
-    public Long getBlocks() {
-        return blocks != null ? blocks:0;
-
-    }
-
-    public void setBlocks(Long blocks) {
-        this.blocks = blocks;
-    }
-
-    public Long getFouls() {
-        return fouls != null ? fouls:0;
-
-    }
-
-    public void setFouls(Long fouls) {
-        this.fouls = fouls;
-    }
-
-
-    public String getTwoPointer() {
-        return twoPointer;
-    }
-
-    public void setTwoPointer(String twoPointer) {
-        this.twoPointer = twoPointer;
-    }
-
-    public String getThreePointer() {
-        return threePointer;
-    }
-
-    public void setThreePointer(String threePointer) {
-        this.threePointer = threePointer;
-    }
-
-    public String getFreeThrow() {
-        return freeThrow;
-    }
-
-    public void setFreeThrow(String freeThrow) {
-        this.freeThrow = freeThrow;
-    }
-
-    public Long getThreePointHit() {
-        return threePointHit != null ? threePointHit:0;
-
-
-    }
-
-    public void setThreePointHit(Long threePointHit) {
-        this.threePointHit = threePointHit;
-    }
-
-    public Long getThreePointMiss() {
-
-        return threePointMiss != null ? threePointMiss:0;
-    }
-
-
-    public void setThreePointMiss(Long threePointMiss) {
-        this.threePointMiss = threePointMiss;
-    }
-
-    public Long getFreeThrowHit() {
-        return freeThrowHit != null ? freeThrowHit:0;
-    }
-
-    public void setFreeThrowHit(Long freeThrowHit) {
-        this.freeThrowHit = freeThrowHit;
-    }
-
-    public Long getFreeThrowMiss() {
-        return freeThrowMiss != null ? freeThrowMiss:0;
-    }
-
-    public void setFreeThrowMiss(Long freeThrowMiss) {
-        this.freeThrowMiss = freeThrowMiss;
-    }
-
-    public Long getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(Long teamId) {
-        this.teamId = teamId;
-    }
-
-    public Long getTwoPointHit() {
-        return twoPointHit != null ? twoPointHit:0;
-    }
-
-    public void setTwoPointHit(Long twoPointHit) {
-        this.twoPointHit = twoPointHit;
-    }
-
-    public Long getTwoPointMiss() {
-        return twoPointMiss != null ? twoPointMiss:0;
-
-    }
-
-    public void setTwoPointMiss(Long twoPointMiss) {
-        this.twoPointMiss = twoPointMiss;
-    }
-
-    public Long getSteals() {
-        return steals != null ? steals:0;
-    }
-
-    public void setSteals(Long steals) {
-        this.steals = steals;
-    }
-
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
 }

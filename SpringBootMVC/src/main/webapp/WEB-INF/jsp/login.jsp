@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<sf:form method="POST" modelAttribute="users" action="/login">
+<sf:form method="POST" modelAttribute="user" action="/login">
 
     <div align="center">
         <div style="color: blue" >${msg}</div>
