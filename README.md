@@ -1,12 +1,21 @@
 # Hugbunadarverkefni1
 
-# Basic
+### Server documentation
+
+Thad er i ser file sem heitir `apidocs.md` :)
+
+
+---
+
+# Github
+
+### Basic
 
 Sjá stöðuna á verkefni => ´git status´
 
 Sjá branches og í hverju þú ert í => ´git branch´
 
-# Skrá username og password (svo þið þurfið ekki að gera það fyrir hvert push)
+### Skrá username og password (svo þið þurfið ekki að gera það fyrir hvert push)
 
 git config --global user.name "notandanafn"
 
@@ -14,7 +23,7 @@ git config --global user.email "email@email.com"
 
 (það er líka hægt að láta git muna psswordið þitt)
 
-# Byrja að nota Git og sækja verkefnið
+### Byrja að nota Git og sækja verkefnið
 
 Gera nýja möppu
 
@@ -29,11 +38,11 @@ Núna ætti ´git remote´ að sýna "origin" á skjánum.
 
 ´git pull origin master´ sækir öll ný skjöl og uppfærir þau sem þú ert með.
 
-# Dæmi með git branch og fara i tad
+## Dæmi með git branch og fara i tad
 
 git checkout branchnafn
 
-# Gera prufu skrá og commit-a
+## Gera prufu skrá og commit-a
 
 touch test.txt
 
@@ -43,7 +52,7 @@ git commit -m "Prufuskrá bætt við"
 
 Núna er búið að bæta við og commit-a test.txt á local branchinu, ekki master.
 
-# Hvernig skal vinna þetta.
+## Hvernig skal vinna þetta.
 
 git branch "þá sérðu hvaða branchi þú ert í, vertu í þínu"
 
@@ -61,7 +70,7 @@ git merge branchnafn
 
 git push origin master
 
-# Eyða branch ef það verður ekki notað aftur
+## Eyða branch ef það verður ekki notað aftur
 
 git branch -d nafn-a-branchi
 
