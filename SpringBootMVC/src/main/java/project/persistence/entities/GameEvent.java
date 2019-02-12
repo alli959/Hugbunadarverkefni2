@@ -11,6 +11,19 @@ import static javax.persistence.GenerationType.*;
 @Entity
 public class GameEvent {
 
+  /**
+   *
+   * Important:
+   *
+   * Basically these constants are here for the int[][] data object
+   * For exmaple if there were 5 hits from LEFT_CORNER in the game
+   * you will have 
+   *    data[HIT][LEFT_CORNER] == 5
+   * or simply
+   *    data[1][4] == 5
+   *
+   */
+  
   // Location constants
   public static final int NONE = 0;
   public static final int LEFT_WING = 1;
@@ -47,8 +60,9 @@ public class GameEvent {
   private int location;
   private Long playerId;
 
+  // Because the input of the controller methods are text 
   public static int getLocationByName(String location) throws Exception {
-    switch (location) {
+    switch (location.toUpperCase()) {
       case "NONE": return NONE;
       case "TOP": return TOP;
       case "LEFT_WING": return LEFT_WING;
@@ -67,8 +81,9 @@ public class GameEvent {
     }
   }
 
+  // Because the input of the controller methods are text
   public static int getEventTypeByName(String type) throws Exception {
-    switch (type) {
+    switch (type.toUpperCase()) {
       case "HIT": return HIT;
       case "MISS": return MISS;
       case "ASSIST": return ASSIST;
@@ -81,6 +96,7 @@ public class GameEvent {
     }
   }
 
+  // Useless
   public GameEvent(int location, int eventType, Long timeOfEvent, Long playerId) {
     this.location = location;
     this.eventType = eventType;
@@ -92,13 +108,17 @@ public class GameEvent {
 
   }
 
-  public boolean isThreePointLocation() {
-    return
+  public static int locationPoints(int location) {
+    if (location == NONE) return 0;
+    if (location == FREE_THROW) return 1;
+    return 
       location == LEFT_WING ||
       location == RIGHT_WING ||
       location == TOP ||
       location == LEFT_CORNER ||
-      location == RIGHT_CORNER;
+      location == RIGHT_CORNER 
+      ? 3 : 2;
+
   }
 
   public Long getId() {

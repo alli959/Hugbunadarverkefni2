@@ -10,10 +10,10 @@ import project.persistence.repositories.*;
 
 /**
 
-    REQUIRES PlayerStats.java
+    REQUIRES Stats.java
 
     Close to being done, but we however need to put in some handy
-    variables into 'PlayerStats.java' that are calculated from
+    variables into 'Stats.java' that are calculated from
     the input data.
 
     Todo:
@@ -35,13 +35,8 @@ public class PlayerController {
   @Autowired
   private GameRepository gameRepository;
 
-  // Not reccomended to use, better getTeam
-  @RequestMapping(value = "/user/getTeam", method = RequestMethod.GET)
-  public Team playerAddGet(@RequestParam Long teamId){
-    return teamRepository.findById(teamId).get();
-  }
-
-  // Done
+  // Method: localhost:8080/user/createPlayer?playerNr[int]&teamId=[long]&name=[string]&playerPos=[string]
+  // Return: The player created as JSON
   @RequestMapping(value = "/user/createPlayer", method = RequestMethod.GET)
   public Player playerAddPost(
     @RequestHeader("Authorization") String authString,
@@ -63,7 +58,8 @@ public class PlayerController {
     return newPlayer;
   }
 
-  // Done
+  // Method: localhost:8080/user/getPlayer?playerId=[long]
+  // Return: Player with id as playerId as JSON
   @RequestMapping(value = "/user/getPlayer", method = RequestMethod.GET)
   public Player playerGetFromName(
     @RequestParam Long playerId
@@ -71,21 +67,19 @@ public class PlayerController {
     return playerRepository.findById(playerId).get();
   }
 
-  // Done
+  // Method: localhost:8080/user/getStatsForPlayer?playerId=[long]
+  // Return: Stats object of the player with playerId as JSON
   @RequestMapping(value = "/user/getStatsForPlayer", method = RequestMethod.GET)
-  public PlayerStats getPlayerStatsForPlayer(
+  public Stats getStatsForPlayer(
     @RequestParam Long playerId
   ) {
     Player player = playerRepository.findById(playerId).get();
     List<Long> gameIds = player.getGamesPlayed();
     List<Game> games = Toolkit.idsToEntities(gameIds, gameRepository);
-    int[][] totalStats = new int[GameEvent.N_GAME_EVENTS][GameEvent.N_LOCATIONS];
-    for (Game game : games) {
-      int[][] stats = game.compileStats(playerId);
-      for (int i = 0; i < stats.length; i++)
-        for (int j = 0; j < stats[i].length; i++)
-          totalStats[i][j] += stats[i][j];
-    }
-    return new PlayerStats(totalStats, playerId);
+    Stats stats = new Stats();
+    for (Game game : games)
+      stats.addData(game.compileStats(playerId));
+    stats.recalculateStats();
+    return stats;
   }
 }

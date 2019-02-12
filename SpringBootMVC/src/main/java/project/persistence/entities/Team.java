@@ -16,6 +16,8 @@ public class Team {
     private String userOwner;
     @OneToMany
     private List<Player> players = new ArrayList<>();
+    @ElementCollection
+    private List<Long> gamesPlayed = new ArrayList<>();
 
     public Team(){ }
 
@@ -29,6 +31,10 @@ public class Team {
       players.add(player);
     }
 
+    public void addGamePlayed(Long gameId) {
+      gamesPlayed.add(gameId);
+    }
+
     public Long getId(){ return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -40,6 +46,14 @@ public class Team {
     public String getUserOwner() { return userOwner; }
 
     public void setUserOwner(String userOwner) {this.userOwner = userOwner;}
+
+    public List<Long> getGamesPlayed() {
+      return gamesPlayed;
+    }
+
+    public void setGamesPlayed(List<Long> gamesPlayed) {
+      this.gamesPlayed = gamesPlayed;
+    }
 
     public List<Player> getPlayers() {
       return players;

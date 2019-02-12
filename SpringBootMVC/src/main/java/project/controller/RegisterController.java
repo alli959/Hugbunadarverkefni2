@@ -23,10 +23,11 @@ public class RegisterController {
   @Autowired
   private UserRepository userRepository;
 
-  // This method is allowed when the authentication header is set to
-  //    Username: anonymous
-  //    Password: anonymous
-  //
+  // Method: localhost:8080/register?userName=[string]&password=[string]&name=[string]&email=[string]
+  // Attntn: Needs the header 'Authorization' to be set to 
+  //    Username: 'anonymous'
+  //    Password: 'anonymous'
+  // Return: userName of the user created if successful, if already exists then "User already exists bruh"
   @RequestMapping(value = "/register", method = RequestMethod.GET)
   public String createUser(
     @RequestParam String userName,
@@ -45,21 +46,5 @@ public class RegisterController {
     String uName = userRepository.save(user).getUserName();
     System.out.printf("Created user with username: %s, password: %s, email: %s", userName, password, email);
     return uName;
-  }
-
-  // Eg aetla ekki ad nota thetta, functionid ad ofan virkar nogu vel
-  @Deprecated
-  @RequestMapping(value = "/register", method = RequestMethod.POST)
-  public String createUserPost(@ModelAttribute("createUser") User inputUser,
-  Model model) {
-    User dbUser = userRepository.findById(inputUser.getName()).get();
-    if(dbUser != null){
-      model.addAttribute("error","User already exists");
-      return "/register";
-    }
-    inputUser.setPassword(BCrypt.hashpw(inputUser.getPassword(), BCrypt.gensalt()));
-    userRepository.save(inputUser);
-    model.addAttribute("createUser", new User());
-    return "redirect:login";
   }
 }

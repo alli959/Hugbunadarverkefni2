@@ -2,8 +2,9 @@
 package project.persistence.entities;
 
 
-import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
 import project.persistence.entities.Game;
 
 @Entity
@@ -15,18 +16,21 @@ public class User {
   private String name;
   private String password;
   private String email;
+
+
+  // Used to have a game active so the User can answer a phone call and come
+  // back later to the same game.
   @OneToOne
   private Game currentGame;
 
-  private ArrayList<Long> gameIds = new ArrayList<>();
-  private ArrayList<Long> playerIds = new ArrayList<>();
-  private ArrayList<Long> teamIds = new ArrayList<>();
+  @ElementCollection
+  private List<Long> gameIds = new ArrayList<>();
+  @ElementCollection
+  private List<Long> playerIds = new ArrayList<>();
+  @ElementCollection
+  private List<Long> teamIds = new ArrayList<>();
 
-  //private Team team;
-
-
-  public User() {
-  }
+  public User() {}
 
   public User(String name, String userName, String password, String email) {
     this.name = name;
@@ -77,27 +81,27 @@ public class User {
     this.email = email;
   }
 
-  public ArrayList<Long> getGameIds() {
+  public List<Long> getGameIds() {
     return gameIds;
   }
 
-  public void setGameIds(ArrayList<Long> gameIds) {
+  public void setGameIds(List<Long> gameIds) {
     this.gameIds = gameIds;
   }
 
-  public ArrayList<Long> getPlayerIds() {
+  public List<Long> getPlayerIds() {
     return playerIds;
   }
 
-  public void setPlayerIds(ArrayList<Long> playerIds) {
+  public void setPlayerIds(List<Long> playerIds) {
     this.playerIds = playerIds;
   }
 
-  public ArrayList<Long> getTeamIds() {
+  public List<Long> getTeamIds() {
     return teamIds;
   }
 
-  public void setTeamIds(ArrayList<Long> teamIds) {
+  public void setTeamIds(List<Long> teamIds) {
     this.teamIds = teamIds;
   }
 

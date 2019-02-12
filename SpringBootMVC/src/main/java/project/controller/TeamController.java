@@ -20,9 +20,10 @@ public class TeamController {
   @Autowired
   private UserRepository userRepository;
 
-  // Done
+  // Method: localhost:8080/user/team
+  // Return: All teams user has as JSON
   @RequestMapping(value = "/user/team", method = RequestMethod.GET)
-  public Iterable<Team> createTeamGet(
+  public Iterable<Team> getAllTeams(
     @RequestHeader("Authorization") String basicAuthString
   ) {
     String userName = Toolkit.getUserName(basicAuthString);
@@ -31,7 +32,8 @@ public class TeamController {
     return Toolkit.idsToEntities(user.getTeamIds(), teamRepository);
   }
 
-  // Done
+  // Method: localhost:8080/user/createTeam?name=[string]
+  // Return: The newly created team as JSON
   @RequestMapping(value = "/user/createTeam", method = RequestMethod.GET)
   public Team createTeamPost(
     @RequestHeader("Authorization") String basicAuthString,
@@ -48,10 +50,11 @@ public class TeamController {
     return team;
   }
 
-  // Done
-  @RequestMapping(value = "/user/team/{teamId}",  method = RequestMethod.GET)
+  // Method: localhost:8080/user/team/getOne?teamId=[long]
+  // Return: The team with teamId provided as JSON
+  @RequestMapping(value = "/user/team/getOne",  method = RequestMethod.GET)
   public Team getOneTeam(
-    @PathVariable Long teamId
+    @RequestParam Long teamId
   ){
     return teamRepository.findById(teamId).get();
   }

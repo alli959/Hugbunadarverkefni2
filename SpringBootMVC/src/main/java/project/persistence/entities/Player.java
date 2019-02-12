@@ -20,9 +20,7 @@ public class Player {
     @ElementCollection
     private List<Long> gamesPlayed = new ArrayList<>();
 
-    public Player() {
-
-    }
+    public Player() {}
 
     public Player(Long id, String name, String playerPos, Long playerNr, Long teamId) {
         this.id = id;
@@ -30,8 +28,6 @@ public class Player {
         this.playerPos = playerPos;
         this.playerNr = playerNr;
         this.teamId = teamId;
-
-
     }
 
     public Long getId() {return id;}

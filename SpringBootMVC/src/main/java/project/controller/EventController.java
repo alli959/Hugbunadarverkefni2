@@ -21,16 +21,6 @@ import project.persistence.entities.*;
 import project.persistence.repositories.*;
 import project.service.*;
 
-/**
-
-  TODO
-  Make a game
-  Add event to current game
-
- **/
-
-
-
 @RestController
 public class EventController {
 
@@ -48,7 +38,8 @@ public class EventController {
   @Autowired
   GameEventRepository gameEventRepository;
 
-  // Can use this one to check if user has a game in process
+  // Method: localhost:8080/user/hasActiveGame
+  // Return: "true" if has a game that he's gathering stats for, "false" otherwis
   @RequestMapping(value="/user/hasActiveGame", method=RequestMethod.GET)
   public Boolean hasActiveGame(
       @RequestHeader("Authorization") String basicAuthString
@@ -58,6 +49,8 @@ public class EventController {
     return (user.getCurrentGame() != null);
   }
 
+  // Method: localhost:8080/user/setActiveGame?gameId=[gameId]
+  // Return: "Success" if active game has been set
   @RequestMapping(value="/user/setActiveGame", method=RequestMethod.GET)
   public String setActiveGame(
       @RequestHeader("Authorization") String basicAuthString,
@@ -71,7 +64,8 @@ public class EventController {
     return "Success";
   }
 
-  // Returns null if no game
+  // Method: localhost:8080/user/getActiveGame
+  // Return: JSON with the current game user is gathering stats for
   @RequestMapping(value="/user/getActiveGame", method=RequestMethod.GET)
   public Game getActiveGame(
       @RequestHeader("Authorization") String basicAuthString
@@ -81,6 +75,11 @@ public class EventController {
     return user.getCurrentGame();
   }
 
+  // Method: localhost:8080/user/createGame?bench=[playerId]&...&playing=[playerId]&...&teamId=[teamId]
+  // Attntn: ... means that ...&key=value1&key=value2&key=value3... is allowed
+  // Notreq: stadiumName, timeOfGame
+  // Return: Game newly created
+  // After : Team and players of the team have id of game
   @RequestMapping(value="/user/createGame", method=RequestMethod.GET)
   public Game createGame(
       @RequestHeader("Authorization") String basicAuthString,
@@ -98,49 +97,27 @@ public class EventController {
     game.setBench(theRest);
     game.setStadiumName(stadiumName);
     game.setTimeOfGame(timeOfGame);
+    game.setTeamId(teamId);
 
     game = gameRepository.save(game);
     for (Player player : game.getAllPlayers()) {
       player.addGamePlayed(game.getId());
       playerRepository.save(player);
     }
-    System.out.println(1);
+
+    Team team = teamRepository.findById(teamId).get();
+    team.addGamePlayed(game.getId());
+    teamRepository.save(team);
+
     return game;
   }
 
-  /*
-  @RequestMapping(value = "/game", method = RequestMethod.GET)
-  public String home(HttpSession session, Model model) {
-    String action = (String) session.getAttribute("Action");
-    User loggedInUser = (User) session.getAttribute("login");
-
-    List<Player> playing = (List<Player>) session.getAttribute("playing");
-    List<Player> bench = (List<Player>) session.getAttribute("bench");
-
-    Long teamId = (Long) session.getAttribute("teamId");
-
-    if (loggedInUser != null) {
-      if (playing.toArray().length < 5 || playing.toArray().length > 5) {
-        session.setAttribute("error", "Starting lineup should be 5 \n not less not more, \n only 5");
-        return "redirect:/user/pregame/" + teamId;
-      }
-      model.addAttribute("starters", playing);
-      model.addAttribute("players", bench);
-      return "Game";
-    }
-    session.setAttribute("error", "User must be logged in!");
-    return "redirect:/login";
-  }
-  */
-
-  // Breyta thessu yfir i method af 3 breytum
-  // Location
-  // EventType
-  // Time
-  // PlayerId
-
-  // IMPORTANT!!
-  // Make sure time is gametime + eventtime everytime
+  // Method: localhost:8080/user/addGameEvent?location=[string]&eventType=[string]&time=[number]&playerId=[playerId]
+  // Note  :
+  //    location can be one of ( "NONE", "LEFT_WING", "RIGHT_WING", "TOP", "LEFT_CORNER", "RIGHT_CORNER", "LEFT_SHORT",
+  //                             "RIGHT_SHORT", "LEFT_TOP", "RIGHT_TOP", "LAY_UP", "FREE_THROW")
+  //    eventType can be one of ("MISS", "HIT", "FOUL", "ASSIST", "REBOUND", "BLOCK", "TURNOVER")
+  // Return: 
   @RequestMapping(value="/user/addGameEvent")
   public GameEvent addGameEvent (
       @RequestHeader("Authorization") String basicAuthString,
@@ -154,7 +131,9 @@ public class EventController {
     Game currentGame = user.getCurrentGame();
     Long timeOfEvent = currentGame.getTimeOfGame() + time;
     GameEvent gameEvent = new GameEvent();
-    gameEvent.setLocation(GameEvent.getLocationByName(location));
+    int locationValue = location == null ? 0 : GameEvent.getLocationByName(location);
+
+    gameEvent.setLocation(locationValue);
     gameEvent.setEventType(GameEvent.getEventTypeByName(eventType));
     gameEvent.setTimeOfEvent(timeOfEvent);
     if (playerId != null) {
@@ -178,7 +157,9 @@ public class EventController {
     System.out.println(myObject.toString());
   }
 
-  @RequestMapping(value = "/game/endgame", method = RequestMethod.GET)
+  // Method: localhost:8080/user/endGame
+  // Return: "Success" if the current game of the user has been unset (set to null)
+  @RequestMapping(value = "/user/endGame", method = RequestMethod.GET)
   public String endgame(
       @RequestHeader("Authorization") String basicAuthString
   ) {
@@ -188,118 +169,5 @@ public class EventController {
     userRepository.save(user);
     return "Success, game has been removed";
   }
-
 }
 
-/***
-//-----Add shots -------//
-String playerIdText = myObject.get("playerId").toString();
-String from = myObject.get("from").toString();
-if(!playerIdText.equals("") && !from.equals("")) {
-Long playerId = Long.parseLong(playerIdText);
-boolean isHit = (boolean) myObject.get("isHit");
-Game shooter = gameRepository.findById(playerId);
-if(isHit) {
-Long shot = Long.parseLong(shooter.getClass().getMethod("get" + from + "Hit").invoke(shooter).toString());
-shooter.getClass().getMethod("set" + from + "Hit", Long.class).invoke(shooter, shot += 1);
-}
-else{
-Long shot = Long.parseLong(shooter.getClass().getMethod("get" + from + "Miss").invoke(shooter).toString());
-shooter.getClass().getMethod("set" + from + "Miss", Long.class).invoke(shooter, shot += 1);
-}
-gameRepository.save(shooter);
-}
-
-//-------Add assist------//
-String assistIdText = myObject.get("assist").toString();
-// System.out.println(assistIdText);
-if(!assistIdText.equals("")) {
-Long assistId = Long.parseLong(assistIdText);
-Game assister = gameRepository.findByPlayerId(assistId);
-Long assist = Long.parseLong(assister.getClass().getMethod("getAssist").invoke(assister).toString());
-assister.getClass().getMethod("setAssist", Long.class).invoke(assister, assist += 1);
-gameRepository.save(assister);
-}
-
-//-------Add rebound-------//
-String reboundIdText = myObject.get("rebound").toString();
-// System.out.println(reboundIdText);
-if(!reboundIdText.equals("")) {
-Long reboundId = Long.parseLong(reboundIdText);
-Game rebounder = gameRepository.findByPlayerId(reboundId);
-Long rebound = Long.parseLong(rebounder.getClass().getMethod("getRebound").invoke(rebounder).toString());
-rebounder.getClass().getMethod("setRebound", Long.class).invoke(rebounder, rebound += 1);
-gameRepository.save(rebounder);
-}
-
-////playerId, from, isHit, assist, rebound, subIn, subOut, turnover, other////
-
-//-----------Add steal---------//
-String stealText = myObject.get("other").toString();
-String stealIdText = myObject.get("playerId").toString();
-if(stealText.equals("Steal") && !stealIdText.equals("")){
-Long stealId = Long.parseLong(stealIdText);
-Game stealer = gameRepository.findByPlayerId(stealId);
-Long steal = Long.parseLong(stealer.getClass().getMethod("getSteal").invoke(stealer).toString());
-stealer.getClass().getMethod("setSteal", Long.class).invoke(stealer, steal += 1);
-gameRepository.save(stealer);
-}
-
-//-----------Add block---------//
-String blockText = myObject.get("other").toString();
-String blockIdText = myObject.get("playerId").toString();
-if(blockText.equals("Block") && !blockIdText.equals("")){
-Long blockId = Long.parseLong(blockIdText);
-Game blocker = gameRepository.findByPlayerId(blockId);
-Long block = Long.parseLong(blocker.getClass().getMethod("getBlock").invoke(blocker).toString());
-blocker.getClass().getMethod("setBlock", Long.class).invoke(blocker, block += 1);
-gameRepository.save(blocker);
-}
-
-
-//----------Add turnover---------//
-String trunoverText = myObject.get("turnover").toString();
-String turnoverIdText = myObject.get("playerId").toString();
-if(trunoverText.equals("Turnover") && !turnoverIdText.equals("")){
-Long turnoverId = Long.parseLong(turnoverIdText);
-Game turnoverer = gameRepository.findByPlayerId(turnoverId);
-Long turnover = Long.parseLong(turnoverer.getClass().getMethod("getTurnover").invoke(turnoverer).toString());
-turnoverer.getClass().getMethod("setTurnover", Long.class).invoke(turnoverer, turnover += 1);
-gameRepository.save(turnoverer);
-}
-
-
-//-----------Add foul--------//
-String foulText = myObject.get("other").toString();
-String foulIdText = myObject.get("playerId").toString();
-if(foulText.equals("Foul") && !turnoverIdText.equals("")){
-  Long foulId = Long.parseLong(foulIdText);
-  Game fouler = gameRepository.findByPlayerId(foulId);
-  Long foul = Long.parseLong(fouler.getClass().getMethod("getFoul").invoke(fouler).toString());
-  fouler.getClass().getMethod("setFoul", Long.class).invoke(fouler, foul += 1);
-  gameRepository.save(fouler);
-}
-
-**/
-//----------Add substitutions --------//
-
-/* String subInText = myObject.get("subIn").toString();
-   String subOutText = myObject.get("subOut").toString();
-   if(!subInText.equals("") && !subOutText.equals("")){
-   System.out.println("subOutText " +subOutText);
-   System.out.println("subInText " +subInText);
-
-
-   Long subInId = Long.parseLong(subInText);
-   Long subOutId = Long.parseLong(subOutText);
-
-
-
-   Game subIner = gameRepository.findByPlayerId(subInId);
-   Game subOuter = gameRepository.findByPlayerId(subOutId);
-   subIner.setBench(false);
-   subOuter.setBench(true);
-   gameRepository.save(subOuter);
-   gameRepository.save(subIner);
-   }
-   */

@@ -9,7 +9,7 @@ public class Game {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id;
+  private Long id;
 
   @OneToMany
   private List<GameEvent> gameEvents = new ArrayList<>();
@@ -18,13 +18,13 @@ public class Game {
   @ManyToMany
   private List<Player> startingLineup = new ArrayList<>();
   private String stadiumName = "Not set";
-  private long timeOfGame = 0;
+  private Long timeOfGame = 0L;
+  private Long teamId;
 
   public Game() { }
 
-  // Duplicate code yes, but for speed
-  // The if sentence a few lines down runs many times
-  public int[][] compileStats(long playerId) {
+  // Get the int[][] data to put into a Stats object for only one player
+  public int[][] compileStats(Long playerId) {
     int[][] stats = new int[GameEvent.N_GAME_EVENTS][GameEvent.N_LOCATIONS];
     for (GameEvent ge : gameEvents)
       if (playerId == ge.getPlayerId() || playerId == 0)
@@ -32,6 +32,7 @@ public class Game {
     return stats;
   }
 
+  // Get the int[][] totals for the entire game
   public int[][] compileStats() {
     int[][] stats = new int[GameEvent.N_GAME_EVENTS][GameEvent.N_LOCATIONS];
     for (GameEvent ge : gameEvents)
@@ -50,11 +51,11 @@ public class Game {
     this.gameEvents.add(gameEvent);
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -66,12 +67,20 @@ public class Game {
     this.stadiumName = stadiumName;
   }
 
-  public long getTimeOfGame() {
+  public Long getTimeOfGame() {
     return timeOfGame;
   }
 
-  public void setTimeOfGame(long timeOfGame) {
+  public void setTimeOfGame(Long timeOfGame) {
     this.timeOfGame = timeOfGame;
+  }
+
+  public Long getTeamId() {
+    return teamId;
+  }
+
+  public void setTeamId(Long teamId) {
+    this.teamId = teamId;
   }
 
   public List<GameEvent> getGameEvents() {
