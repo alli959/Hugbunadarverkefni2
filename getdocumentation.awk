@@ -1,3 +1,5 @@
+# find SpringBootMVC/src/main/ -name "*Controller.java" | xargs cat | awk -f getdocumentation.awk > apidocs.md
+
 BEGIN {
   isapidocs = 0
   customsection = 0
@@ -5,9 +7,9 @@ BEGIN {
 
   if (isapidocs == 1 && $0 ~ /\/\//) {
     print $0
-  } else { 
-   isapidocs = 0 
-  } 
+  } else {
+   isapidocs = 0
+  }
 
   if ($0 ~ /\/\/ Method/) {
     isapidocs = 1
