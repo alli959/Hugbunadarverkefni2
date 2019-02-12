@@ -1,4 +1,14 @@
 
+## Important!
+
+ALL requests need the header with 'Authorization'
+
+To register the header must have username 'anonymous' and password 'anonymous'
+
+All requests with username 'admin' password 'admin' are allowed but since 'admin'
+is not a user right now it might not work always
+
+---
 
   ## Method: localhost:8080/user/whatismyusername
      Return: Username of the user
