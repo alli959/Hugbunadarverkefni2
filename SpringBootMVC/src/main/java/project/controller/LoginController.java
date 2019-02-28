@@ -14,6 +14,7 @@ import project.persistence.repositories.UserRepository;
 
 **/
 
+@CrossOrigin
 @RestController
 public class LoginController {
 

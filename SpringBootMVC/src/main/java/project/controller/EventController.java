@@ -16,6 +16,7 @@ import project.persistence.entities.*;
 import project.persistence.repositories.*;
 import project.service.*;
 
+@CrossOrigin
 @RestController
 public class EventController {
 

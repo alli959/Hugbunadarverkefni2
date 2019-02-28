@@ -13,6 +13,7 @@ import project.controller.Toolkit;
 
 **/
 
+@CrossOrigin
 @RestController
 public class HomeController {
 
