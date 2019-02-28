@@ -32,7 +32,13 @@ public class Player extends Entity {
 
     @Override
     public List<Pair<String, String>> getParameters() {
-        return null;
+        List<Pair<String, String>> params = new ArrayList<>();
+        params.add(new Pair<String, String>("id", id.toString()));
+        params.add(new Pair<String, String>("playerNr", playerNr.toString()));
+        params.add(new Pair<String, String>("name", name));
+        params.add(new Pair<String, String>("playerPos", playerPos));
+        params.add(new Pair<String, String>("teamId", teamId.toString()));
+        return params;
     }
 
     public String getName() {return name;}

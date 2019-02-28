@@ -1,9 +1,15 @@
-package project.persistence.entities;
+package yolo.basket.db.game;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class Game extends Stats {
+import yolo.basket.db.Entity;
+import yolo.basket.db.Pair;
+import yolo.basket.db.gameEvent.GameEvent;
+import yolo.basket.db.player.Player;
+import yolo.basket.db.stats.Stats;
+
+public class Game extends Entity {
 
   private Long id;
 
@@ -50,6 +56,11 @@ public class Game extends Stats {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  @Override
+  public List<Pair<String, String>> getParameters() {
+    return null;
   }
 
   public String getStadiumName() {

@@ -1,5 +1,6 @@
 package yolo.basket.db.gameEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import yolo.basket.db.Entity;
@@ -93,6 +94,18 @@ public class GameEvent extends Entity {
     }
   }
 
+
+  @Override
+  public List<Pair<String, String>> getParameters() {
+    List<Pair<String, String>> params = new ArrayList<>();
+    params.add(new Pair<String, String>("id", id.toString()));
+    params.add(new Pair<String, String>("timeOfEvent", timeOfEvent.toString()));
+    params.add(new Pair<String, String>("eventType", Integer.toString(eventType)));
+    params.add(new Pair<String, String>("location", Integer.toString(location)));
+    params.add(new Pair<String, String>("playerId", playerId.toString()));
+    return params;
+  }
+
   // Useless
   public GameEvent(int location, int eventType, Long timeOfEvent, Long playerId) {
     this.location = location;
@@ -124,11 +137,6 @@ public class GameEvent extends Entity {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  @Override
-  public List<Pair<String, String>> getParameters() {
-    return null;
   }
 
   public Long getTimeOfEvent() {

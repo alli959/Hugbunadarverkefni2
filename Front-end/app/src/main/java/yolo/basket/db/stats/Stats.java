@@ -1,11 +1,19 @@
+package yolo.basket.db.stats;
 
-
-  // This entity is NOT to be stored in the DATABASE!
+// This entity is NOT to be stored in the DATABASE!
   // Rather it is calculated by the current data in the database
   //
   // The purpose is to receive data, calculate it and
   // be sent back through a response as JSON so it 
   // doesn't have to be calculated on the front end.
+
+  import java.util.List;
+
+  import yolo.basket.db.Calculator;
+  import yolo.basket.db.Entity;
+  import yolo.basket.db.EntityController;
+  import yolo.basket.db.Pair;
+  import yolo.basket.db.gameEvent.GameEvent;
 
   /**
    *
@@ -23,7 +31,7 @@
    *
    */
  
-public class Stats {
+public class Stats extends Entity {
   // Input
   private int[][] data;
 
@@ -73,7 +81,12 @@ public class Stats {
     this.data = blankData();
   }
 
-  // To calculate stats for a specific player
+    @Override
+    public List<Pair<String, String>> getParameters() {
+      return null;
+    }
+
+    // To calculate stats for a specific player
   public Stats(int[][] data)  {
     this.data = data;
     recalculateStats();

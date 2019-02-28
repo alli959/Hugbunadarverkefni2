@@ -1,4 +1,4 @@
-package project.persistence.entities;
+package yolo.basket.db;
 
 // Used to calculate stats for the Stats object
 public class Calculator {

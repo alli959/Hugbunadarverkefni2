@@ -7,13 +7,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-/**
- * Author: Olafur Palsson
- * HImail: olp6@gmail.com
- * Actual: olafur.palsson
- * Heiti verkefnis: PACKAGE_NAME
- */
-
 public class PlayerController<Ent extends Player> extends EntityController {
 	public PlayerController() {
 		this.updateURL = "addBooking";

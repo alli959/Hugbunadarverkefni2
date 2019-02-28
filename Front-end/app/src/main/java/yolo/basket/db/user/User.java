@@ -1,9 +1,12 @@
+package yolo.basket.db.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import basket.front.game.Game;
+import yolo.basket.db.Entity;
+import yolo.basket.db.Pair;
+import yolo.basket.db.game.Game;
 
-public class User {
+public class User extends Entity {
   
   private String userName;
   private String name;
@@ -20,6 +23,11 @@ public class User {
   private List<Long> teamIds = new ArrayList<>();
 
   public User() {}
+
+  @Override
+  public List<Pair<String, String>> getParameters() {
+    return null;
+  }
 
   public User(String name, String userName, String password, String email) {
     this.name = name;
