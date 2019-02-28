@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class Game extends Stats {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @OneToMany

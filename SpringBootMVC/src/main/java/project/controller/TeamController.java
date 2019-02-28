@@ -11,7 +11,6 @@ import project.controller.Toolkit;
 
 import java.util.List;
 
-@CrossOrigin
 @RestController
 public class TeamController {
 

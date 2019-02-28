@@ -22,7 +22,6 @@ import project.persistence.repositories.*;
 
 **/
 
-@CrossOrigin
 @RestController
 public class PlayerController {
 

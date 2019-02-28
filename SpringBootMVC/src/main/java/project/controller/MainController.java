@@ -15,7 +15,6 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 
-@CrossOrigin
 @RestController
 public class MainController {
 

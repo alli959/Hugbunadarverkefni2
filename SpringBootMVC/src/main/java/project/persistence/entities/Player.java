@@ -11,7 +11,7 @@ import java.util.List;
 public class Player {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long playerNr;
     private String name;

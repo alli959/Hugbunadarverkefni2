@@ -53,7 +53,7 @@ public class GameEvent {
 
   // Class data
   @Id
-  @GeneratedValue(strategy = IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   private Long timeOfEvent;
   private int eventType;

@@ -4,6 +4,7 @@ package project.persistence.entities;
 
 import project.persistence.entities.GameEvent;
 import project.persistence.entities.Calculator;
+import static javax.persistence.GenerationType.*;
 
 import javax.persistence.*;
 
@@ -37,6 +38,7 @@ public class Stats {
 
   // Unused
   @Id
+  private long id;
   private long playerId;
 
   // Calculated
