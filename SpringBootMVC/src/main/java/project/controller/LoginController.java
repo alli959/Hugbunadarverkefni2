@@ -13,6 +13,8 @@ import project.persistence.repositories.UserRepository;
     whether a user is logged in.
 
 **/
+
+@CrossOrigin
 @RestController
 public class LoginController {
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Entity
-public class Game {
+public class Game extends Stats {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
