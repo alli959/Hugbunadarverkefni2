@@ -31,10 +31,10 @@ public class TeamController {
     return Toolkit.idsToEntities(user.getTeamIds(), teamRepository);
   }
 
-  // Method: localhost:8080/user/createTeam?name=[string]
+  // Method: localhost:8080/user/saveTeam?name=[string]
   // Return: The newly created team as JSON
-  @RequestMapping(value = "/user/createTeam", method = RequestMethod.GET)
-  public Team createTeamPost(
+  @RequestMapping(value = "/user/saveTeam", method = RequestMethod.GET)
+  public Team saveTeam(
     @RequestHeader("Authorization") String basicAuthString,
     @RequestParam String name
   ) {

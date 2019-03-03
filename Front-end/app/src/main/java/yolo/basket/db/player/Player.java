@@ -3,7 +3,7 @@ package yolo.basket.db.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import yolo.basket.db.Pair;
+import yolo.basket.db.Param;
 
 import yolo.basket.db.Entity;
 
@@ -31,13 +31,13 @@ public class Player extends Entity {
     public void setId(Long id) {this.id = id;}
 
     @Override
-    public List<Pair<String, String>> getParameters() {
-        List<Pair<String, String>> params = new ArrayList<>();
-        params.add(new Pair<String, String>("id", id.toString()));
-        params.add(new Pair<String, String>("playerNr", playerNr.toString()));
-        params.add(new Pair<String, String>("name", name));
-        params.add(new Pair<String, String>("playerPos", playerPos));
-        params.add(new Pair<String, String>("teamId", teamId.toString()));
+    public List<Param> getParameters() {
+        List<Param> params = new ArrayList<>();
+        if (id != null) params.add(new Param("id", id.toString()));
+        params.add(new Param("playerNr", playerNr.toString()));
+        params.add(new Param("name", name));
+        params.add(new Param("playerPos", playerPos));
+        if (teamId != null) params.add(new Param("teamId", teamId.toString()));
         return params;
     }
 

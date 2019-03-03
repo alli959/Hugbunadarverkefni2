@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import yolo.basket.db.Entity;
 import yolo.basket.db.EntityController;
 
-public class GameEventController<GameEvent> extends EntityController {
+public class GameEventController<GameEvent, Long> extends EntityController {
     public GameEventController() {
     }
 

@@ -46,4 +46,12 @@ public class RegisterController {
     System.out.printf("Created user with username: %s, password: %s, email: %s", userName, password, email);
     return uName;
   }
+
+  @RequestMapping(value = "/removeUser", method = RequestMethod.GET)
+  public String removeUser(
+      @RequestParam String id
+  ) {
+    userRepository.deleteById(id);
+    return "Success";
+  }
 }

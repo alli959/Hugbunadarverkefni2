@@ -31,6 +31,14 @@ public class Team {
       players.add(player);
     }
 
+    public void removePlayer(Long id) {
+      for (Player player : players)
+        if (player.getId() == id) {
+          players.remove(player);
+          break;
+        }
+    }
+
     public void addGamePlayed(Long gameId) {
       gamesPlayed.add(gameId);
     }

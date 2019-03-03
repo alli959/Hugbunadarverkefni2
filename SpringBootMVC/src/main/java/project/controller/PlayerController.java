@@ -35,11 +35,12 @@ public class PlayerController {
   @Autowired
   private GameRepository gameRepository;
 
-  // Method: localhost:8080/user/createPlayer?playerNr[int]&teamId=[long]&name=[string]&playerPos=[string]
+  // Method: localhost:8080/user/savePlayer?playerNr[int]&teamId=[long]&name=[string]&playerPos=[string]
   // Return: The player created as JSON
-  @RequestMapping(value = "/user/createPlayer", method = RequestMethod.GET)
+  @RequestMapping(value = "/user/savePlayer", method = RequestMethod.GET)
   public Player playerAddPost(
     @RequestHeader("Authorization") String authString,
+    @RequestParam(required=false) Long id,
     @RequestParam Long playerNr,
     @RequestParam Long teamId,
     @RequestParam String name,
@@ -48,6 +49,7 @@ public class PlayerController {
     User user = userRepository.findById(Toolkit.getUserName(authString)).get();
     Team team = teamRepository.findById(teamId).get();
     Player newPlayer = new Player();
+    if (id != null) newPlayer.setId(id);
     newPlayer.setTeamId(teamId);
     newPlayer.setPlayerPos(playerPos);
     newPlayer.setPlayerNr(playerNr);
@@ -58,13 +60,26 @@ public class PlayerController {
     return newPlayer;
   }
 
-  // Method: localhost:8080/user/getPlayer?playerId=[long]
-  // Return: Player with id as playerId as JSON
+  // Method: localhost:8080/user/getPlayer?id=[long]
+  // Return: "Success" if was successful, otherwise not a 4xx/5xx response
+  @RequestMapping(value = "/user/removePlayer", method = RequestMethod.GET)
+  public String removePlayer(
+      @RequestParam Long id
+  ) {
+    Player player = playerRepository.findById(id).get();
+    Team team = teamRepository.findById(player.getTeamId()).get();
+    team.removePlayer(id);
+    playerRepository.deleteById(id);
+    return "Success";
+  }
+
+  // Method: localhost:8080/user/getPlayer?id=[long]
+  // Return: Player with id as id as JSON
   @RequestMapping(value = "/user/getPlayer", method = RequestMethod.GET)
   public Player playerGetFromName(
-    @RequestParam Long playerId
+    @RequestParam Long id
   ){
-    return playerRepository.findById(playerId).get();
+    return playerRepository.findById(id).get();
   }
 
   // Method: localhost:8080/user/getStatsForPlayer?playerId=[long]

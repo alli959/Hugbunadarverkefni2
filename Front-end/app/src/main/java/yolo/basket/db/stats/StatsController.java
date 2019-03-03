@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import yolo.basket.db.Entity;
 import yolo.basket.db.EntityController;
 
-public class StatsController extends EntityController {
+public class StatsController<Stats, Long> extends EntityController {
     @Override
     protected Entity jsonToEntity(JSONObject json) throws JSONException {
         return null;

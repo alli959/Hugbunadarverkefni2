@@ -1,10 +1,4 @@
 package yolo.basket.db;
-/**
- * Author: Olafur Palsson
- * HImail: olp6@gmail.com
- * Actual: olafur.palsson
- * Heiti verkefnis: search.generator
- */
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,29 +7,28 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.*;
 
-public abstract class EntityController<Ent extends Entity> {
+public abstract class EntityController<Ent extends Entity, IdType> {
     //need to initialize these before using the "getAll" and "save" methods
     protected String getAllURL = "getAllURL-not-initialized-properly-somehow";
-    protected String updateURL = "updateURL-not-initialized";
+    protected String saveURL = "saveURL-not-initialized";
     protected String removeURL = "removeURL-not-initialized";
     protected String getOneURL = "getOneURL-not-initialized";
 
     protected abstract Ent jsonToEntity(JSONObject json) throws JSONException;
-    public boolean remove(Long id) throws IOException, JSONException {
-        Pair<String, String> pair = new Pair<>("id", "" + id);
-        Request r = new Request(removeURL, pair);
+    public boolean remove(IdType id) throws IOException, JSONException {
+        Param param = new Param("id", "" + id);
+        Request r = new Request(removeURL, param);
         r.resolve();
         return true;
     }
 
     //returns the id
-    public Long save(Ent ent) throws IOException, JSONException {
+    public Ent save(Ent ent) throws IOException, JSONException {
         JSONObject o = new JSONObject();
-        List<Pair<String, String>> params = ent.getParameters();
-        Request r = new Request(updateURL, ent.getParameters());
+        List<Param> params = ent.getParameters();
+        Request r = new Request(saveURL, ent.getParameters());
         JSONArray a = r.resolve();
-        Long l = Long.parseLong(a.get(0).toString());
-        return l;
+        return (Ent) jsonToEntity((JSONObject) a.get(0));
     }
 
     public Long getAsLong(String key, JSONObject o) throws JSONException {
@@ -67,11 +60,11 @@ public abstract class EntityController<Ent extends Entity> {
         return longMap;
     }
 
-    public List getOne(Long id) throws JSONException {
-        Pair pair = new Pair("id", "" + id);
+    public List getOne(IdType id) throws JSONException {
+        Param param = new Param("id", "" + id);
         JSONArray json;
         try {
-            Request r = new Request(getOneURL, pair);
+            Request r = new Request(getOneURL, param);
             json = r.resolve();
         } catch(IOException e) {
             e.printStackTrace(System.out);
@@ -83,7 +76,7 @@ public abstract class EntityController<Ent extends Entity> {
         return entity;
     }
 
-    public Ent one(Long id) throws IOException, JSONException {
+    public Ent one(IdType id) throws IOException, JSONException {
         List<Ent> list = getOne(id);
         return list.get(0);
     }
@@ -98,5 +91,6 @@ public abstract class EntityController<Ent extends Entity> {
             entities.add(jsonToEntity((JSONObject) json.get(i)));
         return entities;
     }
+
 }
 

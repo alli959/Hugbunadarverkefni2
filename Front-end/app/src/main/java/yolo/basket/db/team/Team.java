@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import yolo.basket.db.Entity;
-import yolo.basket.db.Pair;
+import yolo.basket.db.Param;
 import yolo.basket.db.player.Player;
 
 public class Team extends Entity {
@@ -17,6 +17,17 @@ public class Team extends Entity {
     private List<Long> gamesPlayed = new ArrayList<>();
 
     public Team(){ }
+
+    @Override
+    public List<Param> getParameters() {
+      List<Param> params = new ArrayList<>();
+      if (id != null) params.add(new Param("id", id.toString()));
+      params.add(new Param("name", name));
+      params.add(new Param("userOwner", userOwner));
+      params.addAll(Param.getIdsOfEntitiesAsParams("player", players));
+      params.addAll(Param.listOfLongToParams("gamesPlayed", gamesPlayed));
+      return params;
+    }
 
     public Team(Long id, String name, String userOwner){
         this.id = id;
@@ -35,11 +46,6 @@ public class Team extends Entity {
     public Long getId(){ return id; }
 
     public void setId(Long id) { this.id = id; }
-
-    @Override
-    public List<Pair<String, String>> getParameters() {
-        return null;
-    }
 
     public String getName() { return name; }
 

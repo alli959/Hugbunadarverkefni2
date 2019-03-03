@@ -22,30 +22,30 @@ public abstract class Entity {
 	public void setId(Long id) { this.id = id;  }
 
 
-	public abstract List<Pair<String, String>> getParameters();
+	public abstract List<Param> getParameters();
 
-	protected static Pair<String, String> pair(String key, String value) {
-		return new Pair<>(key, value);
+	protected static Param pair(String key, String value) {
+		return new Param(key, value);
 	}
 
-	protected static Pair<String, String> pair(String key, Long value) {
+	protected static Param pair(String key, Long value) {
 		return pair(key, "" + value);
 	}
 
-	protected static Pair<String, String> pair(String key, Integer value) {
+	protected static Param pair(String key, Integer value) {
 		return pair(key, "" + value);
 	}
 
-	protected static Pair<String, String> pair(String key, Double value) {
+	protected static Param pair(String key, Double value) {
 		return pair(key, "" + value);
 	}
 
-	protected static Pair<String, String> pair(String key, Boolean value) {
+	protected static Param pair(String key, Boolean value) {
 		return pair(key, "" + value);
 	}
 
-	protected static List<Pair<String, String>> mapToListOfPairs(String keyName, Map<Integer, ?> map) {
-		List<Pair<String, String>> list = new ArrayList<>();
+	protected static List<Param> mapToListOfPairs(String keyName, Map<Integer, ?> map) {
+		List<Param> list = new ArrayList<>();
 		for(Map.Entry<Integer, ?> entry : map.entrySet())
 			list.add(pair(keyName, entry.getValue().toString()));
 		return list;

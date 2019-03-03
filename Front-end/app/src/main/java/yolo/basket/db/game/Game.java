@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import yolo.basket.db.Entity;
-import yolo.basket.db.Pair;
+import yolo.basket.db.Param;
 import yolo.basket.db.gameEvent.GameEvent;
 import yolo.basket.db.player.Player;
-import yolo.basket.db.stats.Stats;
 
 public class Game extends Entity {
 
@@ -21,6 +20,18 @@ public class Game extends Entity {
   private Long teamId;
 
   public Game() { }
+
+  @Override
+  public List<Param> getParameters() {
+    List<Param> params = new ArrayList<>();
+    params.addAll(Param.getIdsOfEntitiesAsParams("gameEvent", gameEvents));
+    params.addAll(Param.getIdsOfEntitiesAsParams("bench", bench));
+    params.addAll(Param.getIdsOfEntitiesAsParams("startingLineup", startingLineup));
+    params.add(new Param("stadiumName", stadiumName));
+    params.add(new Param("timeOfGame", timeOfGame.toString()));;
+    params.add(new Param("teamId", teamId.toString()));
+    return params;
+  }
 
   // Get the int[][] data to put into a Stats object for only one player
   public int[][] compileStats(Long playerId) {
@@ -56,11 +67,6 @@ public class Game extends Entity {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  @Override
-  public List<Pair<String, String>> getParameters() {
-    return null;
   }
 
   public String getStadiumName() {

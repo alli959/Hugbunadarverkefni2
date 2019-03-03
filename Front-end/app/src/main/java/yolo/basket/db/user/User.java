@@ -3,7 +3,7 @@ package yolo.basket.db.user;
 import java.util.ArrayList;
 import java.util.List;
 import yolo.basket.db.Entity;
-import yolo.basket.db.Pair;
+import yolo.basket.db.Param;
 import yolo.basket.db.game.Game;
 
 public class User extends Entity {
@@ -25,8 +25,16 @@ public class User extends Entity {
   public User() {}
 
   @Override
-  public List<Pair<String, String>> getParameters() {
-    return null;
+  public List<Param> getParameters() {
+    List<Param> params = new ArrayList<>();
+    params.add(new Param("userName", userName));
+    params.add(new Param("name", name));
+    params.add(new Param("password", password));
+    params.add(new Param("email", email));
+    params.addAll(Param.listOfLongToParams("gameId", gameIds));
+    params.addAll(Param.listOfLongToParams("playerId", playerIds));
+    params.addAll(Param.listOfLongToParams("teamId", teamIds));
+    return params;
   }
 
   public User(String name, String userName, String password, String email) {

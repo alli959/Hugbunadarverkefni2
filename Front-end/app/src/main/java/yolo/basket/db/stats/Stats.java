@@ -1,36 +1,35 @@
 package yolo.basket.db.stats;
 
 // This entity is NOT to be stored in the DATABASE!
-  // Rather it is calculated by the current data in the database
-  //
-  // The purpose is to receive data, calculate it and
-  // be sent back through a response as JSON so it 
-  // doesn't have to be calculated on the front end.
+// Rather it is calculated by the current data in the database
+//
+// The purpose is to receive data, calculate it and
+// be sent back through a response as JSON so it 
+// doesn't have to be calculated on the front end.
 
-  import java.util.List;
+import java.util.List;
 
-  import yolo.basket.db.Calculator;
-  import yolo.basket.db.Entity;
-  import yolo.basket.db.EntityController;
-  import yolo.basket.db.Pair;
-  import yolo.basket.db.gameEvent.GameEvent;
+import yolo.basket.db.Calculator;
+import yolo.basket.db.Entity;
+import yolo.basket.db.Param;
+import yolo.basket.db.gameEvent.GameEvent;
 
-  /**
-   *
-   * Important:
-   *
-   * The constants for the int[][] data object are located in 
-   * GameEvent.java, since it's an int[][] array then we have
-   * names for each of these integers so we know what they are
-   * 
-   * Example:
-   * you will have 
-   *    data[GameEvent.HIT][GameEvent.LEFT_CORNER] == 5
-   * or equivalent
-   *    data[1][4] == 5
-   *
-   */
- 
+/**
+ *
+ * Important:
+ *
+ * The constants for the int[][] data object are located in 
+ * GameEvent.java, since it's an int[][] array then we have
+ * names for each of these integers so we know what they are
+ * 
+ * Example:
+ * you will have 
+ *    data[GameEvent.HIT][GameEvent.LEFT_CORNER] == 5
+ * or equivalent
+ *    data[1][4] == 5
+ *
+ */
+
 public class Stats extends Entity {
   // Input
   private int[][] data;
@@ -81,12 +80,13 @@ public class Stats extends Entity {
     this.data = blankData();
   }
 
-    @Override
-    public List<Pair<String, String>> getParameters() {
-      return null;
-    }
+  // Not used, this method is only needed when sending the data to the server
+  @Override
+  public List<Param> getParameters() {
+    return null;
+  }
 
-    // To calculate stats for a specific player
+  // To calculate stats for a specific player
   public Stats(int[][] data)  {
     this.data = data;
     recalculateStats();
@@ -107,7 +107,7 @@ public class Stats extends Entity {
   public void setData(int[][] data) {
     this.data = data;
   }
- 
+
   public int getBlock() {
     return block;
   }
@@ -115,7 +115,7 @@ public class Stats extends Entity {
   public void setBlock(int block) {
     this.block = block;
   }
- 
+
   public int getTurnover() {
     return turnover;
   }
@@ -124,7 +124,6 @@ public class Stats extends Entity {
     this.turnover = turnover;
   }
 
- 
   public int getMiss() {
     return miss;
   }
@@ -133,7 +132,6 @@ public class Stats extends Entity {
     this.miss = miss;
   }
 
- 
   public int getRebound() {
     return rebound;
   }
@@ -142,7 +140,6 @@ public class Stats extends Entity {
     this.rebound = rebound;
   }
 
- 
   public int getHit() {
     return hit;
   }
@@ -150,7 +147,7 @@ public class Stats extends Entity {
   public void setHit(int hit) {
     this.hit = hit;
   }
- 
+
   public int getAssist() {
     return assist;
   }
@@ -158,7 +155,7 @@ public class Stats extends Entity {
   public void setAssist(int assist) {
     this.assist = assist;
   }
- 
+
   public int[] getHitsByPoints() {
     return hitsByPoints;
   }
@@ -166,7 +163,7 @@ public class Stats extends Entity {
   public void setHitsByPoints(int[] hitsByPoints) {
     this.hitsByPoints = hitsByPoints;
   }
-  
+
   public int[] getMissByPoints() {
     return missByPoints;
   }
@@ -181,7 +178,7 @@ public class Stats extends Entity {
   public void setHitsByLocation(int[] hitsByLocation) {
     this.hitsByLocation = hitsByLocation;
   }
-  
+
   public int[] getMissByLocation() {
     return missByLocation;
   }

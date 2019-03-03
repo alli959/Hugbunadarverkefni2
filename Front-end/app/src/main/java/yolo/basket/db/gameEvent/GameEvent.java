@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import yolo.basket.db.Entity;
-import yolo.basket.db.Pair;
+import yolo.basket.db.Param;
 
 /*
    This is a huge database table for the shots, hits or miss
@@ -96,13 +96,13 @@ public class GameEvent extends Entity {
 
 
   @Override
-  public List<Pair<String, String>> getParameters() {
-    List<Pair<String, String>> params = new ArrayList<>();
-    params.add(new Pair<String, String>("id", id.toString()));
-    params.add(new Pair<String, String>("timeOfEvent", timeOfEvent.toString()));
-    params.add(new Pair<String, String>("eventType", Integer.toString(eventType)));
-    params.add(new Pair<String, String>("location", Integer.toString(location)));
-    params.add(new Pair<String, String>("playerId", playerId.toString()));
+  public List<Param> getParameters() {
+    List<Param> params = new ArrayList<>();
+    params.add(new Param("id", id.toString()));
+    params.add(new Param("timeOfEvent", timeOfEvent.toString()));
+    params.add(new Param("eventType", Integer.toString(eventType)));
+    params.add(new Param("location", Integer.toString(location)));
+    params.add(new Param("playerId", playerId.toString()));
     return params;
   }
 
