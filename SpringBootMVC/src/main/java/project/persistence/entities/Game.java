@@ -49,6 +49,9 @@ public class Game extends Stats {
   }
 
   public void addGameEvent(GameEvent gameEvent) {
+    for (GameEvent ge : gameEvents)
+      if (ge.getId() == gameEvent.getId())
+        return;
     this.gameEvents.add(gameEvent);
   }
 

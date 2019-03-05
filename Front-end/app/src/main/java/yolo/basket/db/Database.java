@@ -64,8 +64,7 @@ public class Database {
         try {
             Request request = new Request("user/whatismyusername");
             String string = (String) request.resolve().get(0);
-            System.out.println(string);
-            return string == userName;
+            return string.equals(userName);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

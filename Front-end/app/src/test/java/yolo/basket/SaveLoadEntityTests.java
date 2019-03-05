@@ -2,6 +2,7 @@ package yolo.basket;
 
 import org.json.JSONException;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 import yolo.basket.db.Database;
 import yolo.basket.db.game.Game;
+import yolo.basket.db.gameEvent.GameEvent;
 import yolo.basket.db.player.Player;
 import yolo.basket.db.team.Team;
 
@@ -54,7 +56,8 @@ public class SaveLoadEntityTests {
     @Test
     public void PlayerTest() throws IOException, JSONException {
         Player player = createPlayer(defaultTeam.getId());
-
+        Player player2 = (Player) Database.player.save(player);
+        Assert.assertEquals(player.getId(), player2.getId());
         // Remove data
         Database.player.remove(player.getId());
     }
@@ -79,6 +82,8 @@ public class SaveLoadEntityTests {
     @Test
     public void TeamTest() throws IOException, JSONException {
         Team teamFromDatabase = createTeam();
+        Team checkId = (Team) Database.team.save(teamFromDatabase);
+        Assert.assertEquals(teamFromDatabase.getId(), checkId.getId());
         // Remove data
         for (Player player : teamFromDatabase.getPlayers())
             Database.player.remove(player);
@@ -108,18 +113,37 @@ public class SaveLoadEntityTests {
 
     @Test
     public void GameTest() throws IOException, JSONException {
-        Game game = createGame();
+        Game game1 = createGame();
+        Game game2 = (Game) Database.game.save(game1);
+        Assert.assertEquals(game1.getId(), game2.getId());
     }
-    // TODO:
 
+    public GameEvent createGameEvent() throws IOException, JSONException {
+        GameEvent gameEvent = new GameEvent();
+        gameEvent.setEventType(5);
+        gameEvent.setLocation(5);
+        gameEvent.setTimeOfEvent(50000L);
+        gameEvent.setPlayerId(5L);
+        GameEvent gameEventFromDatabase = (GameEvent) Database.gameEvent.save(gameEvent);
+        Check.ifEqual(gameEvent, gameEventFromDatabase);
+        return gameEventFromDatabase;
+    }
+
+    @Test
+    public void GameEventTest() throws IOException, JSONException {
+        GameEvent gameEvent = createGameEvent();
+        GameEvent gameEvent2 = (GameEvent) Database.gameEvent.save(gameEvent);
+
+    }
+
+    // TODO:
     //  CREATE GAME TEST
     //  TEST THE SHIT OUT OF EVERYTHING :@
-
-
 
     @After
     public void teardown() throws IOException, JSONException {
         Database.setCredentials("admin", "admin");
+        Database.user.remove("test1");
     }
 }
 

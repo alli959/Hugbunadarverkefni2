@@ -106,6 +106,8 @@ public class EventController {
       @RequestParam(required=false) Long timeOfGame
   ) {
     Game game = new Game();
+    if (id != null)
+      game = gameRepository.findById(id).get();
     List<Player> startingLineup = Toolkit.idsToEntities(playing, playerRepository);
     List<Player> theRest = Toolkit.idsToEntities(bench, playerRepository);
 
@@ -114,9 +116,8 @@ public class EventController {
     game.setStadiumName(stadiumName);
     game.setTimeOfGame(timeOfGame);
     game.setTeamId(teamId);
-    if (id != null)
-      game.setId(id);
     game = gameRepository.save(game);
+    System.out.println(id + " " + game.getId());
     for (Player player : game.getAllPlayers()) {
       player.addGamePlayed(game.getId());
       playerRepository.save(player);

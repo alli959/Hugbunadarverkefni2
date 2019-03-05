@@ -28,6 +28,8 @@ public class Team {
     }
 
     public void addPlayer(Player player) {
+      for (Player p : players)
+        if (p.getId().equals(player.getId())) return;
       players.add(player);
     }
 
@@ -40,6 +42,8 @@ public class Team {
     }
 
     public void addGamePlayed(Long gameId) {
+      for (Long id : gamesPlayed)
+        if (gameId.equals(id)) return;
       gamesPlayed.add(gameId);
     }
 

@@ -49,7 +49,7 @@ public class PlayerController {
     User user = userRepository.findById(Toolkit.getUserName(authString)).get();
     Team team = teamRepository.findById(teamId).get();
     Player newPlayer = new Player();
-    if (id != null) newPlayer.setId(id);
+    if (id != null) newPlayer = playerRepository.findById(id).get();
     newPlayer.setTeamId(teamId);
     newPlayer.setPlayerPos(playerPos);
     newPlayer.setPlayerNr(playerNr);

@@ -98,7 +98,8 @@ public class GameEvent extends Entity {
   @Override
   public List<Param> getParameters() {
     List<Param> params = new ArrayList<>();
-    params.add(new Param("id", id.toString()));
+    if (id != null)
+      params.add(new Param("id", id.toString()));
     params.add(new Param("timeOfEvent", timeOfEvent.toString()));
     params.add(new Param("eventType", Integer.toString(eventType)));
     params.add(new Param("location", Integer.toString(location)));

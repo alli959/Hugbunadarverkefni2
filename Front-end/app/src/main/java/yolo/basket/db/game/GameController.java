@@ -4,12 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import yolo.basket.db.Database;
 import yolo.basket.db.Entity;
 import yolo.basket.db.EntityController;
+import yolo.basket.db.Param;
+import yolo.basket.db.Request;
+import yolo.basket.db.gameEvent.GameEvent;
 import yolo.basket.db.player.Player;
 
 public class GameController extends EntityController {
@@ -20,8 +24,15 @@ public class GameController extends EntityController {
         removeURL = "user/removeGame";
     }
 
+    public void addGameEvent(GameEvent gameEvent) throws IOException, JSONException {
+        String method = "user/addGameEvent";
+        List<Param> params = gameEvent.getParameters();
+        Request request = new Request(method, params);
+        request.resolve();
+    }
+
     @Override
-    protected Game jsonToEntity(JSONObject json) throws JSONException {
+    public Game jsonToEntity(JSONObject json) throws JSONException {
         System.out.println(json.toString());
         Game game = new Game();
         game.setStadiumName(json.getString("stadiumName"));

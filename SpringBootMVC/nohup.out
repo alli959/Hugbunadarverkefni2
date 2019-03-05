@@ -1,0 +1,4 @@
+
+(java:4983): Gtk-WARNING **: 23:01:10.127: Unable to locate theme engine in module_path: "adwaita",
+
+(java:4983): Gtk-WARNING **: 23:01:10.132: Unable to locate theme engine in module_path: "adwaita",
