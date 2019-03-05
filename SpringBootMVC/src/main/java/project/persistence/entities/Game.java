@@ -3,11 +3,13 @@ package project.persistence.entities;
 import javax.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
+import static javax.persistence.GenerationType.*;
 
 @Entity
 public class Game extends Stats {
 
   @Id
+  @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
   @OneToMany
@@ -17,7 +19,7 @@ public class Game extends Stats {
   @ManyToMany
   private List<Player> startingLineup = new ArrayList<>();
   private String stadiumName = "Not set";
-  private Long timeOfGame = 0L;
+  private Long timeOfGame;
   private Long teamId;
 
   public Game() { }

@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 
-import project.persistence.entities.Team;
-import project.persistence.entities.User;
+import project.persistence.entities.*;
 import project.persistence.repositories.*;
 import project.controller.Toolkit;
 
@@ -16,6 +15,8 @@ public class TeamController {
 
   @Autowired
   private TeamRepository teamRepository;
+  @Autowired
+  private PlayerRepository playerRepository;
   @Autowired
   private UserRepository userRepository;
 
@@ -36,25 +37,44 @@ public class TeamController {
   @RequestMapping(value = "/user/saveTeam", method = RequestMethod.GET)
   public Team saveTeam(
     @RequestHeader("Authorization") String basicAuthString,
-    @RequestParam String name
+    @RequestParam String name,
+    @RequestParam(required=false) Long id,
+    @RequestParam(required=false) List<Long> playerIds,
+    @RequestParam(required=false) List<Long> gamesPlayed
   ) {
     String userName = Toolkit.getUserName(basicAuthString);
+    System.out.println(userName);
     User user = userRepository.findById(userName).get();
     Team team = new Team();
+    if (id != null)
+      team = teamRepository.findById(id).get();
     team.setName(name);
     team.setUserOwner(userName);
+    if (gamesPlayed != null)
+      team.setGamesPlayed(gamesPlayed);
+    if (playerIds != null)
+      for (Long playerId : playerIds)
+        team.addPlayer(playerRepository.findById(playerId).get());
     team = teamRepository.save(team);
     user.addTeamId(team.getId());
     userRepository.save(user);
     return team;
   }
 
-  // Method: localhost:8080/user/team/getOne?teamId=[long]
-  // Return: The team with teamId provided as JSON
+  @RequestMapping(value = "/user/team/remove", method = RequestMethod.GET)
+  public String removeOneTeam(
+      @RequestParam  Long id
+      ) {
+    teamRepository.deleteById(id);
+    return "Success";
+      }
+
+  // Method: localhost:8080/user/team/getOne?id=[long]
+  // Return: The team with id provided as JSON
   @RequestMapping(value = "/user/team/getOne",  method = RequestMethod.GET)
   public Team getOneTeam(
-    @RequestParam Long teamId
-  ){
-    return teamRepository.findById(teamId).get();
-  }
+      @RequestParam Long id
+      ){
+    return teamRepository.findById(id).get();
+      }
 }

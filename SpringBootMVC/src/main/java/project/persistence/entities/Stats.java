@@ -38,8 +38,9 @@ public class Stats {
 
   // Unused
   @Id
-  private long id;
-  private long playerId;
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
+  private Long playerId;
 
   // Calculated
   private int block;

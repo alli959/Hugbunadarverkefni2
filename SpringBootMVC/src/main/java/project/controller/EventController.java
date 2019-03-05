@@ -34,6 +34,25 @@ public class EventController {
   @Autowired
   GameEventRepository gameEventRepository;
 
+  // Method: localhost:8080/user/getOneGame?id=[id]
+  // Return: Game as json with id == id
+  @RequestMapping(value="/user/getOneGame", method=RequestMethod.GET)
+  public Game getOneGame(
+      @RequestParam Long id
+  ) {
+    return gameRepository.findById(id).get();
+  }
+
+  // Method: localhost:8080/user/removeGame?id=[id]
+  // Return: Game as json with id == id
+  @RequestMapping(value="/user/removeGame", method=RequestMethod.GET)
+  public String removeGame(
+      @RequestParam Long id
+  ) {
+    gameRepository.deleteById(id);
+    return "Success";
+  }
+
   // Method: localhost:8080/user/hasActiveGame
   // Return: "true" if has a game that he's gathering stats for, "false" otherwis
   @RequestMapping(value="/user/hasActiveGame", method=RequestMethod.GET)
@@ -45,16 +64,16 @@ public class EventController {
     return (user.getCurrentGame() != null);
   }
 
-  // Method: localhost:8080/user/setActiveGame?gameId=[gameId]
+  // Method: localhost:8080/user/setActiveGame?id=[id]
   // Return: "Success" if active game has been set
   @RequestMapping(value="/user/setActiveGame", method=RequestMethod.GET)
   public String setActiveGame(
       @RequestHeader("Authorization") String basicAuthString,
-      @RequestParam Long gameId
+      @RequestParam Long id
   ) {
     String userName = Toolkit.getUserName(basicAuthString);
     User user = userRepository.findById(userName).get();
-    Game game = gameRepository.findById(gameId).get();
+    Game game = gameRepository.findById(id).get();
     user.setCurrentGame(game);
     userRepository.save(user);
     return "Success";
@@ -82,6 +101,7 @@ public class EventController {
       @RequestParam ArrayList<Long> bench,
       @RequestParam ArrayList<Long> playing,
       @RequestParam Long teamId,
+      @RequestParam(required=false) Long id,
       @RequestParam(required=false) String stadiumName,
       @RequestParam(required=false) Long timeOfGame
   ) {
@@ -94,7 +114,8 @@ public class EventController {
     game.setStadiumName(stadiumName);
     game.setTimeOfGame(timeOfGame);
     game.setTeamId(teamId);
-
+    if (id != null)
+      game.setId(id);
     game = gameRepository.save(game);
     for (Player player : game.getAllPlayers()) {
       player.addGamePlayed(game.getId());
