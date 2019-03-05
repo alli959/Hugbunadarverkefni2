@@ -2,17 +2,17 @@ package yolo.basket;
 
 import org.json.JSONException;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import yolo.basket.db.Database;
+import yolo.basket.db.game.Game;
 import yolo.basket.db.player.Player;
 import yolo.basket.db.team.Team;
-
-import static org.junit.Assert.*;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -38,26 +38,88 @@ public class SaveLoadEntityTests {
         System.out.println(defaultTeam.getId());
     }
 
-    @Test
-    public void createPlayer() throws IOException, JSONException {
+    public Player createPlayer(Long teamId) throws IOException, JSONException {
         Player player = new Player();
         player.setName("boris spassky");
         player.setPlayerNr(69L);
-        player.setPlayerPos("Grandmaser");
-        player.setTeamId(defaultTeam.getId());
+        player.setPlayerPos("Grandmaster");
+        player.setTeamId(teamId);
         Player playerFromDatabase = (Player) Database.player.save(player);
-        Assert.assertEquals(player.getName(), playerFromDatabase.getName());
-        Assert.assertEquals(player.getPlayerNr(), playerFromDatabase.getPlayerNr());
-        Assert.assertEquals(player.getPlayerPos(), playerFromDatabase.getPlayerPos());
-        Assert.assertEquals(player.getTeamId(), playerFromDatabase.getTeamId());
-        Assert.assertArrayEquals(player.getGamesPlayed().toArray(), playerFromDatabase.getGamesPlayed().toArray());
-        Database.player.remove(playerFromDatabase.getId());
+
+        Check.ifEqual(player, playerFromDatabase);
+        return playerFromDatabase;
     }
+
+    // Careful, this one creates a player and removes it
+    @Test
+    public void PlayerTest() throws IOException, JSONException {
+        Player player = createPlayer(defaultTeam.getId());
+
+        // Remove data
+        Database.player.remove(player.getId());
+    }
+
+    public Team createTeam() throws IOException, JSONException {
+       Team team = new Team();
+        team.setName("dream$team`!#`");
+        team.setUserOwner("test1");
+        team = (Team) Database.team.save(team);
+
+        List<Player> players = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            players.add(createPlayer(team.getId()));
+        }
+        team.setPlayers(players);
+        Team teamFromDatabase = (Team) Database.team.save(team);
+        Check.ifEqual(team, teamFromDatabase);
+        return teamFromDatabase;
+    }
+
+    @Test
+    public void TeamTest() throws IOException, JSONException {
+        Team teamFromDatabase = createTeam();
+        // Remove data
+        for (Player player : teamFromDatabase.getPlayers())
+            Database.player.remove(player);
+        Database.team.remove(teamFromDatabase);
+    }
+
+    public Game createGame() throws IOException, JSONException {
+        Team team = createTeam();
+        Game game = new Game();
+        game.setTeamId(team.getId());
+        List<Player> bench = new ArrayList<>();
+        List<Player> startingLineup = new ArrayList<>();
+        System.out.println(team.getPlayers().size() + " is size of team");
+        for (int i = 0; i < team.getPlayers().size(); i++)
+            if (i < 5)
+                startingLineup.add(team.getPlayers().get(i));
+            else
+                bench.add(team.getPlayers().get(i));
+        game.setStartingLineup(startingLineup);
+        game.setBench(bench);
+        game.setTimeOfGame(System.currentTimeMillis());
+        game.setStadiumName("Laugardalshöll");
+        Game gameFromDatabase = (Game) Database.game.save(game);
+        Check.ifEqual(game, gameFromDatabase);
+        return gameFromDatabase;
+    }
+
+    @Test
+    public void GameTest() throws IOException, JSONException {
+        Game game = createGame();
+    }
+    // TODO:
+
+    //  CREATE GAME TEST
+    //  TEST THE SHIT OUT OF EVERYTHING :@
+
+
 
     @After
     public void teardown() throws IOException, JSONException {
         Database.setCredentials("admin", "admin");
-
     }
 }
 

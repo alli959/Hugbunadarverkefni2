@@ -15,6 +15,12 @@ public abstract class EntityController<Ent extends Entity, IdType> {
     protected String getOneURL = "getOneURL-not-initialized";
 
     protected abstract Ent jsonToEntity(JSONObject json) throws JSONException;
+
+    public boolean remove(Ent entity) throws IOException, JSONException {
+        remove((IdType) entity.getId());
+        return true;
+    }
+
     public boolean remove(IdType id) throws IOException, JSONException {
         Param param = new Param("id", "" + id);
         Request r = new Request(removeURL, param);
