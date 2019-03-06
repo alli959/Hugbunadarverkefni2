@@ -42,16 +42,20 @@ public class GameController extends EntityController {
 
         JSONArray benchArray = json.getJSONArray("bench");
         JSONArray startingLineupArray = json.getJSONArray("startingLineup");
+        JSONArray gameEventsArray = json.getJSONArray("gameEvents");
         List<Player> bench = new ArrayList<>();
         List<Player> startingLineup = new ArrayList<>();
-
+        List<GameEvent> gameEvents = new ArrayList<>();
 
         for (int i = 0; i < benchArray.length(); i++)
             bench.add(Database.player.jsonToEntity(benchArray.getJSONObject(i)));
         for (int i = 0; i < startingLineupArray.length(); i++)
             startingLineup.add(Database.player.jsonToEntity(benchArray.getJSONObject(i)));
+        for (int i = 0; i < gameEventsArray.length(); i++)
+            gameEvents.add(Database.gameEvent.jsonToEntity(gameEventsArray.getJSONObject(i)));
         game.setStartingLineup(startingLineup);
         game.setBench(bench);
+        game.setGameEvents(gameEvents);
         return game;
     }
 }

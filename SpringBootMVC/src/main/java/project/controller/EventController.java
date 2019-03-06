@@ -130,7 +130,7 @@ public class EventController {
     return game;
   }
 
-  // Method: localhost:8080/user/addGameEvent?location=[string]&eventType=[string]&time=[number]&playerId=[playerId]
+  // Method: localhost:8080/user/addGameEvent?location=[string]&eventType=[string]&timeOfEvent=[number]&playerId=[playerId]
   // Note  :
   //    location can be one of ( "NONE", "LEFT_WING", "RIGHT_WING", "TOP", "LEFT_CORNER", "RIGHT_CORNER", "LEFT_SHORT",
   //                             "RIGHT_SHORT", "LEFT_TOP", "RIGHT_TOP", "LAY_UP", "FREE_THROW")
@@ -139,20 +139,17 @@ public class EventController {
   @RequestMapping(value="/user/addGameEvent")
   public GameEvent addGameEvent (
       @RequestHeader("Authorization") String basicAuthString,
-      @RequestParam(required=false) String location,
-      @RequestParam String eventType,
-      @RequestParam Long time,
+      @RequestParam(required=false) Integer location,
+      @RequestParam Integer eventType,
+      @RequestParam Long timeOfEvent,
       @RequestParam(required=false) Long playerId
   ) throws Exception {
     String userName = Toolkit.getUserName(basicAuthString);
     User user = userRepository.findById(userName).get();
     Game currentGame = user.getCurrentGame();
-    Long timeOfEvent = currentGame.getTimeOfGame() + time;
     GameEvent gameEvent = new GameEvent();
-    int locationValue = location == null ? 0 : GameEvent.getLocationByName(location);
-
-    gameEvent.setLocation(locationValue);
-    gameEvent.setEventType(GameEvent.getEventTypeByName(eventType));
+    gameEvent.setLocation(location);
+    gameEvent.setEventType(eventType);
     gameEvent.setTimeOfEvent(timeOfEvent);
     if (playerId != null) {
       gameEvent.setPlayerId(playerId);

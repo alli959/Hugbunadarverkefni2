@@ -1,5 +1,7 @@
 package yolo.basket;
 
+import android.provider.ContactsContract;
+
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Assert;
@@ -118,22 +120,27 @@ public class SaveLoadEntityTests {
         Assert.assertEquals(game1.getId(), game2.getId());
     }
 
-    public GameEvent createGameEvent() throws IOException, JSONException {
+    public GameEvent createGameEvent() throws Exception {
         GameEvent gameEvent = new GameEvent();
-        gameEvent.setEventType(5);
-        gameEvent.setLocation(5);
+        gameEvent.setEventType(GameEvent.HIT);
+        gameEvent.setLocation(GameEvent.LEFT_SHORT);
         gameEvent.setTimeOfEvent(50000L);
         gameEvent.setPlayerId(5L);
-        GameEvent gameEventFromDatabase = (GameEvent) Database.gameEvent.save(gameEvent);
-        Check.ifEqual(gameEvent, gameEventFromDatabase);
-        return gameEventFromDatabase;
+        Game game = createGame();
+        Database.user.setActiveGame(game);
+        Game game2 = Database.user.getActiveGame();
+        Check.ifEqual(game, game2);
+        Assert.assertEquals(game.getId(), game2.getId());
+
+        Database.game.addGameEvent(gameEvent);
+        game = Database.user.getActiveGame();
+        Check.ifEqual(gameEvent, game.getGameEvents().get(0));
+        return gameEvent;
     }
 
     @Test
-    public void GameEventTest() throws IOException, JSONException {
+    public void GameEventTest() throws Exception {
         GameEvent gameEvent = createGameEvent();
-        GameEvent gameEvent2 = (GameEvent) Database.gameEvent.save(gameEvent);
-
     }
 
     // TODO:
