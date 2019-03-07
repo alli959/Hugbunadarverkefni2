@@ -57,6 +57,18 @@ public class Database {
         }
     }
 
+    public static boolean isLoggedIn() {
+        try {
+            String userName = Request.getUserName();
+            Request request = new Request("user/whatismyusername");
+            String string = (String) request.resolve().get(0);
+            return string.equals(userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Returns true if logged in otherwise false
     public static boolean login(String userName, String password) {
         Request.setUserName(userName);

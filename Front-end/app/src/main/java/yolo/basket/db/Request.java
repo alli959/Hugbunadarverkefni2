@@ -20,8 +20,8 @@ public class Request {
     {
         try {
             // Here you can switch from localhost to server
-            // url = new URL("http://138.68.155.75:8080/");
-            url = new URL("http://localhost:8080/");
+            url = new URL("http://138.68.155.75:8080/");
+            // url = new URL("http://localhost:8080/");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -40,6 +40,7 @@ public class Request {
     public static void setPassword(String password) {
         Request.password = password;
     }
+    public static String getUserName() {return userName; }
 
     public static void setProtocol(String protocol) {
         Request.protocol = protocol;
