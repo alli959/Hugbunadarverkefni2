@@ -1,6 +1,8 @@
 
 package yolo.basket.db;
 
+import android.util.Log;
+
 import org.json.*;
 
 import java.io.*;
@@ -61,7 +63,7 @@ public class Request {
             throw new IllegalStateException("Username or password not found");
 
         // HERE WE DEBUG!!
-        System.out.println(url.toString());
+        Log.d("160492", url.toString());
         con.setRequestMethod(protocol);
         return con;
     }
@@ -88,7 +90,6 @@ public class Request {
             // Print error stream
             in = new BufferedReader( new InputStreamReader(con.getErrorStream()));
             isError = true;
-
         }
         String inputLine;
         StringBuffer responsetext = new StringBuffer();

@@ -1,5 +1,7 @@
 package yolo.basket.db;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -13,6 +15,7 @@ import yolo.basket.db.stats.StatsController;
 import yolo.basket.db.user.User;
 import yolo.basket.db.user.UserController;
 import yolo.basket.db.team.TeamController;
+
 public class Database {
 
     public static final UserController user = new UserController();
@@ -76,8 +79,10 @@ public class Database {
         try {
             Request request = new Request("user/whatismyusername");
             String string = (String) request.resolve().get(0);
+            Log.d("160492 @ login", String.valueOf(string.equals(userName)));
             return string.equals(userName);
         } catch (Exception e) {
+            Log.d("160492", "" + e.getMessage());
             e.printStackTrace();
             return false;
         }
