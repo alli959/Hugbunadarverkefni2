@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="yolo.basket.TeamLeftFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="7dp"
+        tools:layout_editor_absoluteY="3dp"
+        tools:layout="@layout/team_left_fragment" />
+
+    <fragment
+        android:id="@+id/fragment2"
+        android:name="yolo.basket.TeamRightFragment"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/team_right_fragment"
+        tools:layout_editor_absoluteX="1116dp"
+        tools:layout_editor_absoluteY="0dp" />
 </android.support.constraint.ConstraintLayout>

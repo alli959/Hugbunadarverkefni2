@@ -99,4 +99,22 @@ public class Database {
 
     //--------Team And Player methods
 
+
+    //Create new team
+
+    //Method: localhost:8080/user/createTeam?name=[string]
+    public static String createTeam(String name){
+        Request request;
+        try {
+            request = new Request("user/saveTeam", new Param("name", name));
+            return request.resolve().get(0).toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "Failure";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failure";
+        }
+    }
+
 }
