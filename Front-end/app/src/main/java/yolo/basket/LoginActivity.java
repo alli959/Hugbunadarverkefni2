@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, OnTaskCompleted {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -70,15 +71,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Button mSwitchFormButton;
 
     private static final boolean LOGIN = true;
-    private static final boolean REGISTER = true;
+    private static final boolean REGISTER = false;
 
     private boolean currentForm = LOGIN;
 
-    private void getButtonText() {
+    private String getButtonText() {
         String register = "Already have an account?";
         String login = "Don't have an account?";
-        String buttonText = currentForm == LOGIN ? login : register;
+        return currentForm == LOGIN ? login : register;
+    }
 
+    private void switchForm() {
+        currentForm = !currentForm;
+        String btnText = getButtonText();
+        int visibility = currentForm ? View.GONE : View.VISIBLE;
+        mEmailView.setVisibility(visibility);
+        mNameView.setVisibility(visibility);
+        mSwitchFormButton.setText(btnText);
     }
 
     @Override
@@ -90,19 +99,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mNameView = (AutoCompleteTextView) findViewById(R.id.name);
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.userName);
         mSwitchFormButton = (Button) findViewById(R.id.switchFormsButton);
+        mPasswordView = (EditText) findViewById(R.id.password);
+
+        int randomNumber = (int) (Math.random() * 1000);
+
+        mEmailView.setText("oli" + randomNumber);
+        mNameView.setText("oli" + randomNumber);
+        mUserNameView.setText("oli" + randomNumber);
+        mPasswordView.setText("oli" + randomNumber);
 
         mSwitchFormButton.setOnClickListener(view -> {
-            currentForm = !currentForm;
+            switchForm();
         });
 
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptLoginRegister();
                     return true;
                 }
                 return false;
@@ -113,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptLoginRegister();
             }
         });
 
@@ -121,11 +137,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
+
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
         }
-
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -164,13 +180,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptLoginRegister() {
+        Log.d("160492", "Attempting login");
         if (mAuthTask != null) {
             return;
         }
@@ -178,18 +194,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mUserNameView.setError(null);
+        mNameView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-
-        Boolean isLoggedIn = Database.login(email, password);
-        Log.d("160492 @ main ", isLoggedIn.toString() + " " + email + " " + password);
-
-        if (isLoggedIn) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }
+        String name = mNameView.getText().toString();
+        String userName = mUserNameView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -220,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, name, userName, this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -316,6 +328,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    @Override
+    public void onTaskCompleted(String response) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -335,38 +352,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private final String mUserName;
+        private final String mName;
+        private final OnTaskCompleted listener;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, String name, String userName, OnTaskCompleted listener) {
             mEmail = email;
             mPassword = password;
+            mUserName = userName;
+            mName = name;
+            this.listener = listener;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            Database.init();
-            Boolean b = mEmail.equals(Database.login(mEmail, mPassword));
-            Log.i("160492", b.toString());
+            Boolean b;
+            if (currentForm == LOGIN) {
+                Database.init();
+                b = Database.login(mUserName, mPassword);
+                Log.i("160492", b.toString());
+                listener.onTaskCompleted("Fuck yeah");
+            } else {
+                Database.init();
+                b = mUserName.equals(Database.register(mUserName, mPassword, mName, mEmail));
+                Log.i("160492", "register status = " + b.toString());
+            }
             return b;
-            /*
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
-            */
         }
 
         @Override
@@ -375,7 +386,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                finish();
+                System.out.println("Success");
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

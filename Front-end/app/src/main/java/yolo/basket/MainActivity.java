@@ -1,6 +1,7 @@
 package yolo.basket;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -19,20 +20,38 @@ import android.view.MenuItem;
 import yolo.basket.db.Database;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnTaskCompleted {
+
+    public class CheckLoginTask extends AsyncTask<Void, Void, Void> {
+
+        private final OnTaskCompleted listener;
+
+        public CheckLoginTask(OnTaskCompleted listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String result = String.valueOf(Database.isLoggedIn());
+            listener.onTaskCompleted(result);
+            return (Void) null;
+        }
+    }
+
+    @Override
+    public void onTaskCompleted(String response) {
+        if (response.equals("true")) {
+            System.out.println("Do nothing");
+        } else {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        boolean userIsLoggedIn = Database.isLoggedIn();
-        // Switch to login if user is not logged in
-        if (true) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            return;
-        }
-
+        CheckLoginTask mLoginTask = new CheckLoginTask(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,6 +73,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        mLoginTask.execute((Void) null);
     }
 
     @Override
