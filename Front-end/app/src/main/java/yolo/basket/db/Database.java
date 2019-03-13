@@ -1,9 +1,14 @@
 package yolo.basket.db;
 
+import android.accounts.NetworkErrorException;
+import android.os.NetworkOnMainThreadException;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import yolo.basket.db.game.GameController;
@@ -13,6 +18,7 @@ import yolo.basket.db.stats.StatsController;
 import yolo.basket.db.user.User;
 import yolo.basket.db.user.UserController;
 import yolo.basket.db.team.TeamController;
+
 public class Database {
 
     public static final UserController user = new UserController();
@@ -25,7 +31,6 @@ public class Database {
     public static void init() {
         setCredentials("anonymous", "anonymous");
     }
-
 
     public static void setCredentials(String userName, String password) {
         Request.setUserName(userName);
@@ -48,12 +53,20 @@ public class Database {
             e.printStackTrace();
         }
         JSONArray json;
+        String s = "";
         try {
             json = request.resolve();
+            s += json.toString();
             return json.get(0).toString();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            return "Failed to register user";
+            return "Failed to register user --> IOExcetion " + s;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "Failed to register user --> JSONExpcetion " + s;
+        } catch (NetworkOnMainThreadException e) {
+            e.printStackTrace();
+            return "Failed to register user --> NetworkOnMainThreadException";
         }
     }
 
@@ -73,12 +86,21 @@ public class Database {
     public static boolean login(String userName, String password) {
         Request.setUserName(userName);
         Request.setPassword(password);
+        Log.d("160492 @ Database", "Logging in with ..." + userName + " " + password);
         try {
             Request request = new Request("user/whatismyusername");
             String string = (String) request.resolve().get(0);
+            if (string.equals(userName)) {
+                return true;
+            }
+            Log.d("160492 @ Database", string);
             return string.equals(userName);
-        } catch (Exception e) {
+        } catch (JSONException e) {
+            Log.d("160492 @ Database_E", "JSONException" + e.getMessage());
             e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            Log.d("160492 @ Database_E", "IOException" + e.getMessage());
             return false;
         }
     }
