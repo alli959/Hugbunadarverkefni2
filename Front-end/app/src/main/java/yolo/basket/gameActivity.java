@@ -21,11 +21,14 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import yolo.basket.db.Database;
+import yolo.basket.db.game.Game;
 import yolo.basket.db.gameEvent.GameEvent;
 
 import static yolo.basket.db.Database.game;
 
 public class gameActivity extends AppCompatActivity {
+
+    private Game currentGame;
 
     private EndGameTask endGameTask;
     private AddGameEventTask addGameEventTask;
@@ -40,7 +43,6 @@ public class gameActivity extends AppCompatActivity {
     public void defineButtons(){
         findViewById(R.id.leikmadur1).setOnClickListener(buttonClickListener);
         findViewById(R.id.leikmadur2).setOnClickListener(buttonClickListener);
-
     }
 
     gameActivity g;
@@ -94,6 +96,12 @@ public class gameActivity extends AppCompatActivity {
 
         });
     }
+
+    private void startGame() {
+        // Thetta keyrir thegar leikurinn er kominn inn i currentGame
+        System.out.println("Party has started!!!! WOOOO!!!");
+    }
+
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -181,6 +189,31 @@ public class gameActivity extends AppCompatActivity {
                 System.out.println("Successfully added gameEvent");
             } else {
                 System.out.println("Did nothing");
+            }
+        }
+    }
+
+    /**
+     * Async addGameEvent
+     */
+    public class GetActiveGame extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                currentGame = Database.game.getActiveGame();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (success) {
+                startGame();
+            } else {
+                g.finishActivity(0);
             }
         }
     }

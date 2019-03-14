@@ -38,6 +38,13 @@ public class GameController extends EntityController {
         return true;
     }
 
+    public Game getActiveGame() throws Exception {
+        String method = "user/getActiveGame";
+        Request request = new Request(method);
+        JSONArray json = request.resolve();
+        return jsonToEntity(json.getJSONObject(0));
+    }
+
     @Override
     public Game jsonToEntity(JSONObject json) throws JSONException {
         System.out.println(json.toString());
