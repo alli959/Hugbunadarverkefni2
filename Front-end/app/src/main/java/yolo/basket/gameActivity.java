@@ -39,6 +39,7 @@ public class gameActivity extends AppCompatActivity {
     private long selectedPlayer;
     private TextView alertTextView;
     private ImageButton court;
+    private GetActiveGameTask getActiveGameTask;
 
     public void defineButtons(){
         findViewById(R.id.leikmadur1).setOnClickListener(buttonClickListener);
@@ -54,6 +55,7 @@ public class gameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         g = this;
+        getActiveGame();
 
         alertTextView = (TextView) findViewById(R.id.AlertTextView);
         court = (ImageButton) findViewById(R.id.basketBallCourt);
@@ -120,6 +122,9 @@ public class gameActivity extends AppCompatActivity {
         }
     };
 
+    public void getCurrentGame() {
+        getCurr
+    }
 
 
     public void endGame() {
@@ -127,9 +132,10 @@ public class gameActivity extends AppCompatActivity {
         endGameTask.execute((Void) null);
     }
 
-    public void addGameEvent() {
-        addGameEventTask = new AddGameEventTask();
-        addGameEventTask.execute((Void) null);
+    public void getActiveGame() {
+        getActiveGameTask = new GetActiveGameTask();
+        getActiveGameTask.execute((Void) null);
+
     }
 
     /**
@@ -196,7 +202,7 @@ public class gameActivity extends AppCompatActivity {
     /**
      * Async addGameEvent
      */
-    public class GetActiveGame extends AsyncTask<Void, Void, Boolean> {
+    public class GetActiveGameTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
