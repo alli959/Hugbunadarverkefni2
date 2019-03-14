@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity
 
         boolean userIsLoggedIn = Database.isLoggedIn();
         // Switch to login if user is not logged in
-        if (false) {
-            Intent intent = new Intent(this, LoginActivity.class);
+        if (true) {
+            Intent intent = new Intent(this, gameActivity.class);
             startActivity(intent);
             return;
         }
