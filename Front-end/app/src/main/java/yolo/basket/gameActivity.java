@@ -1,8 +1,10 @@
 package yolo.basket;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,10 +20,20 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import yolo.basket.db.Database;
+import yolo.basket.db.gameEvent.GameEvent;
+
+import static yolo.basket.db.Database.game;
+
 public class gameActivity extends AppCompatActivity {
 
+    private EndGameTask endGameTask;
+    private AddGameEventTask addGameEventTask;
+    private String action;
+    private String location;
+    private long timeOfEvent;
 
-    private String selectedPlayer;
+    private long selectedPlayer;
     private TextView alertTextView;
     private ImageButton court;
 
@@ -31,6 +43,7 @@ public class gameActivity extends AppCompatActivity {
 
     }
 
+    gameActivity g;
 
 
     @Override
@@ -38,6 +51,7 @@ public class gameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        g = this;
 
         alertTextView = (TextView) findViewById(R.id.AlertTextView);
         court = (ImageButton) findViewById(R.id.basketBallCourt);
@@ -98,4 +112,81 @@ public class gameActivity extends AppCompatActivity {
         }
     };
 
+
+
+    public void endGame() {
+        endGameTask = new EndGameTask();
+        endGameTask.execute((Void) null);
+    }
+
+    public void addGameEvent() {
+        addGameEventTask = new AddGameEventTask();
+        addGameEventTask.execute((Void) null);
+    }
+
+    /**
+     * Async endGame event
+     *
+     */
+    public class EndGameTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                return Database.game.endGame();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (success) {
+                Intent intent = new Intent(g, MainActivity.class);
+                g.startActivity(intent);
+                finish();
+            } else {
+                System.out.println("Did nothing");
+            }
+        }
+    }
+
+    public GameEvent createGameEvent() throws Exception {
+        GameEvent gameEvent = new GameEvent();
+        gameEvent.setTimeOfEvent(timeOfEvent);
+        gameEvent.setEventType(GameEvent.getEventTypeByName(action));
+        gameEvent.setLocation(GameEvent.getLocationByName(location));
+        gameEvent.setPlayerId(selectedPlayer);
+        return gameEvent;
+    }
+
+    /**
+     * Async addGameEvent
+     */
+    public class AddGameEventTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                return Database.game.addGameEvent(createGameEvent());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (success) {
+                System.out.println("Successfully added gameEvent");
+            } else {
+                System.out.println("Did nothing");
+            }
+        }
+    }
+
 }
+
+
+
+
