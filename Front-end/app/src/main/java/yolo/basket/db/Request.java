@@ -1,6 +1,8 @@
 
 package yolo.basket.db;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import org.json.*;
@@ -48,6 +50,7 @@ public class Request {
         Request.protocol = protocol;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private HttpURLConnection makeRequest() throws IllegalStateException, JSONException, IOException {
         HttpURLConnection con;
         if(paramString != null) {
