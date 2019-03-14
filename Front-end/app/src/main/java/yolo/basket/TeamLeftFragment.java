@@ -1,24 +1,42 @@
 package yolo.basket;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TeamLeftFragment extends Fragment {
 
+
+    private FragmentLeftListener listener;
+
+    public interface FragmentLeftListener {
+        void onLeftFragmentInput(CharSequence input);
+    }
+
+
     private ArrayAdapter<String> listViewAdapter;
 
-    private String[] teamNames = {
+
+
+    private String[] arrTeamNames = {
             "Fjölnir",
             "KR",
             "Prumpuliðið",};
+
+    ArrayList<String> teamNames = new ArrayList<String>(Arrays.asList(arrTeamNames));
 
 
 
@@ -39,8 +57,28 @@ public class TeamLeftFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if(context instanceof FragmentLeftListener) {
+            listener = (FragmentLeftListener) context;
+        }
+
+        else {
+            throw new RuntimeException(context.toString()
+            + " must implement FragmentLeftListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
     public void updateTeamNames(CharSequence text){
-        listViewAdapter.add((String)text);
+        listViewAdapter.add(String.valueOf(text));
     }
 }
 

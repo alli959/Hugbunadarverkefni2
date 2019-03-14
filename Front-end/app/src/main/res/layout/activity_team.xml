@@ -6,21 +6,17 @@
     android:orientation="horizontal"
     >
 
-    <fragment
+    <FrameLayout
         android:id="@+id/leftfragment"
-        android:name="yolo.basket.TeamLeftFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@layout/team_left_fragment" />
+        android:layout_weight="2" />
 
-    <fragment
+    <FrameLayout
         android:id="@+id/rightfragment"
-        android:name="yolo.basket.TeamRightFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        tools:layout="@layout/team_right_fragment" />
+        android:layout_weight="1" />
 
 
 
