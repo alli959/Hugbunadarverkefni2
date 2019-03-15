@@ -19,16 +19,17 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TeamLeftFragment extends Fragment {
+public class PlayerRightFragment extends Fragment {
 
-    private boolean isRightTeamView = false;
     private boolean isRightPlayerView = false;
-    private FragmentLeftListener listener;
-    private Button createTeamButton;
+    private FragmentPlayerListener listener;
+    private Button createPlayerButton;
+    private EditText playerName;
+    private EditText playerPosition;
+    private EditText playerJerseyNumber;
 
-    public interface FragmentLeftListener {
-        void showRightTeamView(boolean value);
-        void showRightPlayerView(boolean value);
+    public interface FragmentPlayerListener {
+        void onPlayerFragmentInput(CharSequence input);
     }
 
 
@@ -36,38 +37,40 @@ public class TeamLeftFragment extends Fragment {
 
 
 
-    private String[] arrTeamNames = {
-            "Fjölnir",
-            "KR",
-            "Prumpuliðið",};
+    private String[] arrPlayerNames = {
+            "John",
+            "Charlie",
+            "Prump",};
 
-    private ArrayList<String> teamNames = new ArrayList<String>(Arrays.asList(arrTeamNames));
+    private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList(arrPlayerNames));
 
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.team_left_fragment, container, false);
-        createTeamButton = view.findViewById(R.id.button_createTeam);
+        View view = inflater.inflate(R.layout.player_right_fragment, container, false);
+        createPlayerButton = view.findViewById(R.id.button_addPlayer);
+        playerName = view.findViewById(R.id.playerName);
+        playerJerseyNumber = view.findViewById(R.id.playerJerseyNumber);
+        playerPosition = view.findViewById(R.id.playerPosition);
 
-
-        ListView listView = (ListView) view.findViewById(R.id.teamList);
+        ListView listView = (ListView) view.findViewById(R.id.playerList);
         listViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
-                teamNames
+                playerNames
         );
 
         listView.setAdapter(listViewAdapter);
 
 
-        createTeamButton.setOnClickListener(new View.OnClickListener() {
+        createPlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isRightTeamView = !isRightTeamView;
-                isRightPlayerView = false;
-                listener.showRightTeamView(isRightTeamView);
+                CharSequence name = playerName.getText();
+                listViewAdapter.add(String.valueOf(name));
+
             }
         });
 
@@ -75,9 +78,7 @@ public class TeamLeftFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = (String) parent.getItemAtPosition(position);
-                isRightTeamView = false;
-                isRightPlayerView = ! isRightPlayerView;
-                listener.showRightPlayerView(isRightPlayerView);
+                Log.d("name", name);
             }
         });
 
@@ -88,13 +89,13 @@ public class TeamLeftFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if(context instanceof FragmentLeftListener) {
-            listener = (FragmentLeftListener) context;
+        if(context instanceof FragmentPlayerListener) {
+            listener = (FragmentPlayerListener) context;
         }
 
         else {
             throw new RuntimeException(context.toString()
-            + " must implement FragmentLeftListener");
+                    + " must implement FragmentLeftListener");
         }
     }
 

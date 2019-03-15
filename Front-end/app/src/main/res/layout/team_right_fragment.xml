@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@android:color/holo_orange_light"
-    android:layout_gravity="center_horizontal"
-    >
+    android:layout_gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/rightTeamHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:text="Create a Team"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="40sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
 
     <EditText
         android:id="@+id/team_name"
         style="@style/Base.Widget.MaterialComponents.TextInputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:background="@android:color/background_light"
         android:textColor="@android:color/background_dark" />
 
