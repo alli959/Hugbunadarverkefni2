@@ -16,15 +16,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import yolo.basket.db.Database;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnTaskCompleted {
 
+
+    private Button team;
+
     public class CheckLoginTask extends AsyncTask<Void, Void, Void> {
 
         private final OnTaskCompleted listener;
+
 
         public CheckLoginTask(OnTaskCompleted listener) {
             this.listener = listener;
@@ -73,7 +78,25 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+        team = (Button) findViewById(R.id.teamView);
+
+        team.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v){
+                openTeamView();
+            }
+        });
+
         mLoginTask.execute((Void) null);
+    }
+
+    public void openTeamView() {
+        Intent intent = new Intent(this, TeamActivity.class);
+        startActivity(intent);
     }
 
     @Override

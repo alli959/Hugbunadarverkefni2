@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_red_light"
+    >
+
+    <TextView
+        android:id="@+id/rightPlayerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:text="Add Players"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="40sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+    <TextView
+        android:id="@+id/createPlayerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:text="Create a player"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+
+
+
+
+    <TextView
+        android:id="@+id/playerNameHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="Player Name:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+    <EditText
+        android:id="@+id/playerName"
+        style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
+        android:textColor="@android:color/background_dark" />
+
+
+    <TextView
+        android:id="@+id/playerPositionHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="Player Position:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+    <EditText
+        android:id="@+id/playerPosition"
+        style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
+        android:textColor="@android:color/background_dark" />
+
+
+    <TextView
+        android:id="@+id/playerJerseyNumberHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="Jersey Number"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+
+    <EditText
+        android:id="@+id/playerJerseyNumber"
+        style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
+        android:textColor="@android:color/background_dark" />
+
+    <Button
+        android:id="@+id/button_addPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Add Team" />
+
+
+
+    <TextView
+        android:id="@+id/playersInTeam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:text="Players in Team"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="40sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+
+
+
+
+
+
+
+
+    <ListView
+        android:id="@+id/playerList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/background_light"
+        ></ListView>
+
+
+
+
+</LinearLayout>

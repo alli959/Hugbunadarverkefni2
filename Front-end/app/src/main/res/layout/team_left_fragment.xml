@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:visibility="visible"
+    tools:layout_width="match_parent">
+
+    <TextView
+        android:id="@+id/leftHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:text="Teams"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="40sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+    <ListView
+        android:id="@+id/teamList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
+        android:divider="#9F030303"
+        android:footerDividersEnabled="false"
+        android:gravity="center_horizontal"
+        android:layout_weight="5"
+        android:headerDividersEnabled="false"></ListView>
+
+    <Button
+        android:id="@+id/button_createTeam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Team" />
+
+</LinearLayout>

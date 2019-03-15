@@ -75,6 +75,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean currentForm = LOGIN;
 
+    public void goToTeamActivity (View view){
+        Intent intent = new Intent (this, TeamActivity.class);
+        startActivity(intent);
+    }
+
     private String getButtonText() {
         String register = "Already have an account?";
         String login = "Don't have an account?";
