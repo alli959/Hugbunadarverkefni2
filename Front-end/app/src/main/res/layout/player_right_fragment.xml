@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_red_light"
+    android:background="@android:color/holo_blue_bright"
     >
 
     <TextView
@@ -36,7 +36,12 @@
 
 
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="30dp"
+        android:background="@android:color/holo_orange_dark">
     <TextView
         android:id="@+id/playerNameHeader"
         android:layout_width="match_parent"
@@ -70,13 +75,13 @@
         android:visibility="visible"
         app:fontFamily="sans-serif-black" />
 
-    <EditText
-        android:id="@+id/playerPosition"
-        style="@style/Base.Widget.MaterialComponents.TextInputEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        android:textColor="@android:color/background_dark" />
+        <EditText
+            android:id="@+id/playerPosition"
+            style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:textColor="@android:color/background_dark" />
 
 
     <TextView
@@ -99,12 +104,13 @@
         android:layout_height="wrap_content"
         android:background="@android:color/background_light"
         android:textColor="@android:color/background_dark" />
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/button_addPlayer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:text="Add Team" />
 
 
@@ -121,7 +127,6 @@
         android:typeface="serif"
         android:visibility="visible"
         app:fontFamily="sans-serif-black" />
-
 
 
 
