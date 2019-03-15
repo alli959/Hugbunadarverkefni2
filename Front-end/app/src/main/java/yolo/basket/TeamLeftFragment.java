@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -36,7 +37,7 @@ public class TeamLeftFragment extends Fragment {
             "KR",
             "Prumpuliðið",};
 
-    ArrayList<String> teamNames = new ArrayList<String>(Arrays.asList(arrTeamNames));
+    private ArrayList<String> teamNames = new ArrayList<String>(Arrays.asList(arrTeamNames));
 
 
 
@@ -53,6 +54,14 @@ public class TeamLeftFragment extends Fragment {
         );
 
         listView.setAdapter(listViewAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String name = (String) parent.getItemAtPosition(position);
+                Log.d("name", name);
+            }
+        });
 
         return view;
     }

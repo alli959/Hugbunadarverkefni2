@@ -25,7 +25,6 @@ public class TeamRightFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.team_right_fragment, container, false);
-
         teamName = view.findViewById(R.id.team_name);
         addTeamButton = view.findViewById(R.id.button_addteam);
 

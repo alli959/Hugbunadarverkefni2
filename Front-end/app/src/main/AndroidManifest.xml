@@ -20,11 +20,11 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"></activity>
         <activity
-            android:name=".TeamActivity"
-            android:label="Team handler">
+            android:name=".TeamActivity">
 
 
-            ></activity>
+
+            </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
