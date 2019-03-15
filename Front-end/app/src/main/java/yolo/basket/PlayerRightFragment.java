@@ -65,6 +65,10 @@ public class PlayerRightFragment extends Fragment {
         listView.setAdapter(listViewAdapter);
 
 
+
+
+
+
         createPlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

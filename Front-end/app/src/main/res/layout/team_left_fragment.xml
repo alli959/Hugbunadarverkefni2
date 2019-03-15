@@ -30,13 +30,21 @@
         android:divider="#9F030303"
         android:footerDividersEnabled="false"
         android:gravity="center_horizontal"
-        android:layout_weight="5"
         android:headerDividersEnabled="false"></ListView>
+
 
     <Button
         android:id="@+id/button_createTeam"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create Team" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="314dp"
+        android:layout_height="297dp"
+        android:layout_gravity="left"
+        android:layout_marginTop="140dp"
+        app:srcCompat="@drawable/basketball" />
 
 </LinearLayout>
