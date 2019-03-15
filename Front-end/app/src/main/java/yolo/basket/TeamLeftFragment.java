@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -20,11 +21,12 @@ import java.util.Arrays;
 
 public class TeamLeftFragment extends Fragment {
 
-
+    private boolean isRightTeamView = false;
     private FragmentLeftListener listener;
+    private Button createTeamButton;
 
     public interface FragmentLeftListener {
-        void onLeftFragmentInput(CharSequence input);
+        void showRightTeamView(boolean value);
     }
 
 
@@ -45,6 +47,8 @@ public class TeamLeftFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.team_left_fragment, container, false);
+        createTeamButton = view.findViewById(R.id.button_createTeam);
+
 
         ListView listView = (ListView) view.findViewById(R.id.teamList);
         listViewAdapter = new ArrayAdapter<String>(
@@ -54,6 +58,15 @@ public class TeamLeftFragment extends Fragment {
         );
 
         listView.setAdapter(listViewAdapter);
+
+
+        createTeamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRightTeamView = !isRightTeamView;
+                listener.showRightTeamView(isRightTeamView);
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
