@@ -4,21 +4,27 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright"
+    android:background="@color/colorAccent"
     >
 
-    <TextView
-        android:id="@+id/rightPlayerHeader"
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:gravity="center_horizontal"
-        android:text="Add Players"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="40sp"
-        android:typeface="serif"
-        android:visibility="visible"
-        app:fontFamily="sans-serif-black" />
+        android:background="@android:color/holo_red_light">
+        <TextView
+            android:id="@+id/rightPlayerHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_full"
+            android:gravity="center_horizontal"
+            android:text="Edit Team ${}"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/createPlayerHeader"

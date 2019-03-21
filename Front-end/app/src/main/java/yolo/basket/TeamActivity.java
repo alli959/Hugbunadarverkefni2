@@ -3,8 +3,10 @@ package yolo.basket;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class TeamActivity extends AppCompatActivity implements TeamRightFragment.FragmentRightListener, TeamLeftFragment.FragmentLeftListener, PlayerRightFragment.FragmentPlayerListener {
     private TeamLeftFragment teamLeftFragment;
@@ -58,15 +60,28 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     @Override
     public void showRightPlayerView(boolean value) {
         FrameLayout playerRightLayout = (FrameLayout) findViewById(R.id.rightfragment);
+        TextView textView = (TextView) playerRightLayout.findViewById(R.id.rightPlayerHeader);
+        Log.d("textView", "showRightPlayerView() returned: " + textView);
+        //textView.setText(String.valueOf("hello bitch"));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rightfragment, playerRightFragment)
                 .commit();
         if(value){
+
+
             playerRightLayout.setVisibility(View.VISIBLE);
         }
         else{
             playerRightLayout.setVisibility(View.GONE);
         }
+    }
+
+
+    @Override
+    public void getTeamName(CharSequence value) {
+
+        //playerRightFragment.setTeamName(value);
+
     }
 
     @Override

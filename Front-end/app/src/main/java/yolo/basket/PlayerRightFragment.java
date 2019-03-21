@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ public class PlayerRightFragment extends Fragment {
     private EditText playerName;
     private EditText playerPosition;
     private EditText playerJerseyNumber;
+    private TextView teamName;
 
     public interface FragmentPlayerListener {
         void onPlayerFragmentInput(CharSequence input);
@@ -54,6 +56,9 @@ public class PlayerRightFragment extends Fragment {
         playerName = view.findViewById(R.id.playerName);
         playerJerseyNumber = view.findViewById(R.id.playerJerseyNumber);
         playerPosition = view.findViewById(R.id.playerPosition);
+
+        teamName = (TextView) view.findViewById(R.id.rightPlayerHeader);
+
 
         ListView listView = (ListView) view.findViewById(R.id.playerList);
         listViewAdapter = new ArrayAdapter<String>(
@@ -109,8 +114,8 @@ public class PlayerRightFragment extends Fragment {
         listener = null;
     }
 
-    public void updateTeamNames(CharSequence text){
-        listViewAdapter.add(String.valueOf(text));
+    public void setTeamName(CharSequence name){
+        teamName.setText(String.valueOf(name));
     }
 }
 

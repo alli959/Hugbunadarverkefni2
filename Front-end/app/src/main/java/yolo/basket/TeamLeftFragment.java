@@ -29,6 +29,7 @@ public class TeamLeftFragment extends Fragment {
     public interface FragmentLeftListener {
         void showRightTeamView(boolean value);
         void showRightPlayerView(boolean value);
+        void getTeamName(CharSequence value);
     }
 
 
@@ -74,10 +75,11 @@ public class TeamLeftFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = (String) parent.getItemAtPosition(position);
+                CharSequence name = (CharSequence) parent.getItemAtPosition(position);
                 isRightTeamView = false;
                 isRightPlayerView = ! isRightPlayerView;
                 listener.showRightPlayerView(isRightPlayerView);
+                listener.getTeamName(name);
             }
         });
 

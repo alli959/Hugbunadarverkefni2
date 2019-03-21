@@ -9,18 +9,25 @@
     android:visibility="visible"
     tools:layout_width="match_parent">
 
-    <TextView
-        android:id="@+id/leftHeader"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:gravity="center_horizontal"
-        android:text="Teams"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="40sp"
-        android:typeface="serif"
-        android:visibility="visible"
-        app:fontFamily="sans-serif-black" />
+        android:background="@android:color/holo_red_light">
+
+        <TextView
+            android:id="@+id/leftHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_full"
+            android:gravity="center_horizontal"
+            android:text="Teams"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
+
+    </FrameLayout>
 
     <ListView
         android:id="@+id/teamList"
