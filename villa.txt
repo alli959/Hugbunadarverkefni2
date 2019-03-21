@@ -1,0 +1,1 @@
+fór í create player og það fór aftur í login screenið

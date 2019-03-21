@@ -1,6 +1,7 @@
 
 package yolo.basket.db;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -134,6 +135,7 @@ public class Request {
         this(databaseMethod,  itemAsList(param));
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
     public Request(String databaseMethod, List<Param> params) throws JSONException, IOException {
         initRequest(databaseMethod);
         addParameters(params);
