@@ -20,4 +20,5 @@
         completions."
     </string>
     <string name="title_activity_game">gameActivity</string>
+    <string name="my_teams">my Teams</string>
 </resources>

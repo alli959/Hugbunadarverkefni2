@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/colorAccent"
+    android:layout_gravity="center_horizontal">
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_red_light">
+
+    <TextView
+        android:id="@+id/rightTeamHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Create a Team"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@drawable/border_full"
+        android:textSize="40sp"
+        android:typeface="serif"
+        android:visibility="visible"
+        app:fontFamily="sans-serif-black" />
+
+    </FrameLayout>
+
+    
+
+    <EditText
+        android:id="@+id/team_name"
+        style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/background_light"
+        android:textColor="@android:color/background_dark" />
+
+    <Button
+        android:id="@+id/button_addteam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Add Team" />
+
+
+    <ImageView
+        android:id="@+id/court"
+        android:layout_width="519dp"
+        android:layout_height="358dp"
+        android:layout_gravity="left"
+        android:layout_marginTop="140dp"
+        app:srcCompat="@drawable/court" />
+
+</LinearLayout>

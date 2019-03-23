@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:visibility="visible"
+    tools:layout_width="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_red_light">
+
+        <TextView
+            android:id="@+id/leftHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_full"
+            android:gravity="center_horizontal"
+            android:text="Teams"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
+
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/teamList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
+        android:divider="#9F030303"
+        android:footerDividersEnabled="false"
+        android:gravity="center_horizontal"
+        android:headerDividersEnabled="false"></ListView>
+
+
+    <Button
+        android:id="@+id/button_createTeam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Team" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="314dp"
+        android:layout_height="297dp"
+        android:layout_gravity="left"
+        android:layout_marginTop="140dp"
+        app:srcCompat="@drawable/basketball" />
+
+</LinearLayout>

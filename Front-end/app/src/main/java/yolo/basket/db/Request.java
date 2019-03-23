@@ -1,6 +1,11 @@
 
 package yolo.basket.db;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+
 import org.json.*;
 
 import java.io.*;
@@ -46,6 +51,7 @@ public class Request {
         Request.protocol = protocol;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private HttpURLConnection makeRequest() throws IllegalStateException, JSONException, IOException {
         HttpURLConnection con;
         if(paramString != null) {
@@ -61,7 +67,7 @@ public class Request {
             throw new IllegalStateException("Username or password not found");
 
         // HERE WE DEBUG!!
-        System.out.println(url.toString());
+        Log.d("160492", url.toString());
         con.setRequestMethod(protocol);
         return con;
     }
@@ -86,9 +92,7 @@ public class Request {
         } catch (IOException e) {
             e.printStackTrace();
             // Print error stream
-            in = new BufferedReader( new InputStreamReader(con.getErrorStream()));
-            isError = true;
-
+            return "Error";
         }
         String inputLine;
         StringBuffer responsetext = new StringBuffer();
@@ -96,7 +100,7 @@ public class Request {
             responsetext.append(inputLine);
         }
         in.close();
-        if (isError) System.out.println(responsetext.toString());
+        if (isError) Log.d("160492 @ RequestError", "::" + responsetext.toString());
         return responsetext.toString();
     }
 
@@ -116,7 +120,7 @@ public class Request {
         url = new URL(url, databaseMethod);
     }
 
-    public Request(String databaseMethod) throws Exception {
+    public Request(String databaseMethod) throws JSONException, MalformedURLException, IOException {
         initRequest(databaseMethod);
         con = makeRequest();
     }
@@ -131,6 +135,7 @@ public class Request {
         this(databaseMethod,  itemAsList(param));
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
     public Request(String databaseMethod, List<Param> params) throws JSONException, IOException {
         initRequest(databaseMethod);
         addParameters(params);
