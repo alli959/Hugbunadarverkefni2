@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import yolo.basket.db.Database;
-import yolo.basket.db.Entity;
 import yolo.basket.db.EntityController;
 import yolo.basket.db.Param;
 import yolo.basket.db.Request;
@@ -24,11 +23,19 @@ public class GameController extends EntityController {
         removeURL = "user/removeGame";
     }
 
-    public void addGameEvent(GameEvent gameEvent) throws IOException, JSONException {
+    public Boolean addGameEvent(GameEvent gameEvent) throws IOException, JSONException {
         String method = "user/addGameEvent";
         List<Param> params = gameEvent.getParameters();
         Request request = new Request(method, params);
         request.resolve();
+        return true;
+    }
+
+    public Boolean endGame() throws Exception {
+        String method = "user/endGame";
+        Request request = new Request(method);
+        request.resolve();
+        return true;
     }
 
     @Override
