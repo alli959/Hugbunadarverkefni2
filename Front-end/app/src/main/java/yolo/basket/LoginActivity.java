@@ -110,8 +110,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mEmailView.setText("oli" + randomNumber);
         mNameView.setText("oli" + randomNumber);
-        mUserNameView.setText("oli" + randomNumber);
-        mPasswordView.setText("oli" + randomNumber);
+        mUserNameView.setText("aaa");
+        mPasswordView.setText("aaa");
 
         mSwitchFormButton.setOnClickListener(view -> {
             switchForm();
