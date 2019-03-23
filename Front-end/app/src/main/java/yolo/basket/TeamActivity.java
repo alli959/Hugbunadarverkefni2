@@ -7,20 +7,18 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import yolo.basket.db.team.Team;
+
 public class TeamActivity extends AppCompatActivity implements TeamRightFragment.FragmentRightListener, TeamLeftFragment.FragmentLeftListener, PlayerRightFragment.FragmentPlayerListener, PreGameFragment.FragmentPreGameListener {
     private TeamLeftFragment teamLeftFragment;
     private TeamRightFragment teamRightFragment;
     private PlayerRightFragment playerRightFragment;
     private PreGameFragment pregame;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
-
 
         teamLeftFragment = new TeamLeftFragment();
         teamRightFragment = new TeamRightFragment();
@@ -29,21 +27,11 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
                 .replace(R.id.leftfragment, teamLeftFragment)
                 .replace(R.id.rightfragment, teamRightFragment)
                 .commit();
-
-
-
-
-
-
-
-
-
     }
 
     @Override
     public void onRightFragmentInput(CharSequence input) {
-        teamLeftFragment.updateTeamNames(input);
-
+        teamLeftFragment.updateTeamNames();
     }
 
     @Override
@@ -60,6 +48,7 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         }
     }
 
+
     @Override
     public void showRightPlayerView(boolean value) {
 
@@ -71,19 +60,19 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     }
 
     @Override
-    public void showRightPlayerView(boolean value, CharSequence name) {
-        Log.d("here",  String.valueOf(name));
+    public void showRightPlayerView(boolean value, Long teamId, String teamName) {
+
         FrameLayout playerRightLayout = (FrameLayout) findViewById(R.id.rightfragment);
-        Bundle playerName = new Bundle();
-        playerName.putString("teamName",String.valueOf(name));
-        playerRightFragment.setArguments(playerName);
+        Bundle bundle = new Bundle();
+        bundle.putLong("teamId", teamId);
+        bundle.putString("teamName", teamName);
+        playerRightFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .detach(playerRightFragment)
                 .attach(playerRightFragment)
                 .replace(R.id.rightfragment, playerRightFragment)
                 .commit();
         if(value){
-
 
             playerRightLayout.setVisibility(View.VISIBLE);
         }
@@ -92,11 +81,9 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         }
     }
 
-
-
-
     @Override
     public void onPlayerFragmentInput(CharSequence input) {
 
     }
+
 }

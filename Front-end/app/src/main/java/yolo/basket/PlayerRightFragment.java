@@ -3,8 +3,10 @@ package yolo.basket;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,12 +21,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static android.support.constraint.Constraints.TAG;
+import yolo.basket.db.Database;
+import yolo.basket.db.Entity;
+import yolo.basket.db.player.Player;
+import yolo.basket.db.team.Team;
 
 @TargetApi(Build.VERSION_CODES.N)
 public class PlayerRightFragment extends Fragment {
@@ -34,21 +42,24 @@ public class PlayerRightFragment extends Fragment {
     private Button createPlayerButton;
     private EditText playerName;
     private EditText playerPosition;
-    private EditText playerJerseyNumber;
+    private View playerJerseyNumber;
     private TextView teamNameTextView;
+    private Team team;
 
     public interface FragmentPlayerListener {
         void onPlayerFragmentInput(CharSequence input);
     }
 
-
     private ArrayAdapter<String> nameViewAdapter;
-
     private ArrayAdapter<String> numberViewAdapter;
-
     private ArrayAdapter<String> positionViewAdapter;
 
+    private String teamName;
+    private Long teamId;
+    private View view;
+    private List<Player> players = new ArrayList<>();
 
+    private ListView listView;
 
     private String[] arrPlayerNames = {
             "John",
@@ -67,38 +78,26 @@ public class PlayerRightFragment extends Fragment {
             "13"
     };
 
-    private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList(arrPlayerNames));
-    private ArrayList<String> playerPositions = new ArrayList<String>(Arrays.asList(arrPlayerPositions));
-    private ArrayList<String> playerJerseyNumbers = new ArrayList<String>(Arrays.asList(arrPlayerJerseyNumbers));
+    private ArrayList<String> playerNames = new ArrayList<>(Arrays.asList(arrPlayerNames));
+    private ArrayList<String> playerPositions = new ArrayList<>(Arrays.asList(arrPlayerPositions));
+    private ArrayList<String> playerJerseyNumbers = new ArrayList<>(Arrays.asList(arrPlayerJerseyNumbers));
 
+    public void displayPlayers() {
 
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> posititons = new ArrayList<>();
+        ArrayList<String> jerseyNumbers = new ArrayList<>();
 
-
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        Bundle bundle = this.getArguments();
-
-
-        View view = inflater.inflate(R.layout.player_right_fragment, container, false);
-        createPlayerButton = view.findViewById(R.id.button_addPlayer);
-        playerName = view.findViewById(R.id.playerName);
-        playerJerseyNumber = view.findViewById(R.id.playerJerseyNumber);
-        playerPosition = view.findViewById(R.id.playerPosition);
-        teamNameTextView = (TextView) view.findViewById(R.id.rightPlayerHeader);
-
-        String teamName = "";
-        if (bundle != null) {
-            teamName = bundle.getString("teamName");
+        for (Player player : players) {
+            names.add(player.getName());
+            posititons.add(player.getPlayerPos());
+            jerseyNumbers.add(player.getPlayerNr().toString());
         }
 
+        this.playerNames = names;
+        this.playerJerseyNumbers = jerseyNumbers;
+        this.playerPositions = posititons;
 
-        teamNameTextView.setText(teamName);
-
-
-        ListView listView = (ListView) view.findViewById(R.id.playerList);
 
         nameViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
@@ -112,36 +111,59 @@ public class PlayerRightFragment extends Fragment {
                 playerJerseyNumbers
         );
 
-
         positionViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
                 playerPositions
         );
 
+        teamNameTextView.setText(teamName);
 
-        Log.d("test", positionViewAdapter.getItem(0));
-
-
-
+        listView = (ListView) view.findViewById(R.id.playerList);
         listView.setAdapter(nameViewAdapter);
 
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Bundle bundle = this.getArguments();
 
+        view = inflater.inflate(R.layout.player_right_fragment, container, false);
+        createPlayerButton = view.findViewById(R.id.button_addPlayer);
+        playerName = view.findViewById(R.id.playerName);
+        playerJerseyNumber = view.findViewById(R.id.playerJerseyNumber);
+        playerPosition = view.findViewById(R.id.playerPosition);
+        teamNameTextView = (TextView) view.findViewById(R.id.rightPlayerHeader);
 
-
-
-
+        teamId = -1L;
+        teamName = "";
+        if (bundle != null) {
+            teamId = bundle.getLong("teamId");
+            teamName = bundle.getString("teamName");
+        }
 
         createPlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CharSequence name = playerName.getText();
-                nameViewAdapter.add(String.valueOf(name));
-
+                // TODO: get the rest of the player d
+                Long playerNumber = 69L;
+                String playerPos = "Doggy style";
+                Player player = new Player();
+                player.setName(name.toString());
+                player.setPlayerNr(playerNumber);
+                player.setPlayerPos(playerPos);
+                player.setTeamId(teamId);
+                CreatePlayerTask createPlayerTask = new CreatePlayerTask(player);
+                createPlayerTask.execute((Void) null);
             }
         });
 
+        displayPlayers();
+        GetOneTeamTask getOneTeamTask = new GetOneTeamTask();
+        getOneTeamTask.execute((Void) null);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -149,6 +171,8 @@ public class PlayerRightFragment extends Fragment {
                 Log.d("name", name);
             }
         });
+
+
 
         return view;
     }
@@ -159,9 +183,7 @@ public class PlayerRightFragment extends Fragment {
 
         if(context instanceof FragmentPlayerListener) {
             listener = (FragmentPlayerListener) context;
-        }
-
-        else {
+        } else {
             throw new RuntimeException(context.toString()
                     + " must implement FragmentLeftListener");
         }
@@ -173,7 +195,53 @@ public class PlayerRightFragment extends Fragment {
         listener = null;
     }
 
+    public class GetOneTeamTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                team = (Team) Database.team.getOne(teamId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
+            players = team.getPlayers();
+            getActivity().runOnUiThread(() -> {
+                displayPlayers();
+            });
+
+            return (Void) null;
+        }
+    }
+
+
+
+    public class CreatePlayerTask extends AsyncTask<Void, Void, Void> {
+        Player newPlayer;
+
+        public CreatePlayerTask(Player newPlayer) {
+            this.newPlayer = newPlayer;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                newPlayer = (Player) Database.player.save(newPlayer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            getActivity().runOnUiThread(() -> {
+                GetOneTeamTask getOneTeamTask = new GetOneTeamTask();
+                getOneTeamTask.execute((Void) null);
+            });
+
+            return (Void) null;
+        }
+    }
 }
 
 

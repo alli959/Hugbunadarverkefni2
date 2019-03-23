@@ -66,7 +66,7 @@ public abstract class EntityController<Ent extends Entity, IdType> {
         return longMap;
     }
 
-    public List getOne(IdType id) throws JSONException {
+    public List listOfOne(IdType id) throws JSONException {
         Param param = new Param("id", "" + id);
         JSONArray json;
         try {
@@ -76,14 +76,14 @@ public abstract class EntityController<Ent extends Entity, IdType> {
             e.printStackTrace(System.out);
             return new ArrayList<>();
         }
-
+        System.out.println(json.toString());
         List<Ent> entity = new ArrayList<>();
         entity.add(jsonToEntity((JSONObject) json.get(0)));
         return entity;
     }
 
-    public Ent one(IdType id) throws IOException, JSONException {
-        List<Ent> list = getOne(id);
+    public Ent getOne(IdType id) throws IOException, JSONException {
+        List<Ent> list = listOfOne(id);
         return list.get(0);
     }
 
@@ -94,7 +94,7 @@ public abstract class EntityController<Ent extends Entity, IdType> {
         List<Ent> entities = new ArrayList<>();
 
         for(int i = 0; i < json.length(); i++)
-            entities.add(jsonToEntity((JSONObject) json.get(i)));
+            entities.add(jsonToEntity(json.getJSONObject(i)));
         return entities;
     }
 
