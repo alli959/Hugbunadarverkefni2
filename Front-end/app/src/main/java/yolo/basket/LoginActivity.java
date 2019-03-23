@@ -211,7 +211,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
+        // Check for a valid password, if the user entered getOne.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
@@ -303,7 +303,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 .CONTENT_ITEM_TYPE},
 
                 // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
+                // a primary email address if the user hasn't specified getOne.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 

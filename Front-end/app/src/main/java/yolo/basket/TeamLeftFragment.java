@@ -2,22 +2,28 @@ package yolo.basket;
 
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import yolo.basket.db.Database;
+import yolo.basket.db.team.Team;
 
 public class TeamLeftFragment extends Fragment {
 
@@ -28,16 +34,15 @@ public class TeamLeftFragment extends Fragment {
     private Button createTeamButton;
     private Button startGameButton;
 
+    private List<Team> teams;
+
     public interface FragmentLeftListener {
         void showRightTeamView(boolean value);
-        void showRightPlayerView(boolean value, CharSequence name);
         void showStartGameView(boolean value);
+        void showRightPlayerView(boolean value, Long teamId, String teamName);
     }
 
-
     private ArrayAdapter<String> listViewAdapter;
-
-
 
     private String[] arrTeamNames = {
             "Fjölnir",
@@ -45,8 +50,12 @@ public class TeamLeftFragment extends Fragment {
             "Prumpuliðið",};
 
     private ArrayList<String> teamNames = new ArrayList<String>(Arrays.asList(arrTeamNames));
+    private View view;
+    private ListView listView;
 
+    private void displayTeamNames() {
 
+<<<<<<< HEAD
 
     @Nullable
     @Override
@@ -57,6 +66,9 @@ public class TeamLeftFragment extends Fragment {
 
         startGameButton = view.findViewById(R.id.button_startGame);
         ListView listView = (ListView) view.findViewById(R.id.teamList);
+=======
+        listView = (ListView) view.findViewById(R.id.teamList);
+>>>>>>> async
         listViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
@@ -66,6 +78,14 @@ public class TeamLeftFragment extends Fragment {
         listView.setAdapter(listViewAdapter);
 
 
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        view = inflater.inflate(R.layout.team_left_fragment, container, false);
+        createTeamButton = view.findViewById(R.id.button_createTeam);
         createTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,6 +96,7 @@ public class TeamLeftFragment extends Fragment {
             }
         });
 
+<<<<<<< HEAD
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,19 +107,27 @@ public class TeamLeftFragment extends Fragment {
 
             }
         });
+=======
+        displayTeamNames();
+        updateTeamNames();
+>>>>>>> async
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CharSequence name = (CharSequence) parent.getItemAtPosition(position);
                 isRightTeamView = false;
                 isStartGameView = false;
                 isRightPlayerView = ! isRightPlayerView;
-                listener.showRightPlayerView(isRightPlayerView, name);
+                listener.showRightPlayerView(isRightPlayerView, teams.get(position).getId(), teams.get(position).getName());
             }
         });
 
         return view;
+    }
+
+    public void updateTeamNames() {
+        GetTeamsTask getTeamsTask = new GetTeamsTask();
+        getTeamsTask.execute((Void) null);
     }
 
     @Override
@@ -121,10 +150,31 @@ public class TeamLeftFragment extends Fragment {
         listener = null;
     }
 
-    public void updateTeamNames(CharSequence text){
-        listViewAdapter.add(String.valueOf(text));
+    public class GetTeamsTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                teams = (List<Team>) Database.team.getAll();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<String> newTeamNames = new ArrayList<>();
+            for (Team team : teams) {
+                newTeamNames.add(team.getName());
+            }
+
+            teamNames = newTeamNames;
+
+            getActivity().runOnUiThread(() -> displayTeamNames());
+
+            return (Void) null;
+        }
     }
+
 }
-
-
-
