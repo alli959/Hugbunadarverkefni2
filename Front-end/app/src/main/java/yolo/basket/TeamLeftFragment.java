@@ -64,7 +64,6 @@ public class TeamLeftFragment extends Fragment {
 
         listView.setAdapter(listViewAdapter);
 
-
     }
 
     @Nullable
@@ -94,6 +93,9 @@ public class TeamLeftFragment extends Fragment {
 
             }
         });
+
+        displayTeamNames();
+        updateTeamNames();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
