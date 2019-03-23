@@ -13,6 +13,9 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     private TeamRightFragment teamRightFragment;
     private PlayerRightFragment playerRightFragment;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

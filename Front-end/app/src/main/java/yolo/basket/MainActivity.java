@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         // Switch to login if user is not logged in
         //if (true) {
         //    Intent intent = new Intent(this, gameActivity.class);
-   // private Button team;
+    private Button team;
 
     public class CheckLoginTask extends AsyncTask<Void, Void, Void> {
 
