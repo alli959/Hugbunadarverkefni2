@@ -2,7 +2,12 @@ package yolo.basket;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,15 +20,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+
+import yolo.basket.canvas.CanvasView;
 import yolo.basket.db.Database;
 import yolo.basket.db.gameEvent.GameEvent;
 
 import static yolo.basket.db.Database.game;
+import static yolo.basket.db.Database.login;
 
 public class gameActivity extends AppCompatActivity {
 
@@ -33,9 +43,14 @@ public class gameActivity extends AppCompatActivity {
     private String location;
     private long timeOfEvent;
 
-    private long selectedPlayer;
+    private String selectedPlayer;
+
+    private Long selectedPlayerID;
+
     private TextView alertTextView;
-    private ImageButton court;
+    private ImageView court;
+
+    private CanvasView canvas;
 
     public void defineButtons(){
         findViewById(R.id.leikmadur1).setOnClickListener(buttonClickListener);
@@ -54,45 +69,11 @@ public class gameActivity extends AppCompatActivity {
         g = this;
 
         alertTextView = (TextView) findViewById(R.id.AlertTextView);
-        court = (ImageButton) findViewById(R.id.basketBallCourt);
+        canvas = (CanvasView) findViewById(R.id.basketBallCourtCanvas);
 
-        court.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(gameActivity.this);
+        court = (ImageView) findViewById(R.id.basketBallCourt);
 
-                builder.setCancelable(true);
-                builder.setTitle("Action for " + selectedPlayer);
-                //builder.setMessage("This is an Alert Dialog Message: " + leikmadur1.getText());
 
-                builder.setItems(new CharSequence[]
-                                {"action 1", "action 2", "action 3", "action 4"},
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // The 'which' argument contains the index position
-                                // of the selected item
-                                // TODO búa til action föll sem tekur inn id af player og uppfærir rétt action í db.
-                                switch (which) {
-                                    case 0:
-                                        Toast.makeText(gameActivity.this, "action 1", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 1:
-                                        Toast.makeText(gameActivity.this, "action 2", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 2:
-                                        Toast.makeText(gameActivity.this, "action 3", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case 3:
-                                        Toast.makeText(gameActivity.this, "action 4", Toast.LENGTH_SHORT).show();
-                                        break;
-                                }
-                            }
-                        });
-                builder.create().show();
-
-            }
-
-        });
     }
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {
         @Override
@@ -157,7 +138,7 @@ public class gameActivity extends AppCompatActivity {
         gameEvent.setTimeOfEvent(timeOfEvent);
         gameEvent.setEventType(GameEvent.getEventTypeByName(action));
         gameEvent.setLocation(GameEvent.getLocationByName(location));
-        gameEvent.setPlayerId(selectedPlayer);
+        gameEvent.setPlayerId(selectedPlayerID);
         return gameEvent;
     }
 
