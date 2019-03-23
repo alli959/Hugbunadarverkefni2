@@ -25,6 +25,7 @@ public class PreGameFragment extends Fragment {
     private FragmentPreGameListener listener;
     private Button startGame;
 
+
     public interface FragmentPreGameListener {
         void showRightTeamView(boolean value);
         void showRightPlayerView(boolean value);
@@ -41,12 +42,71 @@ public class PreGameFragment extends Fragment {
     private String[] arrPlayersAvailable = {
             "Jónas",
             "Palli",
-            "Svenni",};
+            "Svenni",
+            "Sámur",
+            "Blómi",
+            "Rósi",};
 
 
     private ArrayList<String> startingPlayers = new ArrayList<String>(Arrays.asList(arrStartingPlayers));
     private ArrayList<String> playerAvailable = new ArrayList<String>(Arrays.asList(arrPlayersAvailable));
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+
+        View view = inflater.inflate(R.layout.pregame, container, false);
+
+        ListView availableListView =  (ListView) view.findViewById(R.id.playersAvailable);
+
+        ListView startingListView = (ListView) view.findViewById(R.id.playerList);
+
+
+
+        availablePlayersAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                playerAvailable
+        );
+    //availablePlayersAdapter
+
+        startingPlayersAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                startingPlayers
+                );
+
+        availableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CharSequence name = (CharSequence) parent.getItemAtPosition(position);
+                startingPlayersAdapter.add(String.valueOf(name));
+                availablePlayersAdapter.remove(String.valueOf(name));
+
+            }
+        });
+
+
+
+        startingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CharSequence name = (CharSequence) parent.getItemAtPosition(position);
+                availablePlayersAdapter.add(String.valueOf(name));
+                startingPlayersAdapter.remove(String.valueOf(name));
+
+            }
+        });
+
+
+
+
+        availableListView.setAdapter(availablePlayersAdapter);
+
+        startingListView.setAdapter(startingPlayersAdapter);
+
+        return view;
+    }
 }
 
