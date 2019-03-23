@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    >
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_red_light">
+        <TextView
+            android:id="@+id/rightPlayerHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_full"
+            android:gravity="center_horizontal"
+            android:text="PreGame"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="30dp"
+        android:background="@android:color/holo_orange_dark">
+
+        <TextView
+            android:id="@+id/startingPlayers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:gravity="center_horizontal"
+            android:text="Starting Players"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
+
+        <ListView
+            android:id="@+id/playerList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            ></ListView>
+
+        <TextView
+            android:id="@+id/playersInTeam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:gravity="center_horizontal"
+            android:text="Players in Team"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
+
+
+        <ListView
+            android:id="@+id/playersAvailable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            ></ListView>
+
+        <Button
+            android:id="@+id/startGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Game" />
+
+    </LinearLayout>
+
+</LinearLayout>
