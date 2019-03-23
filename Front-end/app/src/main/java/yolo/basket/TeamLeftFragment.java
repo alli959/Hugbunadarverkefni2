@@ -55,20 +55,7 @@ public class TeamLeftFragment extends Fragment {
 
     private void displayTeamNames() {
 
-<<<<<<< HEAD
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.team_left_fragment, container, false);
-        createTeamButton = view.findViewById(R.id.button_createTeam);
-
-        startGameButton = view.findViewById(R.id.button_startGame);
-        ListView listView = (ListView) view.findViewById(R.id.teamList);
-=======
         listView = (ListView) view.findViewById(R.id.teamList);
->>>>>>> async
         listViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
@@ -86,6 +73,7 @@ public class TeamLeftFragment extends Fragment {
 
         view = inflater.inflate(R.layout.team_left_fragment, container, false);
         createTeamButton = view.findViewById(R.id.button_createTeam);
+        startGameButton = view.findViewById(R.id.button_startGame);
         createTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +84,6 @@ public class TeamLeftFragment extends Fragment {
             }
         });
 
-<<<<<<< HEAD
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,10 +94,6 @@ public class TeamLeftFragment extends Fragment {
 
             }
         });
-=======
-        displayTeamNames();
-        updateTeamNames();
->>>>>>> async
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

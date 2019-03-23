@@ -84,7 +84,6 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         }
     }
 
-<<<<<<< HEAD
     @Override
     public void showStartGameView(boolean value) {
         FrameLayout startGameLayout = (FrameLayout) findViewById(R.id.rightfragment);
@@ -103,8 +102,6 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     }
 
 
-=======
->>>>>>> async
     @Override
     public void onPlayerFragmentInput(CharSequence input) {
 
