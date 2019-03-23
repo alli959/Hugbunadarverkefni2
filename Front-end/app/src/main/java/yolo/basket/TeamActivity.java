@@ -61,6 +61,16 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     }
 
     @Override
+    public void showRightPlayerView(boolean value) {
+
+    }
+
+    @Override
+    public void getTeamName(CharSequence value) {
+
+    }
+
+    @Override
     public void showRightPlayerView(boolean value, CharSequence name) {
         Log.d("here",  String.valueOf(name));
         FrameLayout playerRightLayout = (FrameLayout) findViewById(R.id.rightfragment);
