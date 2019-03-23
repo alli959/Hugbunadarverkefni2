@@ -1,6 +1,5 @@
 package yolo.basket;
 
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -63,7 +62,6 @@ public class TeamLeftFragment extends Fragment {
         );
 
         listView.setAdapter(listViewAdapter);
-
     }
 
     @Nullable
