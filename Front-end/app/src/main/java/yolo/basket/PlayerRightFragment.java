@@ -1,7 +1,9 @@
 package yolo.basket;
 
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +21,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static android.support.constraint.Constraints.TAG;
+
+@TargetApi(Build.VERSION_CODES.N)
 public class PlayerRightFragment extends Fragment {
 
     private boolean isRightPlayerView = false;
@@ -28,14 +35,18 @@ public class PlayerRightFragment extends Fragment {
     private EditText playerName;
     private EditText playerPosition;
     private EditText playerJerseyNumber;
-    private TextView teamName;
+    private TextView teamNameTextView;
 
     public interface FragmentPlayerListener {
         void onPlayerFragmentInput(CharSequence input);
     }
 
 
-    private ArrayAdapter<String> listViewAdapter;
+    private ArrayAdapter<String> nameViewAdapter;
+
+    private ArrayAdapter<String> numberViewAdapter;
+
+    private ArrayAdapter<String> positionViewAdapter;
 
 
 
@@ -44,30 +55,78 @@ public class PlayerRightFragment extends Fragment {
             "Charlie",
             "Prump",};
 
+    private String[] arrPlayerPositions = {
+            "Center",
+            "PF",
+            "PG"
+    };
+
+    private String[] arrPlayerJerseyNumbers = {
+            "12",
+            "1",
+            "13"
+    };
+
     private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList(arrPlayerNames));
+    private ArrayList<String> playerPositions = new ArrayList<String>(Arrays.asList(arrPlayerPositions));
+    private ArrayList<String> playerJerseyNumbers = new ArrayList<String>(Arrays.asList(arrPlayerJerseyNumbers));
+
+
 
 
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Bundle bundle = this.getArguments();
+
+
         View view = inflater.inflate(R.layout.player_right_fragment, container, false);
         createPlayerButton = view.findViewById(R.id.button_addPlayer);
         playerName = view.findViewById(R.id.playerName);
         playerJerseyNumber = view.findViewById(R.id.playerJerseyNumber);
         playerPosition = view.findViewById(R.id.playerPosition);
+        teamNameTextView = (TextView) view.findViewById(R.id.rightPlayerHeader);
 
-        teamName = (TextView) view.findViewById(R.id.rightPlayerHeader);
+        String teamName = "";
+        if (bundle != null) {
+            teamName = bundle.getString("teamName");
+        }
+
+
+        teamNameTextView.setText(teamName);
 
 
         ListView listView = (ListView) view.findViewById(R.id.playerList);
-        listViewAdapter = new ArrayAdapter<String>(
+
+        nameViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
                 playerNames
         );
 
-        listView.setAdapter(listViewAdapter);
+        numberViewAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                playerJerseyNumbers
+        );
+
+
+        positionViewAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                playerPositions
+        );
+
+
+        Log.d("test", positionViewAdapter.getItem(0));
+
+
+
+        listView.setAdapter(nameViewAdapter);
+
+
 
 
 
@@ -78,7 +137,7 @@ public class PlayerRightFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 CharSequence name = playerName.getText();
-                listViewAdapter.add(String.valueOf(name));
+                nameViewAdapter.add(String.valueOf(name));
 
             }
         });
@@ -114,9 +173,7 @@ public class PlayerRightFragment extends Fragment {
         listener = null;
     }
 
-    public void setTeamName(CharSequence name){
-        teamName.setText(String.valueOf(name));
-    }
+
 }
 
 

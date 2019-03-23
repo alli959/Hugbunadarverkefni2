@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    tools:layout_width="match_parent">
+
+    <yolo.basket.canvas.CanvasView
+        android:id="@+id/basketBallCourtCanvas"
+        android:layout_width="900dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/basketBallCourt"
+        android:layout_width="900dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="150dp"
+        android:src="@drawable/bballcourt"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"/>
+
+    <Button
+        android:id="@+id/leikmadur1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Leikmaður 1"
+        tools:layout_editor_absoluteX="61dp"
+        tools:layout_editor_absoluteY="156dp"
+        android:layout_centerVertical="true"
+        android:layout_above="@+id/leikmadur2"/>
+
+    <Button
+        android:id="@+id/leikmadur2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="61dp"
+        tools:layout_editor_absoluteY="156dp"
+        android:text="Leikmaður 2"
+        android:layout_centerVertical="true"
+
+        />
+
+    <TextView
+        android:id="@+id/AlertTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/leikmadur1"
+        android:layout_centerHorizontal="true"
+        android:text="Hello Alert"
+        android:textSize="20px"
+        android:visibility="invisible"
+        />
+
+</RelativeLayout>

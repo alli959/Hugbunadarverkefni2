@@ -120,6 +120,7 @@ public class Request {
         url = new URL(url, databaseMethod);
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
     public Request(String databaseMethod) throws JSONException, MalformedURLException, IOException {
         initRequest(databaseMethod);
         con = makeRequest();

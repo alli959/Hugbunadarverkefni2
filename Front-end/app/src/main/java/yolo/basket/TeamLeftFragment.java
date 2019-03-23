@@ -28,8 +28,7 @@ public class TeamLeftFragment extends Fragment {
 
     public interface FragmentLeftListener {
         void showRightTeamView(boolean value);
-        void showRightPlayerView(boolean value);
-        void getTeamName(CharSequence value);
+        void showRightPlayerView(boolean value, CharSequence name);
     }
 
 
@@ -49,6 +48,7 @@ public class TeamLeftFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.team_left_fragment, container, false);
         createTeamButton = view.findViewById(R.id.button_createTeam);
 
@@ -78,8 +78,7 @@ public class TeamLeftFragment extends Fragment {
                 CharSequence name = (CharSequence) parent.getItemAtPosition(position);
                 isRightTeamView = false;
                 isRightPlayerView = ! isRightPlayerView;
-                listener.showRightPlayerView(isRightPlayerView);
-                listener.getTeamName(name);
+                listener.showRightPlayerView(isRightPlayerView, name);
             }
         });
 

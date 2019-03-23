@@ -58,12 +58,15 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     }
 
     @Override
-    public void showRightPlayerView(boolean value) {
+    public void showRightPlayerView(boolean value, CharSequence name) {
+        Log.d("here",  String.valueOf(name));
         FrameLayout playerRightLayout = (FrameLayout) findViewById(R.id.rightfragment);
-        TextView textView = (TextView) playerRightLayout.findViewById(R.id.rightPlayerHeader);
-        Log.d("textView", "showRightPlayerView() returned: " + textView);
-        //textView.setText(String.valueOf("hello bitch"));
+        Bundle playerName = new Bundle();
+        playerName.putString("teamName",String.valueOf(name));
+        playerRightFragment.setArguments(playerName);
         getSupportFragmentManager().beginTransaction()
+                .detach(playerRightFragment)
+                .attach(playerRightFragment)
                 .replace(R.id.rightfragment, playerRightFragment)
                 .commit();
         if(value){
@@ -77,12 +80,7 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     }
 
 
-    @Override
-    public void getTeamName(CharSequence value) {
 
-        //playerRightFragment.setTeamName(value);
-
-    }
 
     @Override
     public void onPlayerFragmentInput(CharSequence input) {

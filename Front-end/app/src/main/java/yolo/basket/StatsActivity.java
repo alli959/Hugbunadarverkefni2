@@ -1,12 +1,8 @@
 package yolo.basket;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,52 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 
-import yolo.basket.db.Database;
-
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnTaskCompleted {
-
-
-        //boolean userIsLoggedIn = Database.isLoggedIn();
-        // Switch to login if user is not logged in
-        //if (true) {
-        //    Intent intent = new Intent(this, gameActivity.class);
-   // private Button team;
-
-    public class CheckLoginTask extends AsyncTask<Void, Void, Void> {
-
-        private final OnTaskCompleted listener;
-
-
-        public CheckLoginTask(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String result = String.valueOf(Database.isLoggedIn());
-            listener.onTaskCompleted(result);
-            return (Void) null;
-        }
-    }
-
-    @Override
-    public void onTaskCompleted(String response) {
-        if (response.equals("true")) {
-            System.out.println("Do nothing");
-        } else {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
-    }
+public class StatsActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CheckLoginTask mLoginTask = new CheckLoginTask(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_stats);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -82,25 +40,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-
-        team = (Button) findViewById(R.id.teamView);
-
-        team.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v){
-                openTeamView();
-            }
-        });
-
-        mLoginTask.execute((Void) null);
-    }
-
-    public void openTeamView() {
-        Intent intent = new Intent(this, TeamActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -116,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.stats, menu);
         return true;
     }
 
