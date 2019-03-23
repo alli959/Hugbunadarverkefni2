@@ -46,6 +46,16 @@
         android:layout_height="wrap_content"
         android:text="Create Team" />
 
+
+    <Button
+        android:id = "@+id/button_startGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Game"/>
+
+
+
+
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="314dp"

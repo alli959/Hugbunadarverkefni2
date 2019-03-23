@@ -11,6 +11,7 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     private TeamLeftFragment teamLeftFragment;
     private TeamRightFragment teamRightFragment;
     private PlayerRightFragment playerRightFragment;
+    private PreGameFragment preGameFragment;
     private PreGameFragment pregame;
 
 
@@ -25,6 +26,8 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         teamLeftFragment = new TeamLeftFragment();
         teamRightFragment = new TeamRightFragment();
         playerRightFragment = new PlayerRightFragment();
+        preGameFragment = new PreGameFragment();
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.leftfragment, teamLeftFragment)
                 .replace(R.id.rightfragment, teamRightFragment)
@@ -92,7 +95,22 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         }
     }
 
+    @Override
+    public void showStartGameView(boolean value) {
+        FrameLayout startGameLayout = (FrameLayout) findViewById(R.id.rightfragment);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.rightfragment, preGameFragment)
+                .commit();
+        if(value){
 
+
+            startGameLayout.setVisibility(View.VISIBLE);
+        }
+        else{
+            startGameLayout.setVisibility(View.GONE);
+        }
+
+    }
 
 
     @Override

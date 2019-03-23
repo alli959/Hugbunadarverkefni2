@@ -23,12 +23,15 @@ public class TeamLeftFragment extends Fragment {
 
     private boolean isRightTeamView = false;
     private boolean isRightPlayerView = false;
+    private boolean isStartGameView = false;
     private FragmentLeftListener listener;
     private Button createTeamButton;
+    private Button startGameButton;
 
     public interface FragmentLeftListener {
         void showRightTeamView(boolean value);
         void showRightPlayerView(boolean value, CharSequence name);
+        void showStartGameView(boolean value);
     }
 
 
@@ -52,7 +55,7 @@ public class TeamLeftFragment extends Fragment {
         View view = inflater.inflate(R.layout.team_left_fragment, container, false);
         createTeamButton = view.findViewById(R.id.button_createTeam);
 
-
+        startGameButton = view.findViewById(R.id.button_startGame);
         ListView listView = (ListView) view.findViewById(R.id.teamList);
         listViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
@@ -68,7 +71,19 @@ public class TeamLeftFragment extends Fragment {
             public void onClick(View v) {
                 isRightTeamView = !isRightTeamView;
                 isRightPlayerView = false;
+                isStartGameView = false;
                 listener.showRightTeamView(isRightTeamView);
+            }
+        });
+
+        startGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isStartGameView = !isStartGameView;
+                isRightTeamView = false;
+                isRightPlayerView = false;
+                listener.showStartGameView(isStartGameView);
+
             }
         });
 
@@ -77,6 +92,7 @@ public class TeamLeftFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CharSequence name = (CharSequence) parent.getItemAtPosition(position);
                 isRightTeamView = false;
+                isStartGameView = false;
                 isRightPlayerView = ! isRightPlayerView;
                 listener.showRightPlayerView(isRightPlayerView, name);
             }

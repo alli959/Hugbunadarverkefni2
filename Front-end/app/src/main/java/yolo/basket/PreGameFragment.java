@@ -43,6 +43,7 @@ public class PreGameFragment extends Fragment {
             "Palli",
             "Svenni",};
 
+
     private ArrayList<String> startingPlayers = new ArrayList<String>(Arrays.asList(arrStartingPlayers));
     private ArrayList<String> playerAvailable = new ArrayList<String>(Arrays.asList(arrPlayersAvailable));
 
