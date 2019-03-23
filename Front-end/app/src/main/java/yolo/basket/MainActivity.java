@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity
 
         private final OnTaskCompleted listener;
 
-
         public CheckLoginTask(OnTaskCompleted listener) {
             this.listener = listener;
         }
