@@ -81,7 +81,8 @@
             android:id="@+id/startGame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Game" />
+            android:text="Start Game"
+            android:onClick="startGame"/>
 
     </LinearLayout>
 

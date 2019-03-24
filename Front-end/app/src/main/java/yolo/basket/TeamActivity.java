@@ -1,5 +1,6 @@
 package yolo.basket;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,6 +23,8 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     private RadioGroup radioGroup;
     private RadioButton radioButton;
 
+    private Button startGame;
+
 
     private boolean isPreGame = false;
 
@@ -30,6 +33,7 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
 
+        startGame = findViewById(R.id.startGame);
         teamLeftFragment = new TeamLeftFragment();
         teamRightFragment = new TeamRightFragment();
         playerRightFragment = new PlayerRightFragment();
@@ -62,6 +66,14 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
             isPreGame = false;
         }
 
+    }
+
+
+    //start Game Button
+
+    public void startGame(View view){
+        Intent intent = new Intent(this, gameActivity.class);
+        startActivity(intent);
     }
 
 

@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         if (response.equals("true")) {
             System.out.println("Do nothing");
         } else {
-            Intent intent = new Intent(this, gameActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
     }
