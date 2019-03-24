@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import yolo.basket.gameActivity;
 
-
+/*
+ * Klassi sem tekur staðsetninguna þar sem notandi klikkar á körfuboltavöllinn
+ */
 
 public class CanvasView extends View {
 

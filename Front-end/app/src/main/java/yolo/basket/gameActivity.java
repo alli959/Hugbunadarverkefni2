@@ -90,9 +90,9 @@ public class gameActivity extends AppCompatActivity {
             "DeMarcus Cousins"
     };
 
-    private ArrayList<String> AwayplayersArr = new ArrayList<String>(Arrays.asList(AwayplayersArray));
+    private ArrayList<String> AwayplayersArr = new ArrayList<>(Arrays.asList(AwayplayersArray));
 
-    private ArrayList<Button> AwayplayerButtons = new ArrayList<Button>();
+    private ArrayList<Button> AwayplayerButtons = new ArrayList<>();
 
     public String getSelectedPlayer() {
         Log.d("110495", selectedPlayer);
@@ -106,8 +106,6 @@ public class gameActivity extends AppCompatActivity {
 
 
     public void defineButtons(){
-        //findViewById(R.id.leikmadur1).setOnClickListener(buttonClickListener);
-        //findViewById(R.id.leikmadur2).setOnClickListener(buttonClickListener);
         findViewById(R.id.StartPauseTimer).setOnClickListener(startPauseTimerListener);
         findViewById(R.id.SetTimer).setOnClickListener(setTimerListener);
     }
@@ -140,14 +138,16 @@ public class gameActivity extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) findViewById(R.id.HomeButtonLayout);
         int id = 1;
         for(String s : HomeplayersArr){
-                Button but = new Button(gameActivity.this);
-                HomeplayerButtons.add(but);
-                //optional: add your buttons to any layout if you want to see them in your screen
-                but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-                but.setText(s);
-                but.setId(id);
-                layout.addView(but);
-                id++;
+            Button but = new Button(gameActivity.this);
+            HomeplayerButtons.add(but);
+            //optional: add your buttons to any layout if you want to see them in your screen
+            but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+            but.setText(s);
+            but.setId(id);
+            //Þarf að setja id fra database her!
+            but.setOnClickListener(buttonClickListener);
+            layout.addView(but);
+            id++;
         }
     }
 
@@ -160,31 +160,22 @@ public class gameActivity extends AppCompatActivity {
             //optional: add your buttons to any layout if you want to see them in your screen
             but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
             but.setText(s);
+            //Þarf að setja id fra database her!
             but.setId(id);
+            but.setOnClickListener(buttonClickListener);
             layout.addView(but);
             id++;
         }
     }
 
-    /*private View.OnClickListener buttonClickListener = new View.OnClickListener() {
+    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.leikmadur1:
-                    //Action
-                    Button leikmadur1 = (Button)v;
-                    setSelectedPlayer(leikmadur1.getText().toString());
-                    Log.d("110495", selectedPlayer);
-                    break;
-                case R.id.leikmadur2:
-                    //Action
-                    Button leikmadur2 = (Button)v;
-                    setSelectedPlayer(leikmadur2.getText().toString());
-                    Log.d("110495", selectedPlayer);
-                break;
-            }
+            Button leikmadur = (Button)v;
+            setSelectedPlayer(leikmadur.getText().toString());
+            Log.d("110495", selectedPlayer);
         }
-    };*/
+    };
 
     // Klukka
     private View.OnClickListener startPauseTimerListener = new View.OnClickListener() {
