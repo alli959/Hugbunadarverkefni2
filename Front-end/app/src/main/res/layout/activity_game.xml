@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:id="@+id/Layout" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:visibility="visible"
     tools:layout_width="match_parent">
+
+    <LinearLayout
+        android:id="@+id/HomeButtonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="25dp"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/AwayButtonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/basketBallCourtCanvas"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="25dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="-163dp"
+        android:orientation="vertical"
+        tools:ignore="DuplicateIds" />
+
 
     <TextView
         android:id="@+id/Timer"
@@ -61,35 +82,5 @@
         android:src="@drawable/bballcourt"
         android:layout_below="@+id/Timer" />
 
-    <Button
-        android:id="@+id/leikmadur1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/leikmadur2"
-        android:layout_centerVertical="true"
-        android:text="Leikmaður 1"
-        tools:layout_editor_absoluteX="61dp"
-        tools:layout_editor_absoluteY="156dp" />
-
-    <Button
-        android:id="@+id/leikmadur2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:text="Leikmaður 2"
-        tools:layout_editor_absoluteX="61dp"
-        tools:layout_editor_absoluteY="156dp"
-
-        />
-
-    <TextView
-        android:id="@+id/AlertTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/leikmadur1"
-        android:layout_centerHorizontal="true"
-        android:text="Hello Alert"
-        android:textSize="20px"
-        android:visibility="invisible" />
 
 </RelativeLayout>

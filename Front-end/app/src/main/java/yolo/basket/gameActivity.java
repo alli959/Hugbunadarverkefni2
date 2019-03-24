@@ -30,12 +30,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 import yolo.basket.canvas.CanvasView;
@@ -67,12 +70,29 @@ public class gameActivity extends AppCompatActivity {
 
     //Player
     private static String selectedPlayer = "";
-    private String[] playersArray = {
+    private String[] HomeplayersArray = {
             "LeBron James",
             "Kyle Kuzma",
             "Lonzo Ball",
-
+            "JaVale McGee",
+            "Brandon Ingram"
     };
+
+    private ArrayList<String> HomeplayersArr = new ArrayList<String>(Arrays.asList(HomeplayersArray));
+
+    private ArrayList<Button> HomeplayerButtons = new ArrayList<Button>();
+
+    private String[] AwayplayersArray = {
+            "Stephen Curry",
+            "Klay Thompson",
+            "Kevin Durant",
+            "Draymond Greeen",
+            "DeMarcus Cousins"
+    };
+
+    private ArrayList<String> AwayplayersArr = new ArrayList<String>(Arrays.asList(AwayplayersArray));
+
+    private ArrayList<Button> AwayplayerButtons = new ArrayList<Button>();
 
     public String getSelectedPlayer() {
         Log.d("110495", selectedPlayer);
@@ -84,15 +104,10 @@ public class gameActivity extends AppCompatActivity {
     }
 
 
-    //View
-    private TextView alertTextView;
-    private ImageView court;
-    private CanvasView canvas;
 
     public void defineButtons(){
-        findViewById(R.id.leikmadur1).setOnClickListener(buttonClickListener);
-        findViewById(R.id.leikmadur2).setOnClickListener(buttonClickListener);
-
+        //findViewById(R.id.leikmadur1).setOnClickListener(buttonClickListener);
+        //findViewById(R.id.leikmadur2).setOnClickListener(buttonClickListener);
         findViewById(R.id.StartPauseTimer).setOnClickListener(startPauseTimerListener);
         findViewById(R.id.SetTimer).setOnClickListener(setTimerListener);
     }
@@ -107,9 +122,6 @@ public class gameActivity extends AppCompatActivity {
 
         g = this;
 
-        alertTextView = (TextView) findViewById(R.id.AlertTextView);
-        canvas = (CanvasView) findViewById(R.id.basketBallCourtCanvas);
-
         startPauseTime = (Button) findViewById(R.id.StartPauseTimer);
         setTime = (Button) findViewById(R.id.SetTimer);
 
@@ -117,11 +129,44 @@ public class gameActivity extends AppCompatActivity {
 
         defineButtons();
 
+        createHomePlayerButtons();
+        createAwayPlayerButtons();
+
         upDateTimer();
 
     }
 
-    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
+    private void createHomePlayerButtons(){
+        LinearLayout layout = (LinearLayout) findViewById(R.id.HomeButtonLayout);
+        int id = 1;
+        for(String s : HomeplayersArr){
+                Button but = new Button(gameActivity.this);
+                HomeplayerButtons.add(but);
+                //optional: add your buttons to any layout if you want to see them in your screen
+                but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+                but.setText(s);
+                but.setId(id);
+                layout.addView(but);
+                id++;
+        }
+    }
+
+    private void createAwayPlayerButtons(){
+        LinearLayout layout = (LinearLayout) findViewById(R.id.AwayButtonLayout);
+        int id = 1;
+        for(String s : AwayplayersArr){
+            Button but = new Button(gameActivity.this);
+            AwayplayerButtons.add(but);
+            //optional: add your buttons to any layout if you want to see them in your screen
+            but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+            but.setText(s);
+            but.setId(id);
+            layout.addView(but);
+            id++;
+        }
+    }
+
+    /*private View.OnClickListener buttonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()){
@@ -139,8 +184,9 @@ public class gameActivity extends AppCompatActivity {
                 break;
             }
         }
-    };
+    };*/
 
+    // Klukka
     private View.OnClickListener startPauseTimerListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -273,12 +319,11 @@ public class gameActivity extends AppCompatActivity {
         upDateTimer();
     }
 
-    /*----------------------------------------------------------------*/
-
-
-
-
-
+    /*
+    *
+    * Bakendi
+    *
+    */
 
     public void endGame() {
         endGameTask = new EndGameTask();
