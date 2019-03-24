@@ -51,14 +51,10 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         int radioId = radioGroup.getCheckedRadioButtonId();
         radioButton = v.findViewById(radioId);
         String viewpoint = (String) radioButton.getText();
-        teamLeftFragment.changeRightPlayerView();
         if(viewpoint.equals("Game")){
             startGameLayout.setVisibility(View.GONE);
-            if(isPreGame == false){
-
-
-            }
             teamLeftFragment.seeCreateTeamButton(false);
+            isPreGame = true;
         }
         else{
             startGameLayout.setVisibility(View.GONE);
