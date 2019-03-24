@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -50,14 +51,18 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         int radioId = radioGroup.getCheckedRadioButtonId();
         radioButton = v.findViewById(radioId);
         String viewpoint = (String) radioButton.getText();
-        Log.d("viewPoint",  viewpoint);
+        teamLeftFragment.changeRightPlayerView();
         if(viewpoint.equals("Game")){
             startGameLayout.setVisibility(View.GONE);
-            isPreGame = true;
+            if(isPreGame == false){
+
+
+            }
+            teamLeftFragment.seeCreateTeamButton(false);
         }
         else{
             startGameLayout.setVisibility(View.GONE);
-
+            teamLeftFragment.seeCreateTeamButton(true);
             isPreGame = false;
         }
 
@@ -105,6 +110,12 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
                     .replace(R.id.rightfragment, preGameFragment)
                     .commit();
 
+            if(value){
+                preGameLayout.setVisibility(View.VISIBLE);
+            }
+            else{
+                preGameLayout.setVisibility(View.GONE);
+            }
         }
 
 

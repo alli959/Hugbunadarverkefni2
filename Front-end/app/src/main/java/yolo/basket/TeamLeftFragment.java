@@ -107,6 +107,20 @@ public class TeamLeftFragment extends Fragment {
     }
 
 
+    public void changeRightPlayerView(){
+        isRightPlayerView = !isRightPlayerView;
+    }
+
+    public void seeCreateTeamButton(boolean value){
+        if(value){
+            createTeamButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            createTeamButton.setVisibility(View.GONE);
+        }
+    }
+
+
 
 
 
