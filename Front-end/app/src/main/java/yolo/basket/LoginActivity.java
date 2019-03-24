@@ -106,12 +106,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mSwitchFormButton = (Button) findViewById(R.id.switchFormsButton);
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        int randomNumber = (int) (Math.random() * 1000);
 
-        mEmailView.setText("oli" + randomNumber);
-        mNameView.setText("oli" + randomNumber);
-        mUserNameView.setText("oli" + randomNumber);
-        mPasswordView.setText("oli" + randomNumber);
+        mEmailView.setText("olitest");
+        mNameView.setText("olitest");
+        mUserNameView.setText("aaa");
+        mPasswordView.setText("aaa");
 
         mSwitchFormButton.setOnClickListener(view -> {
             switchForm();
@@ -211,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
+        // Check for a valid password, if the user entered getOne.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
@@ -303,7 +302,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 .CONTENT_ITEM_TYPE},
 
                 // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
+                // a primary email address if the user hasn't specified getOne.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 

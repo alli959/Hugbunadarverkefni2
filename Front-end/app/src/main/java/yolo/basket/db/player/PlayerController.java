@@ -18,7 +18,7 @@ public class PlayerController<Ent extends Player, IdType> extends EntityControll
 	}
 
 	public Ent getOnePlayer(long id) throws JSONException {
-		List<Ent> listOfOne = getOne(id);
+		List<Ent> listOfOne = listOfOne(id);
 		return listOfOne.get(0);
 	}
 

@@ -13,6 +13,7 @@ public class TeamController extends EntityController {
         saveURL = "user/saveTeam";
         removeURL = "user/team/remove";
         getOneURL = "user/team/getOne";
+        getAllURL = "user/team";
     }
 
     @Override

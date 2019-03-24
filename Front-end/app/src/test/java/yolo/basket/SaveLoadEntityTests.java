@@ -54,7 +54,7 @@ public class SaveLoadEntityTests {
         return playerFromDatabase;
     }
 
-    // Careful, this one creates a player and removes it
+    // Careful, this getOne creates a player and removes it
     @Test
     public void PlayerTest() throws IOException, JSONException {
         Player player = createPlayer(defaultTeam.getId());

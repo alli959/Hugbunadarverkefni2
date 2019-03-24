@@ -35,7 +35,7 @@ public class Game extends Entity {
     return params;
   }
 
-  // Get the int[][] data to put into a Stats object for only one player
+  // Get the int[][] data to put into a Stats object for only getOne player
   public int[][] compileStats(Long playerId) {
     int[][] stats = new int[GameEvent.N_GAME_EVENTS][GameEvent.N_LOCATIONS];
     for (GameEvent ge : gameEvents)

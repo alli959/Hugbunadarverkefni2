@@ -21,4 +21,6 @@
     </string>
     <string name="title_activity_game">gameActivity</string>
     <string name="my_teams">my Teams</string>
+    <string name="title_activity_start_game_fragment">StartGameFragment</string>
+    <string name="title_activity_start">start</string>
 </resources>

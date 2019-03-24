@@ -1,0 +1,4 @@
+
+(java:20474): Gtk-WARNING **: 18:05:32.286: Unable to locate theme engine in module_path: "adwaita",
+
+(java:20474): Gtk-WARNING **: 18:05:32.292: Unable to locate theme engine in module_path: "adwaita",

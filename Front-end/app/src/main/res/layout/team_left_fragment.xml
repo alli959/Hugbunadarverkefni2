@@ -40,11 +40,44 @@
         android:headerDividersEnabled="false"></ListView>
 
 
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/darker_gray">
+
+        <RadioButton android:id="@+id/radio_creation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Creation"
+            android:onClick="checker"
+            android:checked="true"
+
+            />
+        <RadioButton
+            android:id="@+id/radio_pregame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Game"
+            android:onClick="checker">
+
+        </RadioButton>
+    </RadioGroup>
+
     <Button
         android:id="@+id/button_createTeam"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Team" />
+        android:text="Create Team"
+        android:visibility="visible"/>
+
+
+
+
+
+
+
 
     <ImageView
         android:id="@+id/imageView3"

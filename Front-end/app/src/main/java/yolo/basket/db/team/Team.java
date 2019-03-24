@@ -22,8 +22,8 @@ public class Team extends Entity {
     public List<Param> getParameters() {
       List<Param> params = new ArrayList<>();
       if (id != null) params.add(new Param("id", id.toString()));
+      if (userOwner != null) params.add(new Param("userOwner", userOwner));
       params.add(new Param("name", name));
-      params.add(new Param("userOwner", userOwner));
       params.addAll(Param.getIdsOfEntitiesAsParams("player", players));
       params.addAll(Param.listOfLongToParams("gamesPlayed", gamesPlayed));
       return params;

@@ -12,7 +12,7 @@ import yolo.basket.db.team.Team;
 
 
 
-// I literally made this one so the tests
+// I literally made this getOne so the tests
 // can be written with lines like:
 //      Check.ifEqual(team1, team2);
 
