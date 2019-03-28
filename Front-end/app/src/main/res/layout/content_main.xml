@@ -42,11 +42,11 @@
   <TextView
       android:paddingTop="100dp"
       android:id="@+id/textView2"
-      android:layout_width="350dp"
+      android:layout_width="360dp"
       android:layout_height="800dp"
       android:layout_marginStart="100dp"
       android:layout_marginTop="100dp"
-      android:text="PornHub - BasketBall edition"
+      android:text="StatTracker For BasketBall"
       android:textColor="@android:color/background_light"
       android:textSize="64sp"
       app:fontFamily="@font/exoblack"
