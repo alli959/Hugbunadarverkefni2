@@ -27,6 +27,21 @@ import java.util.List;
 import yolo.basket.db.Database;
 import yolo.basket.db.team.Team;
 
+/*
+The fragment where you choose either creation or game by radio buttons.
+
+Case Creation:
+    You can either:
+        click createTeam witch activates "TeamRightFragment"
+        click on any of your teams and activate "PlayerRightFragment"
+
+
+Case Game:
+    CreateTeam button disappears
+    You can:
+        Click on any of your teams and activate "PreGameFragment"
+ */
+
 public class TeamLeftFragment extends Fragment {
 
     private boolean isRightTeamView = false;
@@ -79,6 +94,8 @@ public class TeamLeftFragment extends Fragment {
         createTeamButton = view.findViewById(R.id.button_createTeam);
         createTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
+
+            /*Check if you should show view*/
             public void onClick(View v) {
                 isRightTeamView = !isRightTeamView;
                 isRightPlayerView = false;
