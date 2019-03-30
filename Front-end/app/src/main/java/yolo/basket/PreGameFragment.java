@@ -19,6 +19,17 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+
+/*TODO
+Connect to Database => Connect to gameActivity,
+
+
+ */
+
+
+
+
 public class PreGameFragment extends Fragment {
 
     private boolean isPreGameView = false;
@@ -39,6 +50,12 @@ public class PreGameFragment extends Fragment {
     private String[] arrStartingPlayers = {
             };
 
+
+    /*
+
+    Test inputs
+     */
+
     private String[] arrPlayersAvailable = {
             "Jónas",
             "Palli",
@@ -50,6 +67,8 @@ public class PreGameFragment extends Fragment {
 
     private ArrayList<String> startingPlayers = new ArrayList<String>(Arrays.asList(arrStartingPlayers));
     private ArrayList<String> playerAvailable = new ArrayList<String>(Arrays.asList(arrPlayersAvailable));
+
+
 
     @Nullable
     @Override
@@ -63,13 +82,16 @@ public class PreGameFragment extends Fragment {
         ListView startingListView = (ListView) view.findViewById(R.id.playerList);
 
 
-
+        /*Create
+        A clickable list of avilable players in team, and players that are the starting lineup
+        TODO
+        Connect to database
+         */
         availablePlayersAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
                 playerAvailable
         );
-    //availablePlayersAdapter
 
         startingPlayersAdapter = new ArrayAdapter<String>(
                 getActivity(),

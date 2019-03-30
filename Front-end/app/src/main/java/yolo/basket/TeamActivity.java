@@ -13,6 +13,20 @@ import android.widget.TextView;
 
 import yolo.basket.db.team.Team;
 
+
+
+/*
+TeamActivity is a activity containing 2 fragments, witch are substituted by actions
+ */
+
+
+
+
+/*TODO
+
+connect preGameFragment to db.
+ */
+
 public class TeamActivity extends AppCompatActivity implements TeamRightFragment.FragmentRightListener, TeamLeftFragment.FragmentLeftListener, PlayerRightFragment.FragmentPlayerListener, PreGameFragment.FragmentPreGameListener {
     private TeamLeftFragment teamLeftFragment;
     private TeamRightFragment teamRightFragment;
@@ -33,12 +47,14 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
 
+        //get all the fragments
         startGame = findViewById(R.id.startGame);
         teamLeftFragment = new TeamLeftFragment();
         teamRightFragment = new TeamRightFragment();
         playerRightFragment = new PlayerRightFragment();
         preGameFragment = new PreGameFragment();
 
+        //place default fragments to activity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.leftfragment, teamLeftFragment)
                 .replace(R.id.rightfragment, teamRightFragment)
@@ -49,6 +65,8 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     }
 
 
+    //checks witch view should appear,
+    //depending on radio buttons
     public void checker(View v){
         FrameLayout startGameLayout = (FrameLayout) findViewById(R.id.rightfragment);
         radioGroup = findViewById(R.id.radio_group);
@@ -77,11 +95,18 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
     }
 
 
+    //interfaces from the fragments
+    //where the substitution of the fragments happen
     @Override
     public void onRightFragmentInput(CharSequence input) {
         teamLeftFragment.updateTeamNames();
     }
 
+
+    /*
+    When button Create Team is clicked in TeamLeftFragment
+    Puts TeamRightFragment to the right side of the activity
+     */
     @Override
     public void showRightTeamView(boolean value) {
         FrameLayout teamRightLayout = (FrameLayout)findViewById(R.id.rightfragment);
@@ -107,6 +132,15 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
 
     }
 
+
+    /*
+    checks witch view should appear on the right
+    when team is clicked
+
+    preGameFragment if radio Buttion is on game
+    playerRightFragment if radio button is on creation
+
+     */
     @Override
     public void showRightPlayerView(boolean value, Long teamId, String teamName) {
 
@@ -151,14 +185,17 @@ public class TeamActivity extends AppCompatActivity implements TeamRightFragment
 
     @Override
     public void isPregameView(boolean value) {
-        if(value){
-            isPreGame = true;
-        }
-        else{
-            isPreGame = false;
-        }
+
     }
 
+
+    /*
+    When Button StartGame is Clicked in preGameView fragment.
+    opens a new activity gameActivity
+
+    TODO
+    send values of starters and bench to gameActivity
+     */
     @Override
     public void showStartGameView(boolean value) {
         FrameLayout startGameLayout = (FrameLayout) findViewById(R.id.rightfragment);

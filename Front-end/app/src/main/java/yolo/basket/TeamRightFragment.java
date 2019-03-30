@@ -20,6 +20,13 @@ import java.io.IOException;
 import yolo.basket.db.Database;
 import yolo.basket.db.team.Team;
 
+
+
+/*
+The fragment where you create teams, the values in this fragment are sent via
+interface to TeamActivity.
+ */
+
 public class TeamRightFragment extends Fragment {
 
     private Team newTeam;
@@ -38,6 +45,10 @@ public class TeamRightFragment extends Fragment {
         teamName = view.findViewById(R.id.team_name);
         addTeamButton = view.findViewById(R.id.button_addteam);
 
+
+        /*
+        Values of Team added to database
+         */
         addTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
