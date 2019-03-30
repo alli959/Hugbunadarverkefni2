@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import org.json.JSONException;
 
@@ -24,6 +27,21 @@ import java.util.List;
 import yolo.basket.db.Database;
 import yolo.basket.db.team.Team;
 
+/*
+The fragment where you choose either creation or game by radio buttons.
+
+Case Creation:
+    You can either:
+        click createTeam witch activates "TeamRightFragment"
+        click on any of your teams and activate "PlayerRightFragment"
+
+
+Case Game:
+    CreateTeam button disappears
+    You can:
+        Click on any of your teams and activate "PreGameFragment"
+ */
+
 public class TeamLeftFragment extends Fragment {
 
     private boolean isRightTeamView = false;
@@ -33,12 +51,16 @@ public class TeamLeftFragment extends Fragment {
     private Button createTeamButton;
     private Button startGameButton;
 
+    private RadioGroup radioGroup;
+    private RadioButton radioButton;
+
     private List<Team> teams;
 
     public interface FragmentLeftListener {
         void showRightTeamView(boolean value);
         void showStartGameView(boolean value);
         void showRightPlayerView(boolean value, Long teamId, String teamName);
+        void isPregameView(boolean value);
     }
 
     private ArrayAdapter<String> listViewAdapter;
@@ -70,9 +92,10 @@ public class TeamLeftFragment extends Fragment {
 
         view = inflater.inflate(R.layout.team_left_fragment, container, false);
         createTeamButton = view.findViewById(R.id.button_createTeam);
-        startGameButton = view.findViewById(R.id.button_startGame);
         createTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
+
+            /*Check if you should show view*/
             public void onClick(View v) {
                 isRightTeamView = !isRightTeamView;
                 isRightPlayerView = false;
@@ -81,16 +104,8 @@ public class TeamLeftFragment extends Fragment {
             }
         });
 
-        startGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isStartGameView = !isStartGameView;
-                isRightTeamView = false;
-                isRightPlayerView = false;
-                listener.showStartGameView(isStartGameView);
+        radioGroup = view.findViewById(R.id.radio_group);
 
-            }
-        });
 
         displayTeamNames();
         updateTeamNames();
@@ -108,10 +123,33 @@ public class TeamLeftFragment extends Fragment {
         return view;
     }
 
+
+    public void changeRightPlayerView(){
+        isRightPlayerView = !isRightPlayerView;
+    }
+
+    public void seeCreateTeamButton(boolean value){
+        if(value){
+            createTeamButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            createTeamButton.setVisibility(View.GONE);
+        }
+    }
+
+
+
+
+
+
+
+
     public void updateTeamNames() {
         GetTeamsTask getTeamsTask = new GetTeamsTask();
         getTeamsTask.execute((Void) null);
     }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -126,6 +164,9 @@ public class TeamLeftFragment extends Fragment {
             + " must implement FragmentLeftListener");
         }
     }
+
+
+
 
     @Override
     public void onDetach() {

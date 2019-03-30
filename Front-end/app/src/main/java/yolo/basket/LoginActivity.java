@@ -106,10 +106,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mSwitchFormButton = (Button) findViewById(R.id.switchFormsButton);
         mPasswordView = (EditText) findViewById(R.id.password);
 
+
         mEmailView.setText("olitest");
         mNameView.setText("olitest");
-        mUserNameView.setText("olitest");
-        mPasswordView.setText("olitest");
+        mUserNameView.setText("aaa");
+        mPasswordView.setText("aaa");
 
         mSwitchFormButton.setOnClickListener(view -> {
             switchForm();

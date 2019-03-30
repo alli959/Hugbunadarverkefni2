@@ -24,10 +24,12 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnTaskCompleted {
 
 
-        //boolean userIsLoggedIn = Database.isLoggedIn();
+        boolean userIsLoggedIn = Database.isLoggedIn();
         // Switch to login if user is not logged in
+
         //if (true) {
         //    Intent intent = new Intent(this, gameActivity.class);
+
     private Button team;
 
     public class CheckLoginTask extends AsyncTask<Void, Void, Void> {
