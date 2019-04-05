@@ -165,7 +165,8 @@ public class TeamSelectFragment extends Fragment {
                 newTeamNames.add(team.getName());
             }
             teamNames = newTeamNames;
-            getActivity().runOnUiThread(() -> displayTeamNames());
+            if (isAdded())
+                getActivity().runOnUiThread(() -> displayTeamNames());
             return (Void) null;
         }
     }

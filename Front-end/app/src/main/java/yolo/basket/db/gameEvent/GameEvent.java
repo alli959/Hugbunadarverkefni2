@@ -38,6 +38,21 @@ public class GameEvent extends Entity {
   public static final int LAY_UP = 10;
   public static final int FREE_THROW = 11;
 
+  public static final String[] LOCATION_NAMES = {
+          "NONE",
+          "LEFT_WING",
+          "RIGHT_WING",
+          "TOP",
+          "LEFT_CORNER",
+          "RIGHT_CORNER",
+          "LEFT_SHORT",
+          "RIGHT_SHORT",
+          "LEFT_TOP",
+          "RIGHT_TOP",
+          "LAY_UP",
+          "FREE_THROW"
+  };
+
   public static final int N_LOCATIONS = 12;
 
   // Event type constants
@@ -48,6 +63,17 @@ public class GameEvent extends Entity {
   public static final int REBOUND = 4;
   public static final int BLOCK = 5;
   public static final int TURNOVER = 6;
+
+  public static final String[] ACTION_NAMES = {
+          "MISS",
+          "HIT",
+          "FOUL",
+          "ASSIST",
+          "REBOUND",
+          "BLOCK",
+          "TURNOVER"
+  };
+
 
   public static final int N_GAME_EVENTS = 7;
 
@@ -74,8 +100,8 @@ public class GameEvent extends Entity {
       case "LAY_UP": return LAY_UP;
       case "FREE_THROW": return FREE_THROW;
       default: throw new Exception("Invallid location: " + location + " valid locations are "
-                   + "NONE, TOP, LEFT_CORNER, LEFT_WING, LEFT_TOP, LEFT_SHORT, RIGHT_CORNER"
-                   + "RIGHT_WING, RIGHT_SHORT, RIGHT_TOP, TOP, LAY_UP or FREE_THROW");
+              + "NONE, TOP, LEFT_CORNER, LEFT_WING, LEFT_TOP, LEFT_SHORT, RIGHT_CORNER"
+              + "RIGHT_WING, RIGHT_SHORT, RIGHT_TOP, TOP, LAY_UP or FREE_THROW");
     }
   }
 
@@ -90,7 +116,7 @@ public class GameEvent extends Entity {
       case "BLOCK": return BLOCK;
       case "TURNOVER": return TURNOVER;
       default: throw new Exception("Invallid EventType: " + type + " valid eventTypes are "
-                   + "HIT, MISS, ASSIST, FOUL, REBOUND, BLOCK or TURNOVER");
+              + "HIT, MISS, ASSIST, FOUL, REBOUND, BLOCK or TURNOVER");
     }
   }
 
@@ -122,13 +148,13 @@ public class GameEvent extends Entity {
   public static int locationPoints(int location) {
     if (location == NONE) return 0;
     if (location == FREE_THROW) return 1;
-    return 
-      location == LEFT_WING ||
-      location == RIGHT_WING ||
-      location == TOP ||
-      location == LEFT_CORNER ||
-      location == RIGHT_CORNER 
-      ? 3 : 2;
+    return
+            location == LEFT_WING ||
+                    location == RIGHT_WING ||
+                    location == TOP ||
+                    location == LEFT_CORNER ||
+                    location == RIGHT_CORNER
+                    ? 3 : 2;
 
   }
 

@@ -26,7 +26,7 @@ public class TeamController extends EntityController {
         JSONArray gamesPlayed = json.getJSONArray("gamesPlayed");
         JSONArray players = json.getJSONArray("players");
         for (int i = 0; i < gamesPlayed.length(); i++)
-            team.addGamePlayed((java.lang.Long) gamesPlayed.get(i));
+            team.addGamePlayed(gamesPlayed.getLong(i));
         for (int i = 0; i < players.length(); i++)
             team.addPlayer(Database.player.jsonToEntity(players.getJSONObject(i)));
         return team;

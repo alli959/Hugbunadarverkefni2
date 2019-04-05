@@ -72,6 +72,8 @@ public class PreGameFragment extends Fragment {
     private ArrayList<Player> startingPlayers  = new ArrayList<>();
     private ArrayList<Player> availablePlayers = new ArrayList<>();
 
+    private Button startGameButton;
+
     public void initLists() {
         availablePlayersAdapter = new ArrayAdapter<String>(
                 getActivity(),
@@ -132,6 +134,12 @@ public class PreGameFragment extends Fragment {
         availableListView = view.findViewById(R.id.playersAvailable);
         startingListView = view.findViewById(R.id.playerList);
 
+        startGameButton = view.findViewById(R.id.startGame);
+        startGameButton.setOnClickListener(listener -> {
+            CreateGameTask createGameTask = new CreateGameTask();
+            createGameTask.execute((Void) null);
+        });
+
         Bundle bundle = this.getArguments();
         teamName = "";
         teamId = 1L;
@@ -147,6 +155,9 @@ public class PreGameFragment extends Fragment {
         getOneTeamTask.execute((Void) null);
         return view;
     }
+
+    // BUG:
+    // Ef madur er med engan a bench tha er ekki haegt ad save-a leik
 
     public class CreateGameTask extends AsyncTask<Void, Void, Void> {
         @Override

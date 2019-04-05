@@ -19,7 +19,7 @@
         android:id="@+id/AwayButtonLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@id/basketBallCourtCanvas"
+        android:layout_alignRight="@id/basketBallCourt"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="25dp"
         android:layout_centerVertical="true"
@@ -62,15 +62,6 @@
         android:layout_margin="5dp"
         android:layout_toRightOf="@+id/StartPauseTimer"
         android:text="Set Timer" />
-
-    <yolo.basket.canvas.CanvasView
-        android:id="@+id/basketBallCourtCanvas"
-        android:layout_width="900dp"
-        android:layout_height="500dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:layout_below="@+id/Timer"
-        />
 
     <ImageView
         android:id="@+id/basketBallCourt"
