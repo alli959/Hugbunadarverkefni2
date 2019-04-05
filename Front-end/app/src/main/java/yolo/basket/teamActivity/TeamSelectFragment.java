@@ -1,4 +1,4 @@
-package yolo.basket;
+package yolo.basket.teamActivity;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,9 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import yolo.basket.R;
 import yolo.basket.db.Database;
 import yolo.basket.db.team.Team;
 
@@ -32,8 +31,8 @@ The fragment where you choose either creation or game by radio buttons.
 
 Case Creation:
     You can either:
-        click createTeam witch activates "TeamRightFragment"
-        click on any of your teams and activate "PlayerRightFragment"
+        click createTeam witch activates "CreateTeamFragment"
+        click on any of your teams and activate "EditTeamPlayersFragment"
 
 
 Case Game:
@@ -42,131 +41,104 @@ Case Game:
         Click on any of your teams and activate "PreGameFragment"
  */
 
-public class TeamLeftFragment extends Fragment {
+public class TeamSelectFragment extends Fragment {
 
     private boolean isRightTeamView = false;
     private boolean isRightPlayerView = false;
-    private boolean isStartGameView = false;
     private FragmentLeftListener listener;
     private Button createTeamButton;
-    private Button startGameButton;
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
 
     private List<Team> teams;
+    private boolean isPregame = false;
+
+    public boolean getIsPregame() {
+        return isPregame;
+    }
 
     public interface FragmentLeftListener {
         void showRightTeamView(boolean value);
-        void showStartGameView(boolean value);
-        void showRightPlayerView(boolean value, Long teamId, String teamName);
-        void isPregameView(boolean value);
+        void updateRightSideLayout(Long id, String name);
     }
 
     private ArrayAdapter<String> listViewAdapter;
-
-    private String[] arrTeamNames = {
-            "Fjölnir",
-            "KR",
-            "Prumpuliðið",};
-
-    private ArrayList<String> teamNames = new ArrayList<String>(Arrays.asList(arrTeamNames));
+    private ArrayList<String> teamNames = new ArrayList<>();
     private View view;
     private ListView listView;
 
     private void displayTeamNames() {
-
         listView = (ListView) view.findViewById(R.id.teamList);
-        listViewAdapter = new ArrayAdapter<String>(
+        listViewAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
                 teamNames
         );
-
         listView.setAdapter(listViewAdapter);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.team_left_fragment, container, false);
         createTeamButton = view.findViewById(R.id.button_createTeam);
-        createTeamButton.setOnClickListener(new View.OnClickListener() {
-            @Override
 
-            /*Check if you should show view*/
-            public void onClick(View v) {
-                isRightTeamView = !isRightTeamView;
-                isRightPlayerView = false;
-                isStartGameView = false;
-                listener.showRightTeamView(isRightTeamView);
-            }
+        /*Check if you should show view*/
+        createTeamButton.setOnClickListener(view -> {
+            isRightTeamView = !isRightTeamView;
+            isRightPlayerView = false;
+            listener.showRightTeamView(isRightTeamView);
         });
 
         radioGroup = view.findViewById(R.id.radio_group);
 
 
+
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            System.out.println("Radio button click bruh");
+            radioButton = radioGroup.findViewById(checkedId);
+            String text = (String) radioButton.getText();
+            isPregame = text.equals("Game");
+            createTeamButton.setVisibility(isPregame ? View.GONE : View.VISIBLE);
+        });
+
         displayTeamNames();
-        updateTeamNames();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 isRightTeamView = false;
-                isStartGameView = false;
                 isRightPlayerView = ! isRightPlayerView;
-                listener.showRightPlayerView(isRightPlayerView, teams.get(position).getId(), teams.get(position).getName());
+                listener.updateRightSideLayout(teams.get(position).getId(), teams.get(position).getName());
             }
         });
 
         return view;
     }
 
-
     public void changeRightPlayerView(){
         isRightPlayerView = !isRightPlayerView;
     }
-
-    public void seeCreateTeamButton(boolean value){
-        if(value){
-            createTeamButton.setVisibility(View.VISIBLE);
-        }
-        else{
-            createTeamButton.setVisibility(View.GONE);
-        }
-    }
-
-
-
-
-
-
-
 
     public void updateTeamNames() {
         GetTeamsTask getTeamsTask = new GetTeamsTask();
         getTeamsTask.execute((Void) null);
     }
 
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        updateTeamNames();
 
         if(context instanceof FragmentLeftListener) {
             listener = (FragmentLeftListener) context;
         }
-
         else {
             throw new RuntimeException(context.toString()
             + " must implement FragmentLeftListener");
         }
     }
-
-
-
 
     @Override
     public void onDetach() {
@@ -192,13 +164,9 @@ public class TeamLeftFragment extends Fragment {
             for (Team team : teams) {
                 newTeamNames.add(team.getName());
             }
-
             teamNames = newTeamNames;
-
             getActivity().runOnUiThread(() -> displayTeamNames());
-
             return (Void) null;
         }
     }
-
 }

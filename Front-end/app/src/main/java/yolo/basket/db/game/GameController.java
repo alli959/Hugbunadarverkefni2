@@ -40,7 +40,7 @@ public class GameController extends EntityController {
 
     @Override
     public Game jsonToEntity(JSONObject json) throws JSONException {
-        System.out.println(json.toString());
+        // System.out.println(json.toString());
         Game game = new Game();
         game.setStadiumName(json.getString("stadiumName"));
         game.setTimeOfGame(json.getLong("timeOfGame"));

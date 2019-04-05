@@ -1,4 +1,4 @@
-package yolo.basket;
+package yolo.basket.teamActivity;
 
 
 import android.content.Context;
@@ -17,6 +17,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 
+import yolo.basket.R;
 import yolo.basket.db.Database;
 import yolo.basket.db.team.Team;
 
@@ -27,7 +28,7 @@ The fragment where you create teams, the values in this fragment are sent via
 interface to TeamActivity.
  */
 
-public class TeamRightFragment extends Fragment {
+public class CreateTeamFragment extends Fragment {
 
     private Team newTeam;
 

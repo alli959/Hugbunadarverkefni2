@@ -31,11 +31,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import yolo.basket.db.Database;
+import yolo.basket.teamActivity.TeamActivity;
 
 import static android.Manifest.permission.READ_CONTACTS;
 

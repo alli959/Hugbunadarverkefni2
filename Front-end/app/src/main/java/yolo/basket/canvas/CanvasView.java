@@ -3,7 +3,6 @@ package yolo.basket.canvas;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,7 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import yolo.basket.gameActivity;
+import yolo.basket.GameActivity;
 
 /*
  * Klassi sem tekur staðsetninguna þar sem notandi klikkar á körfuboltavöllinn
@@ -35,7 +34,7 @@ public class CanvasView extends View {
         return mY;
     }
 
-    private gameActivity game;
+    private GameActivity game;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -64,7 +63,7 @@ public class CanvasView extends View {
 
         // Næ í leikmanninn sem er valinn, svo þarf líka að sækja id-ið á leikmanninum til þess að
         // uppfæra databaseinn
-        game = new gameActivity();
+        game = new GameActivity();
         String player = game.getSelectedPlayer();
         Log.d("110495", "player:"+player);
 

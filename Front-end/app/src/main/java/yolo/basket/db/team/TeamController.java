@@ -18,7 +18,7 @@ public class TeamController extends EntityController {
 
     @Override
     protected Team jsonToEntity(JSONObject json) throws JSONException {
-        System.out.println(json.toString());
+        // System.out.println(json.toString());
         Team team = new Team();
         team.setId(getAsLong("id", json));
         team.setUserOwner(json.getString("userOwner"));

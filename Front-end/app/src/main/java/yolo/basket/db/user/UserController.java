@@ -36,6 +36,6 @@ public class UserController extends EntityController {
 
     @Override
     protected User jsonToEntity(JSONObject json) throws JSONException {
-        return null;
+        throw new JSONException("Not implemented");
     }
 }

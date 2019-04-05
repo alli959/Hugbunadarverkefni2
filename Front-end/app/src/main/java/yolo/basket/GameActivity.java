@@ -2,53 +2,30 @@ package yolo.basket;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
-import yolo.basket.canvas.CanvasView;
 import yolo.basket.db.Database;
+import yolo.basket.db.game.Game;
 import yolo.basket.db.gameEvent.GameEvent;
 
-import static yolo.basket.db.Database.game;
-import static yolo.basket.db.Database.login;
-
-public class gameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
 
     // Game
     private EndGameTask endGameTask;
@@ -57,6 +34,8 @@ public class gameActivity extends AppCompatActivity {
     private String location;
     private long timeOfEvent;
     private Long selectedPlayerID;
+    private Game game;
+
 
     // Timer
     private static final long TIME = 600000;
@@ -77,6 +56,9 @@ public class gameActivity extends AppCompatActivity {
             "JaVale McGee",
             "Brandon Ingram"
     };
+
+    private void updateView() {
+    }
 
     private ArrayList<String> HomeplayersArr = new ArrayList<String>(Arrays.asList(HomeplayersArray));
 
@@ -103,15 +85,12 @@ public class gameActivity extends AppCompatActivity {
         this.selectedPlayer = selectedPlayer;
     }
 
-
-
     public void defineButtons(){
         findViewById(R.id.StartPauseTimer).setOnClickListener(startPauseTimerListener);
         findViewById(R.id.SetTimer).setOnClickListener(setTimerListener);
     }
 
-    gameActivity g;
-
+    GameActivity g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +117,7 @@ public class gameActivity extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) findViewById(R.id.HomeButtonLayout);
         int id = 1;
         for(String s : HomeplayersArr){
-            Button but = new Button(gameActivity.this);
+            Button but = new Button(GameActivity.this);
             HomeplayerButtons.add(but);
             //optional: add your buttons to any layout if you want to see them in your screen
             but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -155,7 +134,7 @@ public class gameActivity extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) findViewById(R.id.AwayButtonLayout);
         int id = 1;
         for(String s : AwayplayersArr){
-            Button but = new Button(gameActivity.this);
+            Button but = new Button(GameActivity.this);
             AwayplayerButtons.add(but);
             //optional: add your buttons to any layout if you want to see them in your screen
             but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -363,9 +342,19 @@ public class gameActivity extends AppCompatActivity {
         return gameEvent;
     }
 
-    /**
-     * Async addGameEvent
-     */
+    public class LoadGame extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                game = (Game) Database.user.getActiveGame();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            updateView();
+
+        }
+    }
+
     public class AddGameEventTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {

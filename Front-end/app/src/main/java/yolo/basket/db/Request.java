@@ -92,7 +92,7 @@ public class Request {
         } catch (IOException e) {
             e.printStackTrace();
             // Print error stream
-            return "Error";
+            return "Error in extracting string";
         }
         String inputLine;
         StringBuffer responsetext = new StringBuffer();
@@ -112,6 +112,7 @@ public class Request {
         } catch (JSONException e) {
             return new JSONArray("[" + json + "]");
         }
+        con.disconnect();
         return obj;
     }
 

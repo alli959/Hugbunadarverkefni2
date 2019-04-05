@@ -1,4 +1,4 @@
-package yolo.basket;
+package yolo.basket.teamActivity;
 
 
 import android.annotation.TargetApi;
@@ -29,13 +29,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import yolo.basket.R;
 import yolo.basket.db.Database;
 import yolo.basket.db.Entity;
 import yolo.basket.db.player.Player;
 import yolo.basket.db.team.Team;
 
 @TargetApi(Build.VERSION_CODES.N)
-public class PlayerRightFragment extends Fragment {
+public class EditTeamPlayersFragment extends Fragment {
 
     private boolean isRightPlayerView = false;
     private FragmentPlayerListener listener;
@@ -98,7 +99,6 @@ public class PlayerRightFragment extends Fragment {
         this.playerJerseyNumbers = jerseyNumbers;
         this.playerPositions = posititons;
 
-
         nameViewAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
@@ -143,7 +143,6 @@ public class PlayerRightFragment extends Fragment {
             teamId = bundle.getLong("teamId");
             teamName = bundle.getString("teamName");
         }
-
         createPlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,15 +206,14 @@ public class PlayerRightFragment extends Fragment {
             }
 
             players = team.getPlayers();
-            getActivity().runOnUiThread(() -> {
-                displayPlayers();
-            });
+            if (isAdded())
+                getActivity().runOnUiThread(() -> {
+                    displayPlayers();
+                });
 
             return (Void) null;
         }
     }
-
-
 
     public class CreatePlayerTask extends AsyncTask<Void, Void, Void> {
         Player newPlayer;

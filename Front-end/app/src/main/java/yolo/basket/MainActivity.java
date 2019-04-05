@@ -3,10 +3,8 @@ package yolo.basket;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 import yolo.basket.db.Database;
+import yolo.basket.teamActivity.TeamActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnTaskCompleted {
@@ -28,7 +27,7 @@ public class MainActivity extends AppCompatActivity
         // Switch to login if user is not logged in
 
         //if (true) {
-        //    Intent intent = new Intent(this, gameActivity.class);
+        //    Intent intent = new Intent(this, GameActivity.class);
 
     private Button team;
 
