@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
-    android:visibility="visible"
-    tools:layout_width="match_parent">
+    android:orientation="vertical"
+    android:visibility="visible" >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,17 +30,20 @@
     <ListView
         android:id="@+id/teamList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="50000"
         android:background="@android:color/background_light"
         android:divider="#9F030303"
         android:footerDividersEnabled="false"
-        android:gravity="center_horizontal"
-        android:headerDividersEnabled="false"></ListView>
+        android:gravity="top"
+        android:headerDividersEnabled="false"
+        android:maxHeight="30dp" />
 
     <RadioGroup
         android:id="@+id/radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:orientation="vertical"
         android:background="@android:color/darker_gray">
 
@@ -61,18 +62,18 @@
     </RadioGroup>
 
     <Button
+        android:layout_gravity="top"
         android:id="@+id/button_createTeam"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create Team"
-        android:visibility="visible"/>
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="314dp"
-        android:layout_height="297dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="left"
-        android:layout_marginTop="140dp"
         app:srcCompat="@drawable/basketball" />
 
 </LinearLayout>

@@ -24,7 +24,6 @@
         android:background="@drawable/border_full"
         android:textSize="40sp"
         android:typeface="serif"
-        android:visibility="visible"
         app:fontFamily="sans-serif-black" />
 
     </FrameLayout>

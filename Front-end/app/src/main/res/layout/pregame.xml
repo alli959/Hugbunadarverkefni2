@@ -35,7 +35,6 @@
         android:background="@color/colorAccent">
 
         <TextView
-            android:id="@+id/startingPlayers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
@@ -48,7 +47,7 @@
             app:fontFamily="sans-serif-black" />
 
         <ListView
-            android:id="@+id/playerList"
+            android:id="@+id/startingPlayers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -70,7 +69,7 @@
 
 
         <ListView
-            android:id="@+id/playersAvailable"
+            android:id="@+id/availablePlayers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

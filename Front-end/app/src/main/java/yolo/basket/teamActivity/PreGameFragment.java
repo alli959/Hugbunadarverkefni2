@@ -1,29 +1,23 @@
 package yolo.basket.teamActivity;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import yolo.basket.GameActivity;
 import yolo.basket.R;
@@ -56,99 +50,28 @@ public class PreGameFragment extends Fragment {
     private ArrayAdapter<String> startingPlayersAdapter;
     private ArrayAdapter<String> availablePlayersAdapter;
 
-    private String[] arrStartingPlayers = {
-            };
-
-    private String[] arrPlayersAvailable = {
-            "None"
-            };
-
     private Long teamId;
     private String teamName;
 
     private ListView availableListView;
     private ListView startingListView;
 
-    private ArrayList<Player> startingPlayers  = new ArrayList<>();
-    private ArrayList<Player> availablePlayers = new ArrayList<>();
+    private List<Player> startingPlayers  = new ArrayList<>();
+    private List<Player> availablePlayers = new ArrayList<>();
 
     private Button startGameButton;
+    private View view;
 
-    public void initLists() {
-        availablePlayersAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>()
-        );
-
-        startingPlayersAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>()
-        );
-
-        availableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Player player = availablePlayers.get(position);
-                startingPlayers.add(player);
-                availablePlayers.remove(player);
-                updateLists();
-            }
-        });
-
-        startingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Player player = startingPlayers.get(position);
-                availablePlayers.add(player);
-                startingPlayers.remove(player);
-                updateLists();
-            }
-        });
-
-        availableListView.setAdapter(availablePlayersAdapter);
-        startingListView.setAdapter(startingPlayersAdapter);
-    }
-
-    public void updateLists() {
-        List<String> startingPlayerNames = new ArrayList<>();
-        List<String> availablePlayerNames = new ArrayList<>();
-        for (Player player : startingPlayers)
-            startingPlayerNames.add(player.getName());
-        for (Player player : availablePlayers)
-            availablePlayerNames.add(player.getName());
-
-        startingPlayersAdapter.clear();
-        startingPlayersAdapter.addAll(startingPlayerNames);
-        availablePlayersAdapter.clear();
-        availablePlayersAdapter.addAll(availablePlayerNames);
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        view = inflater.inflate(R.layout.pregame, container, false);
+        unBundleArguments();
 
-        View view = inflater.inflate(R.layout.pregame, container, false);
-        availableListView = view.findViewById(R.id.playersAvailable);
-        startingListView = view.findViewById(R.id.playerList);
-
-        startGameButton = view.findViewById(R.id.startGame);
-        startGameButton.setOnClickListener(listener -> {
-            CreateGameTask createGameTask = new CreateGameTask();
-            createGameTask.execute((Void) null);
-        });
-
-        Bundle bundle = this.getArguments();
-        teamName = "";
-        teamId = 1L;
-        if (bundle != null) {
-            teamId = bundle.getLong("teamId");
-            teamName = bundle.getString("teamName");
-        }
-
-        System.out.println(teamId +  " -- " + teamName);
+        retrieveViews();
+        bindStartGameButton();
         initLists();
 
         GetOneTeamTask getOneTeamTask = new GetOneTeamTask();
@@ -156,51 +79,125 @@ public class PreGameFragment extends Fragment {
         return view;
     }
 
-    // BUG:
-    // Ef madur er med engan a bench tha er ekki haegt ad save-a leik
+    private void retrieveViews() {
+        availableListView = view.findViewById(R.id.availablePlayers);
+        startingListView = view.findViewById(R.id.startingPlayers);
+        startGameButton = view.findViewById(R.id.startGame);
+    }
 
-    public class CreateGameTask extends AsyncTask<Void, Void, Void> {
+    private void unBundleArguments() {
+        Bundle bundle = this.getArguments();
+        assert bundle != null;
+        teamId = bundle.getLong("teamId");
+        teamName = bundle.getString("teamName");
+    }
+
+    private void bindStartGameButton() {
+        startGameButton.setOnClickListener(view -> new CreateGameTask().execute((Void) null));
+    }
+
+    private void initLists() {
+        startingPlayersAdapter  = createList();
+        availablePlayersAdapter = createList();
+
+        startingListView.  setOnItemClickListener(moveBetweenListsOnClick(startingPlayers, availablePlayers));
+        availableListView. setOnItemClickListener(moveBetweenListsOnClick(availablePlayers, startingPlayers));
+
+        startingListView.  setAdapter(startingPlayersAdapter);
+        availableListView. setAdapter(availablePlayersAdapter);
+    }
+
+    private ArrayAdapter<String> createList() {
+        return new ArrayAdapter<>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                new ArrayList<>()
+        );
+    }
+
+    private AdapterView.OnItemClickListener moveBetweenListsOnClick(List<Player> source, List<Player> destination) {
+        return (parent, view, position, id) -> {
+            destination.add(source.remove(position));
+            updateLists();
+        };
+    }
+
+    public void updateLists() {
+        getActivity().runOnUiThread(() -> {
+            startingPlayersAdapter.clear();
+            startingPlayersAdapter.addAll(getPlayerNames(startingPlayers));
+            availablePlayersAdapter.clear();
+            availablePlayersAdapter.addAll(getPlayerNames(availablePlayers));
+        });
+    }
+
+    public List<String> getPlayerNames(List<Player> players) {
+        return players
+                .stream()
+                .map(Player::getName)
+                .collect(Collectors.toList());
+    }
+
+    private Game createGame() {
+        Game game = new Game();
+        game.setStartingLineup(startingPlayers);
+        game.setBench(availablePlayers);
+        game.setTimeOfGame(System.currentTimeMillis());
+        game.setStadiumName("Interplanetary stadium of Oli Pals");
+        game.setTeamId(teamId);
+        return game;
+    }
+
+    private void startGameActivity() {
+        startActivity(new Intent(getActivity(), GameActivity.class));
+    }
+
+    public class CreateGameTask extends AsyncTask<Void, Void, Boolean> {
         @Override
-        protected Void doInBackground(Void... voids) {
-            Game game = new Game();
-            game.setStartingLineup(startingPlayers);
-            game.setBench(availablePlayers);
-            game.setTimeOfGame(System.currentTimeMillis());
-            game.setStadiumName("Interplanetary stadium of Oli Pals");
-            game.setTeamId(teamId);
-            try {
-                game = (Game) Database.game.save(game);
-                Database.user.setActiveGame(game);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            getActivity().runOnUiThread(() -> {
-                Intent intent = new Intent(getActivity(), GameActivity.class);
-                startActivity(intent);
-            });
+        protected Boolean doInBackground(Void... voids) {
+            return trySaveGame();
+        }
 
-            return (Void) null;
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (success)
+                startGameActivity();
+        }
+
+        private boolean trySaveGame() {
+            try {
+                Database.user.setActiveGame(createGame());
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
     }
 
-    public class GetOneTeamTask extends AsyncTask<Void, Void, Void> {
+    public class GetOneTeamTask extends AsyncTask<Void, Void, Boolean> {
+
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
+            return tryGetOneTeam();
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            if (success) {
+                availablePlayers.addAll(team.getPlayers());
+                updateLists();
+            }
+        }
+
+        private boolean tryGetOneTeam() {
             try {
                 team = (Team) Database.team.getOne(teamId);
-            } catch (IOException e) {
+                return true;
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
+                return false;
             }
-
-            startingPlayers = (ArrayList<Player>) team.getPlayers();
-            getActivity().runOnUiThread(() -> {
-                updateLists();
-            });
-            return (Void) null;
         }
     }
 }

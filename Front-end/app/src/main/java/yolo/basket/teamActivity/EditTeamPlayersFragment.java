@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,14 +23,12 @@ import android.widget.TextView;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import yolo.basket.R;
 import yolo.basket.db.Database;
-import yolo.basket.db.Entity;
 import yolo.basket.db.player.Player;
 import yolo.basket.db.team.Team;
 
@@ -119,7 +116,7 @@ public class EditTeamPlayersFragment extends Fragment {
 
         teamNameTextView.setText(teamName);
 
-        listView = (ListView) view.findViewById(R.id.playerList);
+        listView = (ListView) view.findViewById(R.id.startingPlayers);
         listView.setAdapter(nameViewAdapter);
 
     }
@@ -130,7 +127,7 @@ public class EditTeamPlayersFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
         Bundle bundle = this.getArguments();
 
-        view = inflater.inflate(R.layout.player_right_fragment, container, false);
+        view = inflater.inflate(R.layout.edit_players_fragment, container, false);
         createPlayerButton = view.findViewById(R.id.button_addPlayer);
         playerName = view.findViewById(R.id.playerName);
         playerJerseyNumber = view.findViewById(R.id.playerJerseyNumber);
@@ -184,7 +181,7 @@ public class EditTeamPlayersFragment extends Fragment {
             listener = (FragmentPlayerListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement FragmentLeftListener");
+                    + " must implement TeamSelectListener");
         }
     }
 

@@ -1,7 +1,6 @@
 package yolo.basket.teamActivity;
 
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,80 +31,63 @@ public class CreateTeamFragment extends Fragment {
 
     private Team newTeam;
 
-    private FragmentRightListener listener;
+    private CreateTeamListener activity;
     private EditText teamName;
-    private Button addTeamButton;
-    public interface FragmentRightListener {
-        void onRightFragmentInput(CharSequence input);
+    private Button submitButton;
+    private View view;
+
+    public interface CreateTeamListener {
+        void onCreateTeam();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.team_right_fragment, container, false);
-        teamName = view.findViewById(R.id.team_name);
-        addTeamButton = view.findViewById(R.id.button_addteam);
-
-
-        /*
-        Values of Team added to database
-         */
-        addTeamButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CharSequence input = teamName.getText();
-                newTeam = new Team();
-
-                newTeam.setName(input.toString());
-                CreateTeamTask createTeamTask = new CreateTeamTask(input.toString());
-                createTeamTask.execute((Void) null);
-
-            }
-        });
+        view = inflater.inflate(R.layout.create_team_fragment, container, false);
+        retrieveViews();
+        bindSubmitButton();
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if(context instanceof FragmentRightListener) {
-            listener = (FragmentRightListener) context;
-        }
-        else{
-            throw new RuntimeException(context.toString()
-            + " must implement FragmentRightListener");
-        }
-
-
+    private void retrieveViews() {
+        teamName = view.findViewById(R.id.team_name);
+        submitButton = view.findViewById(R.id.button_addteam);
     }
 
+    private void bindSubmitButton() {
+        submitButton.setOnClickListener(v -> {
+            CreateTeamTask createTeamTask = new CreateTeamTask();
+            createTeamTask.execute((Void) null);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
+        });
     }
 
-    public class CreateTeamTask extends AsyncTask<Void, Void, Void> {
+    public class CreateTeamTask extends AsyncTask<Void, Void, Boolean> {
 
-        String input;
+        private Team createTeam() {
+            Team team = new Team();
+            team.setName(teamName.getText().toString());
+            return team;
+        }
 
-        CreateTeamTask(String input) {
-            this.input = input;
+        private boolean trySaveTeam() {
+            try {
+                newTeam = (Team) Database.team.save(createTeam());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                newTeam = (Team) Database.team.save(newTeam);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            listener.onRightFragmentInput(input);
-            return (Void) null;
+        protected Boolean doInBackground(Void... voids) {
+            return trySaveTeam();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            activity.onCreateTeam();
         }
     }
 
