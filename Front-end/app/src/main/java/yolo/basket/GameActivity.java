@@ -29,6 +29,13 @@ import yolo.basket.db.game.Game;
 import yolo.basket.db.gameEvent.GameEvent;
 import yolo.basket.db.player.Player;
 
+
+
+// TODO:
+// Endgame button
+// Add time to the the stuff
+// Undo
+
 public class GameActivity extends AppCompatActivity {
 
     // Game

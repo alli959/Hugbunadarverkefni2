@@ -86,9 +86,7 @@ public class TeamSelectFragment extends Fragment {
     }
 
     private void bindCreateTeamButton() {
-        createTeamButton.setOnClickListener(view -> {
-            activity.showCreateTeamFragment();
-        });
+        createTeamButton.setOnClickListener(view -> activity.showCreateTeamFragment());
     }
 
     private void bindRadioButtons() {
