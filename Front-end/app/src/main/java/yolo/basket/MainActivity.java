@@ -20,61 +20,23 @@ import yolo.basket.db.Database;
 import yolo.basket.teamActivity.TeamActivity;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnTaskCompleted {
-
-
-        boolean userIsLoggedIn = Database.isLoggedIn();
-        // Switch to login if user is not logged in
-
-        //if (true) {
-        //    Intent intent = new Intent(this, GameActivity.class);
-
-    private Button team;
-
-    public class CheckLoginTask extends AsyncTask<Void, Void, Void> {
-
-        private final OnTaskCompleted listener;
-
-        public CheckLoginTask(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String result = String.valueOf(Database.isLoggedIn());
-            listener.onTaskCompleted(result);
-            return (Void) null;
-        }
-    }
-
-    @Override
-    public void onTaskCompleted(String response) {
-        if (response.equals("true")) {
-            System.out.println("Do nothing");
-        } else {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
-    }
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CheckLoginTask mLoginTask = new CheckLoginTask(this);
+        CheckLoginTask checkLoginTask = new CheckLoginTask();
+        checkLoginTask.execute((Void) null);
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -83,24 +45,41 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        findViewById(R.id.start_teamActivity_button).setOnClickListener(v -> openTeamView());
 
+    }
 
-        team = (Button) findViewById(R.id.teamView);
+    public class CheckLoginTask extends AsyncTask<Void, Void, Void> {
 
-        team.setOnClickListener(new View.OnClickListener() {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (!isLoggedIn())
+                goToLoginForm();
+            return null;
+        }
 
-            @Override
-            public void onClick(View v){
-                openTeamView();
+        private boolean isLoggedIn() {
+            try {
+                return Database.isLoggedIn();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
             }
-        });
+        }
+    }
 
-        mLoginTask.execute((Void) null);
+    public void goToLoginForm() {
+        runOnUiThread(() -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        });
     }
 
     public void openTeamView() {
-        Intent intent = new Intent(this, TeamActivity.class);
-        startActivity(intent);
+        runOnUiThread(() -> {
+            Intent intent = new Intent(this, TeamActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override

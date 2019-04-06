@@ -112,7 +112,7 @@
                 android:text="Don't have an account?" />
 
             <Button
-                android:id="@+id/teamView"
+                android:id="@+id/start_teamActivity_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Teams"

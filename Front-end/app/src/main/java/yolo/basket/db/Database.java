@@ -1,7 +1,5 @@
 package yolo.basket.db;
 
-import android.accounts.NetworkErrorException;
-import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -28,7 +26,7 @@ public class Database {
     public static final GameEventController gameEvent = new GameEventController();
     public static final GameController game = new GameController();
 
-    public static void init() {
+    public static void useAnonymousCredentials() {
         setCredentials("anonymous", "anonymous");
     }
 
@@ -37,96 +35,33 @@ public class Database {
         Request.setPassword(password);
     }
 
-    public static String register(String userName, String password, String name, String email) {
+    public static String register(User user) throws Exception {
         // Set credentials to anonymous:anonymous
-        init();
-        User user = new User();
-        user.setEmail(email);
-        user.setName(name);
-        user.setPassword(password);
-        user.setUserName(userName);
+        useAnonymousCredentials();
         List<Param> params = user.getParameters();
-        Request request = null;
-        try {
-            request = new Request("register", params);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        JSONArray json;
-        String s = "";
-        try {
-            json = request.resolve();
-            s += json.toString();
-            return json.get(0).toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Failed to register user --> IOExcetion " + s;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "Failed to register user --> JSONExpcetion " + s;
-        } catch (NetworkOnMainThreadException e) {
-            e.printStackTrace();
-            return "Failed to register user --> NetworkOnMainThreadException";
-        }
+        Request request = new Request("register", params);
+        JSONArray json = request.resolve();
+        return json.getString(0);
     }
 
-    public static boolean isLoggedIn() {
-        try {
-            String userName = Request.getUserName();
-            Request request = new Request("user/whatismyusername");
-            String string = (String) request.resolve().get(0);
-            return string.equals(userName);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public static boolean isLoggedIn() throws Exception {
+        String userName = Request.getUserName();
+        Request request = new Request("user/whatismyusername");
+        String string = (String) request.resolve().get(0);
+        return string.equals(userName);
     }
 
-    // Returns true if logged in otherwise false
-    public static boolean login(String userName, String password) {
-        Request.setUserName(userName);
-        Request.setPassword(password);
-        Log.d("160492 @ Database", "Logging in with ..." + userName + " " + password);
-        try {
-            Request request = new Request("user/whatismyusername");
-            String string = (String) request.resolve().get(0);
-            if (string.equals(userName)) {
-                return true;
-            }
-            Log.d("160492 @ Database", string);
-            return string.equals(userName);
-        } catch (JSONException e) {
-            Log.d("160492 @ Database_E", "JSONException" + e.getMessage());
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            Log.d("160492 @ Database_E", "IOException" + e.getMessage());
-            return false;
-        }
+    // Returns true if logged in otherwise throws Exception / returns false
+    public static boolean login(User user) throws Exception {
+        Request.setUserName(user.getUserName());
+        Request.setPassword(user.getPassword());
+        Request request = new Request("user/whatismyusername");
+        String string = request.resolve().getString(0);
+        return string.equals(user.getUserName());
     }
 
-    public static String unregister(String userName) {
-        Request request;
-        try {
-            request = new Request("removeUser", new Param("id", userName));
-            return request.resolve().get(0).toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "Failure";
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Failure";
-        }
+    public static String unregister(String userName) throws Exception {
+        Request request = new Request("removeUser", new Param("id", userName));
+        return request.resolve().getString(0);
     }
-
-    //--------Team And Player methods
-
-
-    //Create new team
-
-    //Method: localhost:8080/user/createTeam?name=[string]
-
-    //Method: localhost:8080/user/whatismyusername
-
-
 }

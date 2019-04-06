@@ -1,7 +1,5 @@
 package yolo.basket;
 
-import android.provider.ContactsContract;
-
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,7 +27,7 @@ public class SaveLoadEntityTests {
 
     @Before
     public void setup() throws IOException, JSONException {
-        Database.init();
+        Database.useAnonymousCredentials();
         String registerStatus = Database.register("test1", "test2", "test3", "test4");
         System.out.println(registerStatus);
         boolean loginStatus = Database.login("test1", "test2");
