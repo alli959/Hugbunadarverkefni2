@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         retrieveFormFields();
         setDefaultValues();
+        mSwitchFormButton = findViewById(R.id.switchFormsButton);
         bindSwitchFormsButton();
 
         findViewById(R.id.email_sign_in_button).setOnClickListener(view -> {
@@ -84,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void bindSwitchFormsButton() {
-        findViewById(R.id.switchFormsButton).setOnClickListener(view -> switchForm());
+        mSwitchFormButton.setOnClickListener(view -> switchForm());
     }
 
     public void goToTeamActivity (View view){
@@ -162,6 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                 message = Database.register(user);
                 return message.equals(user.getUserName());
             } catch (Exception e) {
+                e.printStackTrace();
                 return false;
             }
         }

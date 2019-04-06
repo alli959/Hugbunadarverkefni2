@@ -106,14 +106,18 @@ public class Request {
 
     private JSONArray getParsedJSONbyStringRequest() throws JSONException, IOException {
         String json = extractJSONstringFromRequest();
-        JSONArray obj;
+        JSONArray array;
         try {
-            obj = new JSONArray(json);
+            array = new JSONArray(json);
         } catch (JSONException e) {
-            return new JSONArray("[" + json + "]");
+            try {
+                return new JSONArray("[" + json + "]");
+            } catch (JSONException e1) {
+                return new JSONArray("[\"" + json + "\"]");
+            }
         }
         con.disconnect();
-        return obj;
+        return array;
     }
 
     private void initRequest(String databaseMethod) throws JSONException, MalformedURLException {
