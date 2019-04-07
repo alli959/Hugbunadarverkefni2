@@ -340,9 +340,7 @@ public class GameActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
-
         builder.show();
-
     }
 
     public void doneInput(String min, String sec) {
