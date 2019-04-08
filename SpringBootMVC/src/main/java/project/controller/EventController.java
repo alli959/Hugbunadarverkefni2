@@ -168,7 +168,7 @@ public class EventController {
     String userName = Toolkit.getUserName(basicAuthString);
     User user = userRepository.findById(userName).get();
     Game currentGame = user.getCurrentGame();
-    GameEvent gamEventToRemove = null;
+    GameEvent gameEventToRemove = null;
     for (GameEvent gameEvent : currentGame.getGameEvents())
       if (gameEvent.getId().equals(id))
         gameEventToRemove = gameEvent;
