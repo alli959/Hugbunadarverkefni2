@@ -166,7 +166,8 @@ public class PreGameFragment extends Fragment {
 
         private boolean trySaveGame() {
             try {
-                Database.user.setActiveGame(createGame());
+                Game game = (Game) Database.game.save(createGame());
+                Database.user.setActiveGame(game);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
