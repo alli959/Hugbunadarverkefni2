@@ -9,7 +9,6 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -28,8 +27,8 @@ import yolo.basket.db.Database;
 import yolo.basket.db.game.Game;
 import yolo.basket.db.gameEvent.GameEvent;
 import yolo.basket.db.player.Player;
-
-
+import yolo.basket.util.Actions;
+import yolo.basket.util.Location;
 
 // TODO:
 // Endgame button
@@ -39,345 +38,234 @@ import yolo.basket.db.player.Player;
 public class GameActivity extends AppCompatActivity {
 
     // Game
-    private EndGameTask endGameTask;
-    private AddGameEventTask addGameEventTask;
     private int action;
     private int location;
-    private long timeOfEvent;
     private Game game;
+    private static Player selectedPlayer;
+    private Long gameClock = 600L;
 
     // Timer
     private static final long TIME = 600000;
-    private TextView klukka;
+    private TextView clockView;
     private Button startPauseTime;
     private Button setTime;
     private CountDownTimer mCountDownTimer;
     private boolean timerRunning;
-    String timeText;
     private Long timeLeft = TIME;
 
     //Player
-    private static Player selectedPlayer;
+    private List<Player> players = new ArrayList<>();
+    private ArrayList<Button> playerButtons = new ArrayList<>();
 
-    private String[] HomeplayersArray = {
-            "LeBron James",
-            "Kyle Kuzma",
-            "Lonzo Ball",
-            "JaVale McGee",
-            "Brandon Ingram"
-    };
-
-    private List<Player> homePlayers = new ArrayList<>();
-    private ArrayList<Player> awayPlayers = new ArrayList<>();
-
-    private ArrayList<String> HomeplayersArr = new ArrayList<>(Arrays.asList(HomeplayersArray));
-    private ArrayList<Button> homePlayerButtons = new ArrayList<>();
-
-    private String[] AwayplayersArray = {
-            "Stephen Curry",
-            "Klay Thompson",
-            "Kevin Durant",
-            "Draymond Greeen",
-            "DeMarcus Cousins"
-    };
-
-    private ArrayList<String> AwayplayersArr = new ArrayList<>(Arrays.asList(AwayplayersArray));
-    private ArrayList<Button> AwayplayerButtons = new ArrayList<>();
-
-    public void defineButtons(){
-        findViewById(R.id.StartPauseTimer).setOnClickListener(startPauseTimerListener);
-        findViewById(R.id.SetTimer).setOnClickListener(setTimerListener);
-    }
-
-    private Player getSelectedPlayer() {
-       return selectedPlayer;
-    }
-
-    GameActivity g;
+    private GameActivity gameActivity;
 
     private ImageView court;
 
-    private double[][] LOCATIONS = {
-          // x, y, location
-            {0.09, 0.18, GameEvent.LEFT_CORNER  },
-            {0.90, 0.18, GameEvent.RIGHT_CORNER },
-            {0.86, 0.59, GameEvent.RIGHT_WING   },
-            {0.66, 0.64, GameEvent.LEFT_WING    },
-            {0.74, 0.16, GameEvent.RIGHT_SHORT  },
-            {0.74, 0.27, GameEvent.RIGHT_SHORT  },
-            {0.26, 0.16, GameEvent.LEFT_SHORT   },
-            {0.26, 0.27, GameEvent.LEFT_SHORT   },
-            {0.50, 0.29, GameEvent.LAY_UP       },
-            {0.50, 0.50, GameEvent.TOP          },
-            {0.31, 0.79, GameEvent.RIGHT_TOP    },
-            {0.66, 0.80, GameEvent.LEFT_TOP     }
-    };
+    // Gives the GameEvent location type a location on the image
+    // Used to calculate which one is closest for approximate solution
+    private static final List<Location> LOCATIONS = new ArrayList<>(Arrays.asList(
+            new Location(0.09, 0.18, GameEvent.LEFT_CORNER),
+            new Location(0.90, 0.18, GameEvent.RIGHT_CORNER),
+            new Location(0.86, 0.59, GameEvent.RIGHT_WING),
+            new Location(0.66, 0.64, GameEvent.LEFT_WING),
+            new Location(0.74, 0.16, GameEvent.RIGHT_SHORT),
+            new Location(0.74, 0.27, GameEvent.RIGHT_SHORT),
+            new Location(0.26, 0.16, GameEvent.LEFT_SHORT),
+            new Location(0.26, 0.27, GameEvent.LEFT_SHORT),
+            new Location(0.50, 0.29, GameEvent.LAY_UP),
+            new Location(0.50, 0.50, GameEvent.TOP),
+            new Location(0.31, 0.79, GameEvent.RIGHT_TOP),
+            new Location(0.66, 0.80, GameEvent.LEFT_TOP)
+    ));
+    private EditText timerDialogInput;
 
-    private int getLocation(double ratioX, double ratioY) {
-        int loc = 0;
-        double minDistance = 999999;
-        for (double[] location : LOCATIONS) {
-            double distXsquared = Math.pow(ratioX - location[0], 2);
-            double distYsquared = Math.pow(ratioY - location[1], 2);
-            if (minDistance > distXsquared + distYsquared) {
-                minDistance = distXsquared + distYsquared;
-                // add a little bit for the float -> int conversion
-                loc = (int) (location[2] + 0.0001);
-            }
-        }
-        return loc;
-    }
-
-    private void createShotAlert(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        String playerName = selectedPlayer.getName();
-        builder.setCancelable(true);
-        builder.setTitle("Action for " + playerName);
-
-        builder.setItems(new CharSequence[]{"Made Shot", "Missed Shot", "Committed Foul", "Turnover", "Rebound", "Block", "Assist"},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0: action = GameEvent.HIT     ; break;
-                        case 1: action = GameEvent.MISS    ; break;
-                        case 2: action = GameEvent.FOUL    ; break;
-                        case 3: action = GameEvent.TURNOVER; break;
-                        case 4: action = GameEvent.REBOUND ; break;
-                        case 5: action = GameEvent.BLOCK   ; break;
-                        case 6: action = GameEvent.ASSIST  ; break;
-                    }
-                    addGameEvent();
-                });
-        builder.create().show();
-    }
-
-
-
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        g = this;
+        gameActivity = this;
+        retrieveViews();
 
-        court = findViewById(R.id.basketBallCourt);
-        court.setOnTouchListener((view, event) -> {
-            double x = event.getX();
-            double y = event.getY();
-            double height = view.getHeight();
-            double width = view.getWidth();
-            location = getLocation(x / width, y / height);
-            createShotAlert();
-            return false;
-        });
-
-        startPauseTime = (Button) findViewById(R.id.StartPauseTimer);
-        setTime = (Button) findViewById(R.id.SetTimer);
-
-        klukka = (TextView) findViewById(R.id.Timer);
-
-        defineButtons();
-        createAwayPlayerButtons();
-        upDateTimer();
+        bindOnCourtClick();
+        bindTimerButtons();
+        updateClockView(6000);
         loadGame();
     }
 
-    private int buttonId = 0;
+    public void bindTimerButtons(){
+        findViewById(R.id.StartPauseTimer).setOnClickListener(startPauseTimerListener);
+        findViewById(R.id.SetTimer).setOnClickListener(setTimerListener);
+    }
+
+    private void retrieveViews() {
+        court = findViewById(R.id.basketBallCourt);
+        startPauseTime = findViewById(R.id.StartPauseTimer);
+        setTime = findViewById(R.id.SetTimer);
+        clockView = findViewById(R.id.Timer);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void bindOnCourtClick() {
+        court.setOnTouchListener((view, event) -> {
+            double x = event.getX() / view.getWidth();
+            double y = event.getY() / view.getHeight();
+            location = getLocation(new Location(x, y, 0));
+            createShotAlert();
+            return false;
+        });
+    }
+
+    private int getLocation(Location clickLocation) {
+        Location closestLocation = LOCATIONS.stream().reduce(
+                (loc1, loc2) -> clickLocation.distanceTo(loc1) < clickLocation.distanceTo(loc2) ?
+                        loc1 : loc2).get();
+        return closestLocation.getCourtLocation();
+    }
+
+    private void createPlayerButtons(){
+        LinearLayout layout = findViewById(R.id.HomeButtonLayout);
+        int buttonId = 0;
+        for (Player player : players)
+            layout.addView(createButton(player, buttonId++));
+        selectedPlayer = players.get(0);
+    }
+
     private Button createButton(Player player, int buttonId) {
         Button button = new Button(GameActivity.this);
-        homePlayerButtons.add(button);
+        playerButtons.add(button);
         button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         button.setText(player.getName());
         button.setId(buttonId);
         button.setOnClickListener(view -> {
-            selectedPlayer = homePlayers.get(buttonId);
+            selectedPlayer = players.get(buttonId);
         });
         return button;
     }
 
-    private void createHomePlayerButtons(){
-        LinearLayout layout = findViewById(R.id.HomeButtonLayout);
-        int buttonId = 0;
-        for (Player player : homePlayers)
-            layout.addView(createButton(player, buttonId++));
-        selectedPlayer = homePlayers.get(0);
+    private void createShotAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setCancelable(true);
+        builder.setTitle("Action for " + selectedPlayer.getName());
+        builder.setItems(Actions.getNames(),
+                (dialog, which) -> {
+                    action = Actions.values()[which].getAction();
+                    if (action == Actions.Missed.getAction())
+                        createReboundAlert();
+                    addGameEvent();
+                });
+        builder.create().show();
     }
 
-    private void createAwayPlayerButtons(){
-        LinearLayout layout = findViewById(R.id.AwayButtonLayout);
-        int id = 1;
-        for(String s : AwayplayersArr){
-            Button but = new Button(GameActivity.this);
-            AwayplayerButtons.add(but);
-            //optional: add your buttons to any layout if you want to see them in your screen
-            but.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-            but.setText(s);
-            //Þarf að setja id fra database her!
-            but.setId(id);
-            but.setOnClickListener(buttonClickListener);
-            layout.addView(but);
-            id++;
-        }
+    private void createReboundAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setCancelable(true);
+        builder.setTitle("Rebound");
+        builder.setItems(players.stream().map(Player::getName).toArray(String[]::new),
+                (dialog, which) -> {
+                    action = GameEvent.REBOUND;
+                    selectedPlayer = players.get(which);
+                    addGameEvent();
+                });
+        builder.create().show();
     }
-
-    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Button leikmadur = (Button)v;
-            // setSelectedPlayer(leikmadur.getText().toString());
-        }
-    };
 
     // Klukka
     private View.OnClickListener startPauseTimerListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(!timerRunning){
-                mCountDownTimer = new CountDownTimer(timeLeft, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        timeLeft = millisUntilFinished;
-                        upDateTimer();
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        timerRunning = false;
-                        startPauseTime.setText("Start");
-                        startPauseTime.setVisibility(View.INVISIBLE);
-                        setTime.setVisibility(View.VISIBLE);
-                    }
-                }.start();
-                timerRunning = true;
+            if(mCountDownTimer == null){
+                mCountDownTimer = createCountdown(gameClock);
+                mCountDownTimer.start();
                 setTime.setVisibility(View.INVISIBLE);
                 startPauseTime.setText("Pause");
             } else {
                 mCountDownTimer.cancel();
-                timerRunning = false;
+                mCountDownTimer = null;
                 startPauseTime.setText("Start");
                 setTime.setVisibility(View.VISIBLE);
-
             }
-
         }
     };
 
-    private void upDateTimer(){
-        int min = (int) (timeLeft / 1000) / 60;
-        int sec = (int) (timeLeft / 1000) % 60;
+    private CountDownTimer createCountdown(long time) {
+        return new CountDownTimer(time, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                updateClockView(millisUntilFinished);
+            }
 
-        String timeLeft = String.format(Locale.getDefault(),"%02d:%02d", min, sec);
-
-        klukka.setText(timeLeft);
+            @Override
+            public void onFinish() {
+                startPauseTime.setText("Start");
+                startPauseTime.setVisibility(View.INVISIBLE);
+                setTime.setVisibility(View.VISIBLE);
+                mCountDownTimer = null;
+            }
+        };
     }
 
+    private void updateClockView(long millisUntilFinished){
+        int min = (int) (millisUntilFinished / 1000) / 60;
+        int sec = (int) (millisUntilFinished / 1000) % 60;
+
+        String timeLeft = String.format(Locale.getDefault(),"%02d:%02d", min, sec);
+        clockView.setText(timeLeft);
+    }
 
     private View.OnClickListener setTimerListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             showPopupMin();
-            upDateTimer();
+            updateClockView(gameClock);
             startPauseTime.setVisibility(View.VISIBLE);
         }
     };
 
     public void showPopupMin() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Set time in minutes");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        // Center text inside EditText
-        input.setGravity(Gravity.CENTER);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                timeText = input.getText().toString();
-                showPopupSec(timeText);
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
+        createDialogInput("Set minutes", ((dialog, which) -> {
+            String minutes = timerDialogInput.getText().toString();
+            showPopupSec(minutes);
+        }));
     }
 
-    public void showPopupSec(String min) {
+    public void showPopupSec(String minutes) {
+        createDialogInput("Set time in seconds", (dialog, which) -> {
+            String seconds = timerDialogInput.getText().toString();
+            doneInput(minutes, seconds);
+        });
+    }
 
+    public void createDialogInput(String title, DialogInterface.OnClickListener onSubmit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Set time in seconds");
+        builder.setTitle(title);
 
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        // Center text inside EditText
-        input.setGravity(Gravity.CENTER);
-        builder.setView(input);
+        timerDialogInput = new EditText(this);
+        timerDialogInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        timerDialogInput.setGravity(Gravity.CENTER);
+        builder.setView(timerDialogInput);
 
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                timeText = input.getText().toString();
-                doneInput(min, timeText);
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setPositiveButton("OK", onSubmit);
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
     public void doneInput(String min, String sec) {
-        long Lmin = Long.parseLong(min);
-        long Lsec = Long.parseLong(sec);
-
-        double temp = (double)Lsec/60;
-
-        temp = Lmin + temp;
-
-        temp *= 60000;
-        timeLeft = (long)temp;
-
-        Toast.makeText(this, "Setting clock to " + min + ": " + sec, Toast.LENGTH_LONG).show();
-
-        upDateTimer();
+        gameClock = (long) ((Integer.parseInt(min) * 60 + Integer.parseInt(sec)) * 1000);
+        Toast.makeText(this, "Setting gameClock to " + min + ": " + sec, Toast.LENGTH_LONG).show();
+        updateClockView(gameClock);
     }
 
-    /*
-    *
-    * Bakendi
-    *
-    */
-
     public void endGame() {
-        endGameTask = new EndGameTask();
-        endGameTask.execute((Void) null);
+        new EndGameTask().execute((Void) null);
     }
 
     public void addGameEvent() {
-        addGameEventTask = new AddGameEventTask();
-        addGameEventTask.execute((Void) null);
+        new AddGameEventTask().execute((Void) null);
     }
 
     public void loadGame() {
-        LoadGameTask loadGameTask = new LoadGameTask();
-        loadGameTask.execute((Void) null);
+        new LoadGameTask().execute((Void) null);
     }
 
     public class LoadGameTask extends AsyncTask<Void, Void, Void> {
@@ -388,18 +276,14 @@ public class GameActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            homePlayers = game.getStartingLineup();
+            players = game.getStartingLineup();
             runOnUiThread(() -> {
-                createHomePlayerButtons();
+                createPlayerButtons();
             });
             return (Void) null;
         }
     }
 
-    /**
-     * Async endGame event
-     *
-     */
     public class EndGameTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -415,22 +299,11 @@ public class GameActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                Intent intent = new Intent(g, MainActivity.class);
-                g.startActivity(intent);
+                Intent intent = new Intent(gameActivity, MainActivity.class);
+                gameActivity.startActivity(intent);
                 finish();
-            } else {
-                System.out.println("Did nothing");
             }
         }
-    }
-
-    public GameEvent createGameEvent() throws Exception {
-        GameEvent gameEvent = new GameEvent();
-        gameEvent.setTimeOfEvent(timeOfEvent);
-        gameEvent.setEventType(action);
-        gameEvent.setLocation(location);
-        gameEvent.setPlayerId(selectedPlayer.getId());
-        return gameEvent;
     }
     public class AddGameEventTask extends AsyncTask<Void, Void, Boolean> {
         @Override
@@ -464,6 +337,14 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public GameEvent createGameEvent() throws Exception {
+        GameEvent gameEvent = new GameEvent();
+        gameEvent.setTimeOfEvent(gameClock);
+        gameEvent.setEventType(action);
+        gameEvent.setLocation(location);
+        gameEvent.setPlayerId(selectedPlayer.getId());
+        return gameEvent;
+    }
 }
 
 

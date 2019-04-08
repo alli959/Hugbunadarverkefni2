@@ -14,20 +14,20 @@
         android:stretchColumns="1">
         <TableRow>
             <TextView
-                android:text="@string/table_layout_4_open"
+                android:text="lol"
                 android:padding="3dip" />
             <TextView
-                android:text="@string/table_layout_4_open_shortcut"
+                android:text="lol"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
 
         <TableRow>
             <TextView
-                android:text="@string/table_layout_4_save"
+                android:text="lol"
                 android:padding="3dip" />
             <TextView
-                android:text="@string/table_layout_4_save_shortcut"
+                android:text="lol"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
