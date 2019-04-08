@@ -16,6 +16,7 @@ public class GameEventController extends EntityController {
     public GameEvent jsonToEntity(JSONObject json) throws JSONException {
         // System.out.println(json.toString());
         GameEvent gameEvent = new GameEvent();
+        gameEvent.setId(json.getLong("id"));
         gameEvent.setPlayerId(json.getLong("playerId"));
         gameEvent.setTimeOfEvent(json.getLong("timeOfEvent"));
         gameEvent.setLocation(json.getInt("location"));

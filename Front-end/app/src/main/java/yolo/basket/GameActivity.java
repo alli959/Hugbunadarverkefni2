@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import yolo.basket.db.Database;
@@ -145,8 +144,9 @@ public class GameActivity extends AppCompatActivity {
 
     private void bindOnLogClick() {
         gameEventLog.setOnItemClickListener(((parent, view, position, id) -> {
-            game.getGameEvents().remove(position);
-            new UpdateGameTask().execute((Void) null);
+            GameEvent gameEvent = game.getGameEvents().get(position);
+            System.out.println("Removing gameEvent");
+            new RemoveGameEvent(gameEvent).execute((Void) null);
         }));
     }
 
@@ -312,18 +312,21 @@ public class GameActivity extends AppCompatActivity {
 
 
 
-    public class UpdateGameTask extends AsyncTask<Void, Void, Void> {
+    public class RemoveGameEvent extends AsyncTask<Void, Void, Void> {
+        private final GameEvent gameEvent;
+
+        RemoveGameEvent(GameEvent gameEvent) {
+            this.gameEvent = gameEvent;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                game = (Game) Database.game.save(game);
+                Database.game.removeGameEvent(gameEvent);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            gameEvents = game.getGameEvents();
-            runOnUiThread(() -> {
-                updateGameLog();
-            });
+            new LoadGameEventsTask().execute((Void) null);
             return (Void) null;
         }
     }
