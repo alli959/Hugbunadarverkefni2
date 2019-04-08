@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:id="@+id/Layout" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
     android:visibility="visible"
     tools:layout_width="match_parent">
@@ -15,18 +15,13 @@
         android:layout_margin="25dp"
         android:orientation="vertical" />
 
-    <LinearLayout
-        android:id="@+id/AwayButtonLayout"
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/gameEventLog"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignRight="@id/basketBallCourt"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="25dp"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="-163dp"
-        android:orientation="vertical"
-        tools:ignore="DuplicateIds" />
-
+        android:orientation="vertical" />
 
     <TextView
         android:id="@+id/Timer"
@@ -72,6 +67,5 @@
         android:scaleType="fitXY"
         android:src="@drawable/bballcourt"
         android:layout_below="@+id/Timer" />
-
 
 </RelativeLayout>

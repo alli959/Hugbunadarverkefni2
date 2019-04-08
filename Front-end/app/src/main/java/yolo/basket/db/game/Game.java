@@ -28,7 +28,7 @@ public class Game extends Entity {
     params.addAll(Param.getIdsOfEntitiesAsParams("bench", bench));
     params.addAll(Param.getIdsOfEntitiesAsParams("playing", startingLineup));
     params.add(new Param("stadiumName", stadiumName));
-    params.add(new Param("timeOfGame", timeOfGame.toString()));;
+    params.add(new Param("timeOfGame", timeOfGame.toString()));
     params.add(new Param("teamId", teamId.toString()));
     if (id != null)
       params.add(new Param("id", id.toString()));

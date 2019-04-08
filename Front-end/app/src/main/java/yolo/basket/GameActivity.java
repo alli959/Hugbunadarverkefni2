@@ -11,10 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import yolo.basket.db.Database;
 import yolo.basket.db.game.Game;
@@ -57,6 +61,10 @@ public class GameActivity extends AppCompatActivity {
     private List<Player> players = new ArrayList<>();
     private ArrayList<Button> playerButtons = new ArrayList<>();
 
+    // GameEvents
+    private List<GameEvent> gameEvents;
+    private ListView gameEventLog;
+
     private GameActivity gameActivity;
 
     private ImageView court;
@@ -90,7 +98,9 @@ public class GameActivity extends AppCompatActivity {
         bindOnCourtClick();
         bindTimerButtons();
         updateClockView(6000);
-        loadGame();
+        loadPlayers();
+        loadGameEvents();
+        bindOnLogClick();
     }
 
     public void bindTimerButtons(){
@@ -103,6 +113,7 @@ public class GameActivity extends AppCompatActivity {
         startPauseTime = findViewById(R.id.StartPauseTimer);
         setTime = findViewById(R.id.SetTimer);
         clockView = findViewById(R.id.Timer);
+        gameEventLog = findViewById(R.id.gameEventLog);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -121,6 +132,32 @@ public class GameActivity extends AppCompatActivity {
                 (loc1, loc2) -> clickLocation.distanceTo(loc1) < clickLocation.distanceTo(loc2) ?
                         loc1 : loc2).get();
         return closestLocation.getCourtLocation();
+    }
+
+
+    private void updateGameLog() {
+        gameEventLog.setAdapter(new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                getLogData()
+        ));
+    }
+
+    private void bindOnLogClick() {
+        gameEventLog.setOnItemClickListener(((parent, view, position, id) -> {
+            game.getGameEvents().remove(position);
+            new UpdateGameTask().execute((Void) null);
+        }));
+    }
+
+    private List<String> getLogData() {
+       return gameEvents.stream().map(gameEvent -> {
+            String logString = "";
+            logString += gameEvent.getTimeOfEvent() / 1000;
+            logString += GameEvent.ACTION_NAMES[gameEvent.getEventType()];
+            logString += GameEvent.LOCATION_NAMES[gameEvent.getLocation()];
+            return logString;
+        }).collect(Collectors.toList());
     }
 
     private void createPlayerButtons(){
@@ -264,11 +301,51 @@ public class GameActivity extends AppCompatActivity {
         new AddGameEventTask().execute((Void) null);
     }
 
-    public void loadGame() {
-        new LoadGameTask().execute((Void) null);
+    public void loadGameEvents() {
+        new LoadGameEventsTask().execute((Void) null);
     }
 
-    public class LoadGameTask extends AsyncTask<Void, Void, Void> {
+    public void loadPlayers() {
+        new LoadPlayersTask().execute((Void) null);
+
+    }
+
+
+
+    public class UpdateGameTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                game = (Game) Database.game.save(game);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            gameEvents = game.getGameEvents();
+            runOnUiThread(() -> {
+                updateGameLog();
+            });
+            return (Void) null;
+        }
+    }
+
+
+    public class LoadGameEventsTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                game = (Game) Database.user.getActiveGame();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            gameEvents = game.getGameEvents();
+            runOnUiThread(() -> {
+                updateGameLog();
+            });
+            return (Void) null;
+        }
+    }
+
+    public class LoadPlayersTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -323,6 +400,7 @@ public class GameActivity extends AppCompatActivity {
                                 " ply:" + selectedPlayer.getName()
                         , Toast.LENGTH_SHORT).show();
             });
+            loadGameEvents();
 
             return success;
         }

@@ -7,7 +7,9 @@ import yolo.basket.db.Entity;
 import yolo.basket.db.EntityController;
 
 public class GameEventController extends EntityController {
+
     public GameEventController() {
+
     }
 
     @Override
