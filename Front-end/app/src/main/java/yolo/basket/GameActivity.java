@@ -3,6 +3,7 @@ package yolo.basket;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -21,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -30,7 +30,6 @@ import yolo.basket.db.Database;
 import yolo.basket.db.game.Game;
 import yolo.basket.db.gameEvent.GameEvent;
 import yolo.basket.db.player.Player;
-import yolo.basket.util.Actions;
 import yolo.basket.util.Location;
 
 // TODO:
@@ -40,18 +39,26 @@ import yolo.basket.util.Location;
 
 public class GameActivity extends AppCompatActivity {
 
+    private static final boolean HOME = true;
+    private static final boolean AWAY = false;
+
+    // Colors
+    private int GRAY = Color.rgb(55, 55, 55);
+    private int RED = Color.rgb(85, 45, 45);
+
     // Game
     private int action;
     private int location;
     private Game game;
+    private boolean activeTeam = HOME;
 
     private int scoreHome = 0;
     private TextView homeScore;
 
 
-    private static Player selectedPlayer;
+    private static Player gameEventPlayer;
+    private Player userSelectedPlayer;
     private Long gameClock = 600L;
-
 
     // Timer
     private static final long TIME = 600000;
@@ -59,17 +66,10 @@ public class GameActivity extends AppCompatActivity {
     private Button startPauseTime;
     private Button setTime;
     private CountDownTimer mCountDownTimer;
-    private boolean timerRunning;
-    private Long timeLeft = TIME;
 
     //Away team
-    private Button madeShotAway;
-    private Button missedShotAway;
-    private Button foulAway;
-    private Button turnoverAway;
     private TextView awayScore;
     private int scoreAway = 0;
-
 
     //Player
     private List<Player> players = new ArrayList<>();
@@ -80,35 +80,11 @@ public class GameActivity extends AppCompatActivity {
     private ListView gameEventLog;
 
     private GameActivity gameActivity;
-
     private ImageView court;
-
-    // Gives the GameEvent location type a location on the image
-    // Used to calculate which one is closest for approximate solution
-    private static final List<Location> LOCATIONS = new ArrayList<>(Arrays.asList(
-            new Location(0.09, 0.18, GameEvent.LEFT_CORNER),
-            new Location(0.90, 0.18, GameEvent.RIGHT_CORNER),
-            new Location(0.86, 0.59, GameEvent.RIGHT_WING),
-            new Location(0.66, 0.64, GameEvent.LEFT_WING),
-            new Location(0.74, 0.16, GameEvent.RIGHT_SHORT),
-            new Location(0.74, 0.27, GameEvent.RIGHT_SHORT),
-            new Location(0.26, 0.16, GameEvent.LEFT_SHORT),
-            new Location(0.26, 0.27, GameEvent.LEFT_SHORT),
-            new Location(0.50, 0.29, GameEvent.LAY_UP),
-            new Location(0.50, 0.50, GameEvent.TOP),
-            new Location(0.31, 0.79, GameEvent.RIGHT_TOP),
-            new Location(0.66, 0.80, GameEvent.LEFT_TOP)
-    ));
     private EditText timerDialogInput;
 
-
-
-    public void defineButtons(){
-        findViewById(R.id.madeShotAway).setOnClickListener(awayMadeShotListener);
-        findViewById(R.id.foulAway).setOnClickListener(awayFoulListener);
-        findViewById(R.id.missedShotAway).setOnClickListener(awayMissedShotListener);
-        findViewById(R.id.turnoverAway).setOnClickListener(awayTurnoverListener);
-    }
+    private static final long SEC_IN_MIN = 60;
+    private static final long MS_IN_SEC = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,21 +94,15 @@ public class GameActivity extends AppCompatActivity {
         gameActivity = this;
         retrieveViews();
 
-        bindOnCourtClick();
         bindTimerButtons();
-        defineButtons();
-        updateClockView(6000);
+        bindAwayTeamButtons();
+        bindOnCourtClick();
+        gameClock = 10 * SEC_IN_MIN * MS_IN_SEC;
+        updateClockView();
         loadPlayers();
         loadGameEvents();
         bindOnLogClick();
     }
-
-    public void bindTimerButtons(){
-        findViewById(R.id.StartPauseTimer).setOnClickListener(startPauseTimerListener);
-        findViewById(R.id.SetTimer).setOnClickListener(setTimerListener);
-    }
-
-
 
     private void retrieveViews() {
         court = findViewById(R.id.basketBallCourt);
@@ -140,35 +110,72 @@ public class GameActivity extends AppCompatActivity {
         setTime = findViewById(R.id.SetTimer);
         clockView = findViewById(R.id.Timer);
         gameEventLog = findViewById(R.id.gameEventLog);
-        homeScore = (TextView) findViewById(R.id.homeScore);
-        awayScore = (TextView) findViewById(R.id.awayScore);
+        homeScore = findViewById(R.id.homeScore);
+        awayScore = findViewById(R.id.awayScore);
+    }
+
+    public void bindTimerButtons(){
+        findViewById(R.id.StartPauseTimer).setOnClickListener(startPauseTimerListener);
+        findViewById(R.id.SetTimer).setOnClickListener(setTimerListener);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void bindOnCourtClick() {
+
         court.setOnTouchListener((view, event) -> {
             double x = event.getX() / view.getWidth();
             double y = event.getY() / view.getHeight();
-            location = getLocation(new Location(x, y, 0));
-            createShotAlert();
+            location = Location.getLocation(new Location(x, y, 0));
+            gameEventPlayer = userSelectedPlayer;
+            createHomeTeamAlert();
             return false;
         });
     }
 
-    private int getLocation(Location clickLocation) {
-        Location closestLocation = LOCATIONS.stream().reduce(
-                (loc1, loc2) -> clickLocation.distanceTo(loc1) < clickLocation.distanceTo(loc2) ?
-                        loc1 : loc2).get();
-        return closestLocation.getCourtLocation();
-    }
-
-
     private void updateGameLog() {
-        gameEventLog.setAdapter(new ArrayAdapter<String>(
+        gameEventLog.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
                 getLogData()
         ));
+    }
+
+    private List<String> getLogData() {
+        return gameEvents.stream().map(gameEvent -> getLogStringForEvent(gameEvent)).collect(Collectors.toList());
+    }
+
+    private String getLogStringForEvent(GameEvent gameEvent) {
+        String logString = "";
+        logString += getClockString(gameEvent.getTimeOfEvent());
+        logString += "\n";
+        logString += getPlayerNameById(gameEvent.getPlayerId());
+        logString += "\n";
+
+        logString += GameEvent.ACTION_NAMES[gameEvent.getEventType()];
+
+        int eventType = gameEvent.getEventType();
+        if (
+                eventType != GameEvent.REBOUND &&
+                eventType != GameEvent.BLOCK &&
+                eventType != GameEvent.ASSIST
+        ) {
+            logString += "\n";
+            logString += GameEvent.LOCATION_NAMES[gameEvent.getLocation()];
+        }
+
+        return logString;
+    }
+
+    private String getPlayerNameById(Long id) {
+        String name = "No name";
+        for (Player player : players)
+            if (player.getId().equals(id))
+                name = player.getName();
+        if (name.length() > 15) {
+            name = name.substring(0, 15);
+            name += "...";
+        }
+        return name;
     }
 
     private void bindOnLogClick() {
@@ -179,299 +186,195 @@ public class GameActivity extends AppCompatActivity {
         }));
     }
 
-    private void createShotAlert(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        String playerName = selectedPlayer.getName();
-        builder.setCancelable(true);
-        builder.setTitle("Action for " + playerName);
+    private void createHomeTeamAlert(){
+        activeTeam = HOME;
 
-        builder.setItems(new CharSequence[]{"Made Shot", "Missed Shot", "Committed Foul", "Turnover"},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            action = GameEvent.HIT;
-                            addScoreToHome(2);
-                            addGameEvent();
-                            createAssistAlert();
-                        break;
-                        case 1:
-                            action = GameEvent.MISS;
-                            addGameEvent();
-                            createReboundAlert();
-                        break;
-                        case 2:
-                            createFoulAlert(true);
-                        break;
-                        case 3: action = GameEvent.TURNOVER;
-                            addGameEvent();
-                            break;
-                    }
-                });
-        builder.create().show();
+        String title = "Action for " + gameEventPlayer.getName();
+        String[] options = {
+                "Made Shot",
+                "Missed Shot",
+                "Committed Foul",
+                "Turnover / Steal"
+        };
+
+        createListDialog(title, options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    action = GameEvent.HIT;
+                    addScoreToHome(2);
+                    addGameEvent();
+                    createAssistAlert();
+                    break;
+                case 1:
+                    action = GameEvent.MISS;
+                    addGameEvent();
+                    createReboundAlert();
+                    break;
+                case 2:
+                    createFoulAlert();
+                    break;
+                case 3:
+                    createStealAlert();
+                    break;
+            }
+        });
     }
 
-    private void createFoulAlert(boolean home) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        String playerName = selectedPlayer.getName();
-        builder.setCancelable(true);
-        if(home){
-            builder.setTitle(playerName + " fouled a player, choose foul type");
-        } else {
-            builder.setTitle("Away team committed a foul");
-        }
-
-        builder.setItems(new CharSequence[]{"Defensive foul", "Offensive foul(Turnover)"},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            createShootingFoulAlert(home);
-                            break;
-                        case 1:
-                            if(home) {
-                                action = GameEvent.TURNOVER;
-                                addGameEvent();
-                            }
-                            break;
-                    }
-                });
-        builder.create().show();
+    public void bindAwayTeamButtons(){
+        findViewById(R.id.madeShotAway).setOnClickListener(v -> awayMadeShotAlert());
+        findViewById(R.id.missedShotAway).setOnClickListener(v -> awayMissedAlert());
+        findViewById(R.id.foulAway).setOnClickListener(v -> awayFoulAlert());
     }
 
-    private void createShootingFoulAlert(boolean home) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        String playerName = selectedPlayer.getName();
-        builder.setCancelable(true);
-        if(home){
-            builder.setTitle(playerName + " fouled a player, ");
-        } else {
-            builder.setTitle("Away team committed a foul");
-        }
-
-        builder.setItems(new CharSequence[]{"Shooting foul", "Non shooting foul"},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            if(home){
-                                createShootingFoulShotAlert(home, selectedPlayer);
-                            } else {
-                                createShowPlayers(home);
-                            }
-                            break;
-                        case 1:
-                            if(home){
-                                action = GameEvent.FOUL;
-                                addGameEvent();
-                            }
-                            break;
-                    }
-                });
-        builder.create().show();
+    public void awayFoulAlert() {
+        activeTeam = AWAY;
+        createFoulAlert();
     }
 
-    private void createShowPlayers(boolean home){
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setCancelable(true);
-        builder.setTitle("Shooting player");
-        ArrayList<Player> arrayPlayer =new ArrayList<Player>();
-        ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : players){
-                arrayPlayer.add(player);
-                arrayPlayerNames.add(player.getName());
-        }
+    public void awayMissedAlert() {
+        String title = "Away team misses";
+        String[] options = { "Shot missed", "Shot blocked" };
 
-        CharSequence[] charPlayers = arrayPlayerNames.toArray(new CharSequence[arrayPlayerNames.size()]);
-        Player temp = selectedPlayer;
-        builder.setItems(new CharSequence[]{ charPlayers[0], charPlayers[1], charPlayers[2], charPlayers[3], charPlayers[4]},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            selectedPlayer = arrayPlayer.get(0);
-                            createShootingFoulShotAlert(home, temp);
-                            break;
-                        case 1:
-                            selectedPlayer = arrayPlayer.get(1);
-                            createShootingFoulShotAlert(home, temp);
-                            break;
-                        case 2:
-                            selectedPlayer = arrayPlayer.get(2);
-                            createShootingFoulShotAlert(home, temp);
-                            break;
-                        case 3:
-                            selectedPlayer = arrayPlayer.get(3);
-                            createShootingFoulShotAlert(home, temp);
-                            break;
-                        case 4:
-                            selectedPlayer = arrayPlayer.get(4);
-                            createShootingFoulShotAlert(home, temp);
-                            break;
-                    }
-                });
-        builder.create().show();
+        createListDialog(title, options, (dialog, which) -> {
+            if (which == 0)
+                createReboundAlert();
+            else
+                createBlockAlert();
+        });
     }
 
-    private void createShootingFoulShotAlert(boolean home, Player temp) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        //String playerName = selectedPlayer.getName();
-        builder.setCancelable(true);
-        builder.setTitle("Shooting foul");
+    public void awayMadeShotAlert() {
+        String title = "Away team scores";
+        String[] options = { "Two point shot", "Three point shot" };
 
-        builder.setItems(new CharSequence[]{"1 Shot", "2 shots", "3 Shots", "Basket made and 1 shot"},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            freeThrows(1, home);
-                            break;
-                        case 1:
-                            freeThrows(2, home);
-                            break;
-                        case 2:
-                            freeThrows(3, home);
-                            break;
-                        case 3:
-                            freeThrows(1, home);
-                            if(home){
-                                addScoreToAway(2);
-                            } else {
-                                addScoreToHome(2);
-
-                            }
-                            break;
-                    }
-                });
-        builder.create().show();
-        selectedPlayer = temp;
+        createListDialog(title, options, (dialog, which) -> {
+            if (which == 0)
+                addScoreToAway(2);
+            else
+                addScoreToAway(3);
+        });
     }
 
-    private void freeThrows(int amount, boolean home){
-        while(amount-- != 0){
-            AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-            builder.setCancelable(true);
-            builder.setTitle("Free throw");
+    private void createFoulAlert() {
+        String title = getFoulAlertTitle();
+        String[] options = { "Defensive foul", "Offensive foul(Turnover)" };
 
-            builder.setItems(new CharSequence[]{"Made", "Missed"},
-                    (dialog, which) -> {
-                        switch (which) {
-                            case 0:
-                                if(home){
-                                    addScoreToAway(1);
-                                } else {
-                                    //action = GameEvent.FREE_THROW; virkar ekki!
-                                    action = GameEvent.HIT;
-                                    location = GameEvent.FREE_THROW;
-                                    addGameEvent();
-                                    addScoreToHome(1);
-                                }
-                                break;
-                            case 1:
-                                if(!home){
-                                    action = GameEvent.MISS; //Ætti að vera .Freethrow miss
-                                    addGameEvent();
-                                }
-                                break;
-                        }
-                    });
-            builder.create().show();
-        }
+        createListDialog(title, options, (dialog, which) -> {
+            if (which == 0)
+                createFoulTypeDialog();
+            if (activeTeam == HOME)
+                addFoul();
+        });
+    }
+
+    private void createFoulTypeDialog() {
+        String title = getFoulAlertTitle();
+        String[] options = { "Shooting foul", "Non shooting foul" };
+
+        createListDialog(title, options, (dialog, which) -> {
+            if (which == 0) {
+                // Foul was made by active team -> switch teams for free throws
+                activeTeam = !activeTeam;
+                goToFreeThrows();
+            }
+        });
+    }
+
+    private String getFoulAlertTitle() {
+        return activeTeam == HOME ? gameEventPlayer.getName() + " fouled a player, " : "Away team committed a foul";
+    }
+
+    private void addFoul() {
+        action = GameEvent.FOUL;
+        addGameEvent();
+    }
+
+    private void goToFreeThrows() {
+        createFreeThrowAmountDialog();
+    }
+
+    private void createFreeThrowAmountDialog() {
+        String title = "Shooting foul";
+        String[] options = {
+                "Basket made and 1 shot",
+                "1 Shot",
+                "2 shots",
+                "3 Shots"
+        };
+
+        createListDialog(title, options, (dialog, which) -> {
+            int numberOfFreeThrows = which;
+            if (which == 0) {
+                addScore(2);
+                numberOfFreeThrows = 1;
+            }
+            if (activeTeam == HOME)
+                selectPlayerForFreeThrows(numberOfFreeThrows);
+            else
+                startFreeThrows(numberOfFreeThrows);
+        });
+    }
+
+    private void selectPlayerForFreeThrows(int numberOfFreeThrows){
+        String title = "Shooting player";
+        String[] options = asArray(getPlayerNames());
+        createListDialog(title, options, (dialog, which) -> {
+            gameEventPlayer = players.get(which);
+            startFreeThrows(numberOfFreeThrows);
+        });
+
+    }
+
+    private void startFreeThrows(int amount){
+        while(amount-- != 0)
+            createFreeThrowDialog();
+    }
+
+    private void createFreeThrowDialog() {
+        String title = "Free throw";
+        String[] options = { "Made", "Missed" };
+
+        createListDialog(title, options, (dialog, which) -> {
+            addScore(1);
+
+            if (activeTeam == HOME) {
+                action = which == 1 ? GameEvent.HIT : GameEvent.MISS;
+                location = GameEvent.FREE_THROW;
+                addGameEvent();
+            }
+        });
     }
 
     private void createReboundAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        String playerName = selectedPlayer.getName();
-        builder.setCancelable(true);
-        builder.setTitle(playerName + " missed the shot, rebound for");
-        ArrayList<Player> arrayPlayer =new ArrayList<Player>();
-        ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : players){
-                arrayPlayer.add(player);
-                arrayPlayerNames.add(player.getName());
-        }
+        List<String> optionsList = getPlayerNames();
+        optionsList.add("Away team");
+        optionsList.add("None");
 
-        CharSequence[] charPlayers = arrayPlayerNames.toArray(new CharSequence[arrayPlayerNames.size()]);
-        Player temp = selectedPlayer;
-        builder.setItems(new CharSequence[]{ charPlayers[0], charPlayers[1], charPlayers[2], charPlayers[3], charPlayers[4], "Away team"},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            action = GameEvent.REBOUND;
-                            selectedPlayer = arrayPlayer.get(0);
-                            addGameEvent();
-                            break;
-                        case 1:
-                            action = GameEvent.REBOUND;
-                            selectedPlayer = arrayPlayer.get(1);
-                            addGameEvent();
-                            break;
-                        case 2:
-                            action = GameEvent.REBOUND;
-                            selectedPlayer = arrayPlayer.get(2);
-                            addGameEvent();
-                            break;
-                        case 3:
-                            action = GameEvent.REBOUND;
-                            selectedPlayer = arrayPlayer.get(3);
-                            addGameEvent();
-                            break;
-                        case 4:
-                            action = GameEvent.REBOUND;
-                            selectedPlayer = arrayPlayer.get(4);
-                            addGameEvent();
-                            break;
-                        case 5:
-                            action = GameEvent.REBOUND;
-                            selectedPlayer = null;
-                            break;
-                    }
-                });
-        builder.create().show();
-        selectedPlayer = temp;
+        String title = gameEventPlayer.getName() + " missed the shot, rebound caught by...";
+        String[] options = asArray(optionsList);
+
+        Player temp = gameEventPlayer;
+        createListDialog(title, options, (dialog, which) -> {
+            if (which >= players.size())
+                return;
+            gameEventPlayer = players.get(which);
+            action = GameEvent.REBOUND;
+            addGameEvent();
+        });
+        gameEventPlayer = temp;
     }
 
     private void createBlockAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setCancelable(true);
-        builder.setTitle("Shot blocked by");
-        ArrayList<Player> arrayPlayer =new ArrayList<Player>();
-        ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : players){
-                arrayPlayer.add(player);
-                arrayPlayerNames.add(player.getName());
-        }
+        String title = "Shot blocked by";
+        String[] options = asArray(getPlayerNames());
 
-        CharSequence[] charPlayers = arrayPlayerNames.toArray(new CharSequence[arrayPlayerNames.size()]);
-
-        Player temp = selectedPlayer;
-        builder.setItems(new CharSequence[]{ charPlayers[0], charPlayers[1], charPlayers[2], charPlayers[3], charPlayers[4] },
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            selectedPlayer = arrayPlayer.get(0);
-                            action = GameEvent.BLOCK;
-                            addGameEvent();
-                            break;
-                        case 1:
-                            selectedPlayer = arrayPlayer.get(1);
-                            action = GameEvent.BLOCK;
-                            addGameEvent();
-                            break;
-                        case 2:
-                            selectedPlayer = arrayPlayer.get(2);
-                            action = GameEvent.BLOCK;
-                            addGameEvent();
-                            break;
-                        case 3:
-                            selectedPlayer = arrayPlayer.get(3);
-                            action = GameEvent.BLOCK;
-                            addGameEvent();
-                            break;
-                        case 4:
-                            selectedPlayer = arrayPlayer.get(4);
-                            action = GameEvent.BLOCK;
-                            addGameEvent();
-                            break;
-                    }
-                });
-        builder.create().show();
-        selectedPlayer = temp;
+        Player temp = gameEventPlayer;
+        createListDialog(title, options, (dialog, which) -> {
+            gameEventPlayer = players.get(which);
+            action = GameEvent.BLOCK;
+            addGameEvent();
+        });
+        gameEventPlayer = temp;
     }
 
     /**
@@ -479,211 +382,84 @@ public class GameActivity extends AppCompatActivity {
      */
 
     private void createStealAlert(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setCancelable(true);
-        builder.setTitle("Steal by");
-        ArrayList<Player> arrayPlayer =new ArrayList<Player>();
-        ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : players){
-            arrayPlayer.add(player);
-            arrayPlayerNames.add(player.getName());
-        }
+        String title = "Turnover / Steal";
+        String[] options = { "Home team", "Away team", "Pass out of bounds" };
 
-        CharSequence[] charPlayers = arrayPlayerNames.toArray(new CharSequence[arrayPlayerNames.size()]);
-
-        Player temp = selectedPlayer;
-        builder.setItems(new CharSequence[]{ charPlayers[0], charPlayers[1], charPlayers[2], charPlayers[3], charPlayers[4], "Pass out of bounds" },
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            selectedPlayer = arrayPlayer.get(0);
-                            //action = GameEvent.STEAL;
-                            //addGameEvent();
-                            break;
-                        case 1:
-                            selectedPlayer = arrayPlayer.get(1);
-                            //action = GameEvent.STEAL;
-                            //addGameEvent();
-                            break;
-                        case 2:
-                            selectedPlayer = arrayPlayer.get(2);
-                            //action = GameEvent.STEAL;
-                            //addGameEvent();
-                            break;
-                        case 3:
-                            selectedPlayer = arrayPlayer.get(3);
-                            //action = GameEvent.STEAL;
-                            //addGameEvent();
-                            break;
-                        case 4:
-                            selectedPlayer = arrayPlayer.get(4);
-                            //action = GameEvent.STEAL;
-                            //addGameEvent();
-                            break;
-                        case 5:
-                            selectedPlayer = null;
-                            //Do nothing...
-                    }
-                });
-        builder.create().show();
-        selectedPlayer = temp;
+        Player temp = gameEventPlayer;
+        createListDialog(title, options, (dialog, which) -> {
+            if (which == 0) {
+                // action = GameEvent.STEAL; // We want this
+                action = GameEvent.TURNOVER;
+                addGameEvent();
+            }
+        });
+        gameEventPlayer = temp;
     }
 
     private void createAssistAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        String playerName = selectedPlayer.getName();
-        builder.setCancelable(true);
-        builder.setTitle("Made shot by " + playerName + " Assist from");
-        ArrayList<Player> arrayPlayer =new ArrayList<Player>();
-        ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : players){
-            if(player != selectedPlayer) {
-                arrayPlayer.add(player);
-                arrayPlayerNames.add(player.getName());
-            }
-        }
+        String title = "Made shot by " + gameEventPlayer.getName() + " Assist from";
+        String[] options = asArray(getPlayerNames());
 
-        CharSequence[] charPlayers = arrayPlayerNames.toArray(new CharSequence[arrayPlayerNames.size()]);
-        Player temp = selectedPlayer;
-        builder.setItems(new CharSequence[]{ charPlayers[0], charPlayers[1], charPlayers[2], charPlayers[3]},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            action = GameEvent.ASSIST;
-                            selectedPlayer = arrayPlayer.get(0);
-                            break;
-                        case 1:
-                            action = GameEvent.ASSIST;
-                            selectedPlayer = arrayPlayer.get(1);
-                            break;
-                        case 2:
-                            action = GameEvent.ASSIST;
-                            selectedPlayer = arrayPlayer.get(2);
-                            break;
-                        case 3:
-                            action = GameEvent.ASSIST;
-                            selectedPlayer = arrayPlayer.get(3);
-                            break;
-                    }
-                    addGameEvent();
-
-                });
-        builder.create().show();
-        selectedPlayer = temp;
+        createListDialog(title, options, (dialog, which) -> {
+            gameEventPlayer = players.get(which);
+            action = GameEvent.ASSIST;
+            addGameEvent();
+        });
     }
 
-    private int buttonId = 0;
-    private List<String> getLogData() {
-       return gameEvents.stream().map(gameEvent -> {
-            String logString = "";
-            logString += gameEvent.getTimeOfEvent() / 1000;
-            logString += GameEvent.ACTION_NAMES[gameEvent.getEventType()];
-            logString += GameEvent.LOCATION_NAMES[gameEvent.getLocation()];
-            return logString;
-        }).collect(Collectors.toList());
+    private void createListDialog(String title, String[] options, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setItems(options, onClickListener);
+        builder.create();
+        builder.show();
+    }
+
+    private List<String> getPlayerNames() {
+        return players.stream().map(Player::getName).collect(Collectors.toList());
+    }
+
+    private String[] asArray(List<String> list) {
+        return list.stream().toArray(String[]::new);
     }
 
     private void createPlayerButtons(){
         LinearLayout layout = findViewById(R.id.HomeButtonLayout);
-        int buttonId = 0;
-        for (Player player : players)
-            layout.addView(createButton(player, buttonId++));
-        selectedPlayer = players.get(0);
+
+        for (Player player : players) {
+            Button button = createButton(player);
+            layout.addView(button);
+            playerButtons.add(button);
+        }
+
+        gameEventPlayer = players.get(0);
+        userSelectedPlayer = gameEventPlayer;
     }
 
-
-    private Button createButton(Player player, int buttonId) {
+    private Button createButton(Player player) {
         Button button = new Button(GameActivity.this);
         playerButtons.add(button);
         button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         button.setText(player.getName());
-        button.setId(buttonId);
         button.setOnClickListener(view -> {
-            selectedPlayer = players.get(buttonId);
+            userSelectedPlayer = player;
+            deactivateButtons();
+            button.setAlpha(1.0f);
         });
         return button;
     }
 
-    /*private void createShotAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setCancelable(true);
-        builder.setTitle("Action for " + selectedPlayer.getName());
-        builder.setItems(Actions.getNames(),
-                (dialog, which) -> {
-                    action = Actions.values()[which].getAction();
-                    if (action == Actions.Missed.getAction())
-                        createReboundAlert();
-                    addGameEvent();
-                });
-        builder.create().show();
-    }*/
-
-
-
-    private View.OnClickListener awayMadeShotListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showMadeShotAway();
-        }
-    };
-
-    private View.OnClickListener awayMissedShotListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showMissedShotAway();
-        }
-    };
-
-    private View.OnClickListener awayFoulListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            createShootingFoulAlert(false);
-        }
-    };
-
-    private View.OnClickListener awayTurnoverListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            createStealAlert();
-        }
-    };
-
-    public void showMissedShotAway(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Away team misses");
-        builder.setCancelable(true);
-
-        builder.setItems(new CharSequence[]{ "Shot missed", "Shot blocked" },
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            createReboundAlert();
-                            break;
-                        case 1:
-                            createBlockAlert();
-                            break;
-                    }
-                });
-        builder.create().show();
+    private void deactivateButtons() {
+        for (Button button : playerButtons)
+            button.setAlpha(0.6f);
     }
 
-    public void showMadeShotAway(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Away team scores");
-        builder.setCancelable(true);
-
-        builder.setItems(new CharSequence[]{ "Two point shot", "Three point shot" },
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0:
-                            addScoreToAway(2);
-                            break;
-                        case 1:
-                            addScoreToAway(3);
-                            break;
-                    }
-                });
-        builder.create().show();
+    public void addScore(int score) {
+        if (activeTeam == HOME)
+            addScoreToHome(score);
+        else
+            addScoreToAway(score);
     }
 
     public void addScoreToAway(int score){
@@ -695,21 +471,6 @@ public class GameActivity extends AppCompatActivity {
         scoreHome += score;
         homeScore.setText(Integer.toString(scoreHome));
     }
-
-
-    
-    /*private void createReboundAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setCancelable(true);
-        builder.setTitle("Rebound");
-        builder.setItems(players.stream().map(Player::getName).toArray(String[]::new),
-                (dialog, which) -> {
-                    action = GameEvent.REBOUND;
-                    selectedPlayer = players.get(which);
-                    addGameEvent();
-                });
-        builder.create().show();
-    }*/
 
     /**
      * Klukka
@@ -735,7 +496,8 @@ public class GameActivity extends AppCompatActivity {
         return new CountDownTimer(time, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                updateClockView(millisUntilFinished);
+                gameClock = millisUntilFinished;
+                updateClockView();
             }
 
             @Override
@@ -748,20 +510,22 @@ public class GameActivity extends AppCompatActivity {
         };
     }
 
-    private void updateClockView(long millisUntilFinished){
-        int min = (int) (millisUntilFinished / 1000) / 60;
-        int sec = (int) (millisUntilFinished / 1000) % 60;
-
-        String timeLeft = String.format(Locale.getDefault(),"%02d:%02d", min, sec);
+    private void updateClockView(){
+        String timeLeft = getClockString(gameClock);
         clockView.setText(timeLeft);
     }
 
+    private String getClockString(long clockValue) {
+        int min = (int) (clockValue / 1000) / 60;
+        int sec = (int) (clockValue / 1000) % 60;
+        return String.format(Locale.getDefault(),"%02d:%02d", min, sec);
+    }
 
     private View.OnClickListener setTimerListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             showPopupMin();
-            updateClockView(gameClock);
+            updateClockView();
             startPauseTime.setVisibility(View.VISIBLE);
         }
     };
@@ -799,11 +563,12 @@ public class GameActivity extends AppCompatActivity {
     public void doneInput(String min, String sec) {
         gameClock = (long) ((Integer.parseInt(min) * 60 + Integer.parseInt(sec)) * 1000);
         Toast.makeText(this, "Setting gameClock to " + min + ": " + sec, Toast.LENGTH_LONG).show();
-        updateClockView(gameClock);
+        updateClockView();
     }
 
     public void endGame() {
         new EndGameTask().execute((Void) null);
+        this.finish();
     }
 
     public void addGameEvent() {
@@ -816,7 +581,6 @@ public class GameActivity extends AppCompatActivity {
 
     public void loadPlayers() {
         new LoadPlayersTask().execute((Void) null);
-
     }
 
 
@@ -904,16 +668,7 @@ public class GameActivity extends AppCompatActivity {
                 e.printStackTrace();
                 return false;
             }
-
-            runOnUiThread(() -> {
-                Toast.makeText(GameActivity.this,
-                        "Event - loc:" + GameEvent.LOCATION_NAMES[location] +
-                                " act:" + GameEvent.ACTION_NAMES[action] +
-                                " ply:" + selectedPlayer.getName()
-                        , Toast.LENGTH_SHORT).show();
-            });
             loadGameEvents();
-
             return success;
         }
 
@@ -932,7 +687,7 @@ public class GameActivity extends AppCompatActivity {
         gameEvent.setTimeOfEvent(gameClock);
         gameEvent.setEventType(action);
         gameEvent.setLocation(location);
-        gameEvent.setPlayerId(selectedPlayer.getId());
+        gameEvent.setPlayerId(gameEventPlayer.getId());
         return gameEvent;
     }
 }

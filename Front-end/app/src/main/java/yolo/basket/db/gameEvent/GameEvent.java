@@ -39,18 +39,18 @@ public class GameEvent extends Entity {
   public static final int FREE_THROW = 11;
 
   public static final String[] LOCATION_NAMES = {
-          "NONE",
-          "LEFT_WING",
-          "RIGHT_WING",
-          "TOP",
-          "LEFT_CORNER",
-          "RIGHT_CORNER",
-          "LEFT_SHORT",
-          "RIGHT_SHORT",
-          "LEFT_TOP",
-          "RIGHT_TOP",
-          "LAY_UP",
-          "FREE_THROW"
+          "None",
+          "Left wing",
+          "Right wing",
+          "Top",
+          "Left corner",
+          "Right corner",
+          "Left short",
+          "Right short",
+          "Left top",
+          "Right top",
+          "Lay up",
+          "Free throw"
   };
 
   public static final int N_LOCATIONS = 12;
@@ -65,13 +65,13 @@ public class GameEvent extends Entity {
   public static final int TURNOVER = 6;
 
   public static final String[] ACTION_NAMES = {
-          "MISS",
-          "HIT",
-          "FOUL",
-          "ASSIST",
-          "REBOUND",
-          "BLOCK",
-          "TURNOVER"
+          "Shot missed",
+          "Shot made",
+          "Foul",
+          "Assist",
+          "Rebound caught",
+          "Blocked shot",
+          "Steal"
   };
 
 
