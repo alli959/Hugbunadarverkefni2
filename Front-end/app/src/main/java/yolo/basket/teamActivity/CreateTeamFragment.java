@@ -44,6 +44,7 @@ public class CreateTeamFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.create_team_fragment, container, false);
+        activity = (CreateTeamListener) this.getActivity();
         retrieveViews();
         bindSubmitButton();
         return view;

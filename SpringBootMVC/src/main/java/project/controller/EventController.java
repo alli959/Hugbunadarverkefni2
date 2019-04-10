@@ -160,6 +160,23 @@ public class EventController {
     return gameEvent;
   }
 
+  @RequestMapping(value="/user/removeGameEventFromCurrentGame")
+  public String removeGameEvent (
+      @RequestHeader("Authorization") String basicAuthString,
+      @RequestParam Long id
+  ) throws Exception {
+    String userName = Toolkit.getUserName(basicAuthString);
+    User user = userRepository.findById(userName).get();
+    Game currentGame = user.getCurrentGame();
+    GameEvent gameEventToRemove = null;
+    for (GameEvent gameEvent : currentGame.getGameEvents())
+      if (gameEvent.getId().equals(id))
+        gameEventToRemove = gameEvent;
+    currentGame.getGameEvents().remove(gameEventToRemove);
+    gameRepository.save(currentGame);
+    return "Success";
+  }
+
   // Unused
   @RequestMapping(value = "/game", method = RequestMethod.POST)
   public void ShotMade(@RequestBody String shotAction) throws JSONException, Exception {

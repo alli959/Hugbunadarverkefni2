@@ -31,6 +31,14 @@ public class GameController extends EntityController {
         return true;
     }
 
+    public Boolean removeGameEvent(GameEvent gameEvent) throws Exception {
+        String method = "user/removeGameEventFromCurrentGame";
+        Param param = new Param("id", "" + gameEvent.getId());
+        Request request = new Request(method, param);
+        request.resolve();
+        return true;
+    }
+
     public Boolean endGame() throws Exception {
         String method = "user/endGame";
         Request request = new Request(method);

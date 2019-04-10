@@ -81,6 +81,7 @@ public class TeamActivity extends AppCompatActivity implements CreateTeamFragmen
     @Override
     public void showCreateTeamFragment() {
         nextRightFragment = createTeamFragment;
+        showRightFragment = true;
         renderLayout();
     }
 

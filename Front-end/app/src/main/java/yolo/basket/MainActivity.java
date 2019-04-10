@@ -46,7 +46,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         findViewById(R.id.start_teamActivity_button).setOnClickListener(v -> openTeamView());
+        findViewById(R.id.start_statsActivity_button).setOnClickListener(v -> openStatsView());
 
+    }
+
+    private void openStatsView() {
+        runOnUiThread(() -> startActivity(new Intent(this, StatsActivity.class)));
     }
 
     public class CheckLoginTask extends AsyncTask<Void, Void, Void> {

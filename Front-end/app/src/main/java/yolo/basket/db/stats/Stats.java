@@ -7,6 +7,7 @@ package yolo.basket.db.stats;
 // be sent back through a response as JSON so it 
 // doesn't have to be calculated on the front end.
 
+import java.util.Arrays;
 import java.util.List;
 
 import yolo.basket.db.Calculator;
@@ -94,6 +95,14 @@ public class Stats extends Entity {
 
   public static int[][] blankData() {
     return new int[GameEvent.N_GAME_EVENTS][GameEvent.N_LOCATIONS];
+  }
+
+  public int sum(int[] array) {
+    return Arrays.stream(array).sum();
+  }
+
+  public double ratioHit() {
+    return (double) hit / (hit + miss);
   }
 
   public void addData(int[][] moreData) {

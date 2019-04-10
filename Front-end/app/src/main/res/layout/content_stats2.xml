@@ -8,26 +8,49 @@
     tools:context=".StatsActivity"
     tools:showIn="@layout/activity_stats2">
 
-    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stretchColumns="1">
-        <TableRow>
-            <TextView
-                android:padding="3dip" />
-            <TextView
-                android:gravity="right"
-                android:padding="3dip" />
-        </TableRow>
+        android:background="@color/colorAccent"
+        android:orientation="vertical"
+        android:visibility="visible" >
 
-        <TableRow>
-            <TextView
-                android:padding="3dip" />
-            <TextView
-                android:gravity="right"
-                android:padding="3dip" />
-        </TableRow>
-    </TableLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_red_light">
 
+            <TextView
+                android:id="@+id/leftHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_full"
+                android:gravity="center_horizontal"
+                android:text="Teams"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="40sp"
+                android:typeface="serif"
+                android:visibility="visible"
+                app:fontFamily="sans-serif-black" />
+
+        </FrameLayout>
+
+
+        <ExpandableListView
+            android:id="@+id/stats_view_main"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="0.5dp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="left"
+            app:srcCompat="@drawable/basketball" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

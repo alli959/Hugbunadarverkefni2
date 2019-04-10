@@ -28,7 +28,7 @@ public class Game extends Stats {
   public int[][] compileStats(Long playerId) {
     int[][] stats = new int[GameEvent.N_GAME_EVENTS][GameEvent.N_LOCATIONS];
     for (GameEvent ge : gameEvents)
-      if (playerId == ge.getPlayerId() || playerId == 0)
+      if (playerId.equals(ge.getPlayerId()) || playerId == 0)
         stats[ge.getEventType()][ge.getLocation()]++;
     return stats;
   }

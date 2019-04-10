@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  app:layout_behavior="@string/appbar_scrolling_view_behavior"
-  tools:context=".MainActivity"
-  tools:showIn="@layout/app_bar_main">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main">
 
 
   <ImageView
@@ -20,24 +20,58 @@
       tools:layout_editor_absoluteX="72dp"
       tools:layout_editor_absoluteY="0dp" />
 
-  <Button
-      android:id="@+id/start_teamActivity_button"
-      android:layout_width="wrap_content"
+
+  <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:width="500dp"
-      android:height="100dp"
-      android:background="@android:color/background_light"
-      android:text="@string/my_teams"
-      android:textAlignment="center"
-      android:textSize="32dp"
-      android:visibility="visible"
-      app:fontFamily="@font/exoblack"
+      android:layout_marginBottom="84dp"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintHorizontal_bias="0.453"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.783" />
+      tools:layout_editor_absoluteX="193dp">
+
+
+    <Button
+        android:id="@+id/start_teamActivity_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:width="500dp"
+        android:height="100dp"
+        android:background="@android:color/background_light"
+        android:text="@string/my_teams"
+        android:textAlignment="center"
+        android:textSize="32dp"
+        android:visibility="visible"
+        app:fontFamily="@font/exoblack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.453"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.708" />
+
+
+    <Button
+        android:id="@+id/start_statsActivity_button"
+        android:layout_width="wrap_content"
+        android:layout_height="103dp"
+        android:layout_margin="10dp"
+        android:width="500dp"
+        android:height="100dp"
+        android:background="@android:color/background_light"
+        android:text="Statistics"
+        android:textAlignment="center"
+        android:textSize="32dp"
+        android:visibility="visible"
+        app:fontFamily="@font/exoblack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.453"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.842" />
+  </LinearLayout>
 
   <TextView
       android:paddingTop="100dp"
