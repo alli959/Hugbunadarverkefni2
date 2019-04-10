@@ -20,8 +20,10 @@ import yolo.basket.db.Database;
 import yolo.basket.teamActivity.TeamActivity;
 
 public class MainActivity extends AppCompatActivity
+
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    Button resumeGame;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
+        resumeGame = (Button) findViewById(R.id.start_gameActivity_button);
         findViewById(R.id.start_teamActivity_button).setOnClickListener(v -> openTeamView());
         findViewById(R.id.start_statsActivity_button).setOnClickListener(v -> openStatsView());
         findViewById(R.id.start_gameActivity_button).setOnClickListener(v -> openGameView());
@@ -78,8 +81,13 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(final Boolean hasActiveGame) {
-            if (hasActiveGame)
+            if (hasActiveGame) {
                 System.out.println("Display button");
+                resumeGame.setVisibility(View.VISIBLE);
+            } else {
+                resumeGame.setVisibility(View.INVISIBLE);
+            }
+
         }
     }
 
