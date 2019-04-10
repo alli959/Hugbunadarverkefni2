@@ -110,9 +110,8 @@ public class StatsViewDialog {
     private void createProfileView(Player player) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(createTextView(player.getName(), 18));
-        layout.addView(createTextView(player.getPlayerPos(), 12));
-        layout.addView(createTextView(String.valueOf(player.getPlayerNr()), 12));
+        layout.addView(createTextView(" " + player.getName() + " " + String.valueOf(player.getPlayerNr()), 50));
+        layout.addView(createTextView("        Position:  " + player.getPlayerPos(), 24));
         profileView = layout;
     }
 
