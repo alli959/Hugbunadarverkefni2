@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
         findViewById(R.id.start_teamActivity_button).setOnClickListener(v -> openTeamView());
         findViewById(R.id.start_statsActivity_button).setOnClickListener(v -> openStatsView());
-
+        new CheckActiveGameTask().execute((Void) null);
     }
 
     private void openStatsView() {
