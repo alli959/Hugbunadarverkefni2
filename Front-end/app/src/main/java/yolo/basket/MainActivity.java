@@ -40,6 +40,12 @@ public class MainActivity extends AppCompatActivity
         new CheckActiveGameTask().execute((Void) null);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new CheckActiveGameTask().execute((Void) null);
+    }
+
     private void openStatsView() {
         runOnUiThread(() -> startActivity(new Intent(this, StatsActivity.class)));
     }
@@ -82,7 +88,6 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(final Boolean hasActiveGame) {
             if (hasActiveGame) {
-                System.out.println("Display button");
                 resumeGame.setVisibility(View.VISIBLE);
             } else {
                 resumeGame.setVisibility(View.INVISIBLE);
