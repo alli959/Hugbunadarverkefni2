@@ -11,9 +11,18 @@
         android:id="@+id/HomeButtonLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_margin="25dp"
-        android:orientation="vertical" />
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="35dp"
+        android:orientation="vertical" >
+
+        <TextView
+        android:id="@+id/textView55"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:textSize="30sp" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/madeShotAway"
@@ -22,9 +31,21 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="248dp"
-        android:layout_marginEnd="39dp"
+        android:layout_marginTop="455dp"
+        android:layout_marginEnd="1135dp"
         android:text="Made shot" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/madeShotAway"
+        android:layout_alignStart="@+id/madeShotAway"
+        android:layout_alignRight="@+id/madeShotAway"
+        android:layout_marginTop="-100dp"
+
+        android:text="Away"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/missedShotAway"
@@ -98,6 +119,8 @@
         android:layout_marginTop="5dp"
         android:text="Home"
         android:textSize="30sp" />
+
+
 
     <TextView
         android:layout_width="wrap_content"

@@ -151,7 +151,8 @@ public class GameEvent extends Entity {
     return
             location == LEFT_WING ||
                     location == RIGHT_WING ||
-                    location == TOP ||
+                    location == LEFT_TOP ||
+                    location == RIGHT_TOP ||
                     location == LEFT_CORNER ||
                     location == RIGHT_CORNER
                     ? 3 : 2;

@@ -201,7 +201,7 @@ public class GameActivity extends AppCompatActivity {
             switch (which) {
                 case 0:
                     action = GameEvent.HIT;
-                    addScoreToHome(2);
+                    addScoreToHome(GameEvent.locationPoints(location));
                     addGameEvent();
                     createAssistAlert();
                     break;
