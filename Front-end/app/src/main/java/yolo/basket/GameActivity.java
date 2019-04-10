@@ -274,7 +274,7 @@ public class GameActivity extends AppCompatActivity {
         builder.setTitle("Shooting player");
         ArrayList<Player> arrayPlayer =new ArrayList<Player>();
         ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : homePlayers){
+        for (Player player : players){
                 arrayPlayer.add(player);
                 arrayPlayerNames.add(player.getName());
         }
@@ -381,7 +381,7 @@ public class GameActivity extends AppCompatActivity {
         builder.setTitle(playerName + " missed the shot, rebound for");
         ArrayList<Player> arrayPlayer =new ArrayList<Player>();
         ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : homePlayers){
+        for (Player player : players){
                 arrayPlayer.add(player);
                 arrayPlayerNames.add(player.getName());
         }
@@ -432,7 +432,7 @@ public class GameActivity extends AppCompatActivity {
         builder.setTitle("Shot blocked by");
         ArrayList<Player> arrayPlayer =new ArrayList<Player>();
         ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : homePlayers){
+        for (Player player : players){
                 arrayPlayer.add(player);
                 arrayPlayerNames.add(player.getName());
         }
@@ -484,7 +484,7 @@ public class GameActivity extends AppCompatActivity {
         builder.setTitle("Steal by");
         ArrayList<Player> arrayPlayer =new ArrayList<Player>();
         ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : homePlayers){
+        for (Player player : players){
             arrayPlayer.add(player);
             arrayPlayerNames.add(player.getName());
         }
@@ -536,7 +536,7 @@ public class GameActivity extends AppCompatActivity {
         builder.setTitle("Made shot by " + playerName + " Assist from");
         ArrayList<Player> arrayPlayer =new ArrayList<Player>();
         ArrayList<String> arrayPlayerNames =new ArrayList<String>();
-        for (Player player : homePlayers){
+        for (Player player : players){
             if(player != selectedPlayer) {
                 arrayPlayer.add(player);
                 arrayPlayerNames.add(player.getName());
@@ -604,7 +604,7 @@ public class GameActivity extends AppCompatActivity {
         return button;
     }
 
-    private void createShotAlert() {
+    /*private void createShotAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setCancelable(true);
         builder.setTitle("Action for " + selectedPlayer.getName());
@@ -616,7 +616,7 @@ public class GameActivity extends AppCompatActivity {
                     addGameEvent();
                 });
         builder.create().show();
-    }
+    }*/
 
 
 
@@ -698,7 +698,7 @@ public class GameActivity extends AppCompatActivity {
 
 
     
-    private void createReboundAlert() {
+    /*private void createReboundAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setCancelable(true);
         builder.setTitle("Rebound");
@@ -709,7 +709,7 @@ public class GameActivity extends AppCompatActivity {
                     addGameEvent();
                 });
         builder.create().show();
-    }
+    }*/
 
     /**
      * Klukka
