@@ -125,6 +125,7 @@ public class GameActivity extends AppCompatActivity {
         court.setOnTouchListener((view, event) -> {
             double x = event.getX() / view.getWidth();
             double y = event.getY() / view.getHeight();
+            System.out.println(x + " "  + y);
             location = Location.getLocation(new Location(x, y, 0));
             gameEventPlayer = userSelectedPlayer;
             createHomeTeamAlert();

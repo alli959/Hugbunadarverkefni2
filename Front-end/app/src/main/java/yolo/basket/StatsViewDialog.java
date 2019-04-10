@@ -160,7 +160,7 @@ public class StatsViewDialog {
     private View createTableViewFromHashMap(HashMap<String, String[]> map) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(createTableRow("", new String[]{"Total", "Accuracy %"}));
+        layout.addView(createTableRow("", new String[]{"Hits", "Shots", "Accuracy %"}));
         for (HashMap.Entry<String, String[]> entry : map.entrySet())
             layout.addView(createTableRow(entry.getKey(), entry.getValue()));
         return layout;
@@ -173,10 +173,12 @@ public class StatsViewDialog {
         TextView rowHeader = row.findViewById(R.id.stats_table_row_header);
         TextView data0 = row.findViewById(R.id.stats_table_row_data0);
         TextView data1 = row.findViewById(R.id.stats_table_row_data1);
+        TextView data2 = row.findViewById(R.id.stats_table_row_data2);
 
         rowHeader.setText(headerText);
         data0.setText(values[0]);
         data1.setText(values[1]);
+        data2.setText(values[2]);
 
         return view;
     }

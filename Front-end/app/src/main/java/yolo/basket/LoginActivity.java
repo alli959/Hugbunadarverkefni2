@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mUserNameView;
 
     private Button mSwitchFormButton;
+    private Button mLoginButton;
 
     private static final boolean LOGIN = true;
     private static final boolean REGISTER = false;
@@ -63,11 +64,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         retrieveFormFields();
-        setDefaultValues();
+        // setDefaultValues();
         mSwitchFormButton = findViewById(R.id.switchFormsButton);
         bindSwitchFormsButton();
-
-        findViewById(R.id.email_sign_in_button).setOnClickListener(view -> {
+        mLoginButton = findViewById(R.id.email_sign_in_button);
+        mLoginButton.setText("Login");
+        mLoginButton.setOnClickListener(view -> {
             loginRegister();
         });
     }
@@ -99,6 +101,12 @@ public class LoginActivity extends AppCompatActivity {
         return currentForm == LOGIN ? login : register;
     }
 
+    private String getOtherButtonText() {
+        String register = "Register";
+        String login = "Login";
+        return currentForm == LOGIN ? login : register;
+    }
+
     private void switchForm() {
         currentForm = !currentForm;
         String btnText = getButtonText();
@@ -106,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmailView.setVisibility(visibility);
         mNameView.setVisibility(visibility);
         mSwitchFormButton.setText(btnText);
+        mLoginButton.setText(getOtherButtonText());
     }
 
     private void retrieveFormFields() {
@@ -148,9 +157,12 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            if (success)
+            if (success && currentForm == LOGIN)
                 startMainActivity();
-            else
+            else if (success) {
+                currentForm = LOGIN;
+                new UserLoginTask().execute((Void) null);
+            } else
                 showError();
         }
 

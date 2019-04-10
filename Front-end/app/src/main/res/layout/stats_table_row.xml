@@ -50,6 +50,18 @@
                 android:textStyle="bold"
                 tools:ignore="NestedWeights" />
 
+            <TextView
+                android:id="@+id/stats_table_row_data2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="NestedWeights" />
+
+
+
         </LinearLayout>
     </LinearLayout>
 

@@ -20,8 +20,9 @@ public class StatsFormatter {
         int totalMiss = stats.getMiss();
         int totalHit = stats.getHit();
         double ratio = stats.ratioHit();
-        double hitsPerGame = ratioOf(totalHit, gamesPlayed);
-        double missPerGame = ratioOf(totalMiss, gamesPlayed);
+
+        double hitsPerGame = (double) totalHit / gamesPlayed;
+        double missPerGame = (double) totalMiss / gamesPlayed;
 
         HashMap<String, String> totalsMap = new HashMap<>();
         totalsMap.put("Shots hit", intToString(totalHit));
@@ -35,53 +36,65 @@ public class StatsFormatter {
     public HashMap<String, String[]> getHitsByLocationMap() {
         int[] hitsByLocation = stats.getHitsByLocation();
         int[] missByLocation = stats.getMissByLocation();
+        int[] sum = arraySum(hitsByLocation, missByLocation);
+
 
         double[] ratios = ratioOf(hitsByLocation, missByLocation);
 
         HashMap<String, String[]> hitsByLocationMap = new HashMap<>();
-        hitsByLocationMap.put("Left short", totalsAndRatios(hitsByLocation, ratios, GameEvent.LEFT_SHORT));
-        hitsByLocationMap.put("Right short", totalsAndRatios(hitsByLocation, ratios, GameEvent.RIGHT_SHORT));
-        hitsByLocationMap.put("Left top", totalsAndRatios(hitsByLocation, ratios, GameEvent.LEFT_TOP));
-        hitsByLocationMap.put("Right top", totalsAndRatios(hitsByLocation, ratios, GameEvent.RIGHT_TOP));
-        hitsByLocationMap.put("Top", totalsAndRatios(hitsByLocation, ratios, GameEvent.TOP));
-        hitsByLocationMap.put("Right corner", totalsAndRatios(hitsByLocation, ratios, GameEvent.RIGHT_CORNER));
-        hitsByLocationMap.put("Left corner", totalsAndRatios(hitsByLocation, ratios, GameEvent.LEFT_CORNER));
-        hitsByLocationMap.put("Right wing", totalsAndRatios(hitsByLocation, ratios, GameEvent.RIGHT_WING));
-        hitsByLocationMap.put("Left wing", totalsAndRatios(hitsByLocation, ratios, GameEvent.LEFT_WING));
+        hitsByLocationMap.put("Left short", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.LEFT_SHORT));
+        hitsByLocationMap.put("Right short", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.RIGHT_SHORT));
+        hitsByLocationMap.put("Left top", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.LEFT_TOP));
+        hitsByLocationMap.put("Right top", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.RIGHT_TOP));
+        hitsByLocationMap.put("Top", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.TOP));
+        hitsByLocationMap.put("Right corner", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.RIGHT_CORNER));
+        hitsByLocationMap.put("Left corner", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.LEFT_CORNER));
+        hitsByLocationMap.put("Right wing", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.RIGHT_WING));
+        hitsByLocationMap.put("Left wing", totalsAndRatios(sum, hitsByLocation, ratios, GameEvent.LEFT_WING));
         return hitsByLocationMap;
     }
 
     public HashMap<String, String[]> pointsMap() {
         int[] hitsByPoints = stats.getHitsByPoints();
         int[] missByPoints = stats.getMissByPoints();
+        int[] sum = arraySum(missByPoints, hitsByPoints);
 
         double[] ratios = ratioOf(hitsByPoints, missByPoints);
 
         HashMap<String, String[]> pointsMap = new HashMap<>();
-        pointsMap.put("3 pointers", totalsAndRatios(hitsByPoints, ratios, 3));
-        pointsMap.put("2 pointers", totalsAndRatios(hitsByPoints, ratios, 2));
-        pointsMap.put("Free throws", totalsAndRatios(hitsByPoints, ratios, 1));
+        pointsMap.put("3 pointers", totalsAndRatios(sum, hitsByPoints, ratios, 3));
+        pointsMap.put("2 pointers", totalsAndRatios(sum, hitsByPoints, ratios, 2));
+        pointsMap.put("Free throws", totalsAndRatios(sum, hitsByPoints, ratios, 1));
         return pointsMap;
     }
 
-    private String[] totalsAndRatios(int[] hits, double[] ratios, int index) {
-        return new String[]{ intToString(hits[index]), formatPercentage(ratios[index])};
+    private String[] totalsAndRatios(int[] hits, int[] totals, double[] ratios, int index) {
+        return new String[]{ intToString(totals[index]), intToString(hits[index]), formatPercentage(ratios[index])};
     }
 
     private double ratioOf(int a, int b) {
-        return (double) a / b;
+        double d1 = a;
+        double d2 = b;
+        return d1 / (d2 + d1);
     }
 
     private double[] ratioOf(int[] a, int[] b) {
         double[] ratios = new double[a.length];
         for (int i = 0; i < ratios.length; i++)
-            ratios[i] = ratioOf(a[i], b[i]);
+            ratios[i] = ratioOf(a[i], b[i] + a[i]);
         return ratios;
     }
 
     private String formatPercentage(double d) {
          String percentage = new DecimalFormat("#.#").format(d * 100);
          return percentage + "%";
+    }
+
+    private int[] arraySum(int[] a, int[] b) {
+        int[] out = new int[a.length];
+        for (int i = 0; i < a.length; i++)
+            out[i] = a[i] + b[i];
+        return out;
     }
 
     private String formatDouble(double d) {

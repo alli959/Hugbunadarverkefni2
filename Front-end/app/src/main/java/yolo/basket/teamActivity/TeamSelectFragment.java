@@ -35,7 +35,7 @@ public class TeamSelectFragment extends Fragment {
 
     private static final boolean PREGAME = true;
 
-    private List<Team> teams;
+    private List<Team> teams = new ArrayList<>();
     private boolean radioButtonStatus = false;
 
 
