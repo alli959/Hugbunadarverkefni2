@@ -148,6 +148,8 @@ public class EventController {
     User user = userRepository.findById(userName).get();
     Game currentGame = user.getCurrentGame();
     GameEvent gameEvent = new GameEvent();
+    if (location >= GameEvent.N_LOCATIONS && eventType >= GameEvent.N_GAME_EVENTS)
+      throw new Exception("Not a valid location");
     gameEvent.setLocation(location);
     gameEvent.setEventType(eventType);
     gameEvent.setTimeOfEvent(timeOfEvent);
