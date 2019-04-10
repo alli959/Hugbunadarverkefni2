@@ -48,38 +48,37 @@
         android:orientation="vertical"
         android:paddingBottom="30dp"
         android:background="@android:color/holo_orange_dark">
-    <TextView
-        android:id="@+id/playerNameHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="Player Name:"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
-        android:typeface="serif"
-        android:visibility="visible"
-        app:fontFamily="sans-serif-black" />
+        <TextView
+            android:id="@+id/playerNameHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="Player Name:"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
 
-    <EditText
-        android:id="@+id/playerName"
-        style="@style/Base.Widget.MaterialComponents.TextInputEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        android:textColor="@android:color/background_dark" />
+        <EditText
+            android:id="@+id/playerName"
+            style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:textColor="@android:color/background_dark" />
 
-
-    <TextView
-        android:id="@+id/playerPositionHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="Player Position:"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
-        android:typeface="serif"
-        android:visibility="visible"
-        app:fontFamily="sans-serif-black" />
+        <TextView
+            android:id="@+id/playerPositionHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="Player Position:"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
 
         <EditText
             android:id="@+id/playerPosition"
@@ -90,26 +89,26 @@
             android:textColor="@android:color/background_dark" />
 
 
-    <TextView
-        android:id="@+id/playerJerseyNumberHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="Jersey Number"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
-        android:typeface="serif"
-        android:visibility="visible"
-        app:fontFamily="sans-serif-black" />
+        <TextView
+            android:id="@+id/playerJerseyNumberHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="Jersey Number"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:fontFamily="sans-serif-black" />
 
 
-    <EditText
-        android:id="@+id/playerJerseyNumber"
-        style="@style/Base.Widget.MaterialComponents.TextInputEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        android:textColor="@android:color/background_dark" />
+        <EditText
+            android:id="@+id/playerJerseyNumber"
+            style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:textColor="@android:color/background_dark" />
     </LinearLayout>
 
 

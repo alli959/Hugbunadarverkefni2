@@ -98,7 +98,7 @@ public class EventController {
   @RequestMapping(value="/user/createGame", method=RequestMethod.GET)
   public Game createGame(
       @RequestHeader("Authorization") String basicAuthString,
-      @RequestParam ArrayList<Long> bench,
+      @RequestParam(required=false) ArrayList<Long> bench,
       @RequestParam ArrayList<Long> playing,
       @RequestParam Long teamId,
       @RequestParam(required=false) Long id,
