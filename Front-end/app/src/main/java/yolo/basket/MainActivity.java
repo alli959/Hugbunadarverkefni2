@@ -73,6 +73,33 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public class CheckActiveGameTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            if ()
+                goToLoginForm();
+            return null;
+        }
+
+        private boolean isLoggedIn() {
+            try {
+                return Database.user.hasActiveGame();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean hasActiveGame) {
+            if (hasActiveGame)
+                System.out.println("Display button");
+        }
+    }
+
+
+
     public void goToLoginForm() {
         runOnUiThread(() -> {
             Intent intent = new Intent(this, LoginActivity.class);
