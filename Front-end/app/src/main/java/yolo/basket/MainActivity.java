@@ -29,24 +29,13 @@ public class MainActivity extends AppCompatActivity
         checkLoginTask.execute((Void) null);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         findViewById(R.id.start_teamActivity_button).setOnClickListener(v -> openTeamView());
         findViewById(R.id.start_statsActivity_button).setOnClickListener(v -> openStatsView());
+        findViewById(R.id.start_gameActivity_button).setOnClickListener(v -> openGameView());
+
+        
 
     }
 
@@ -83,6 +72,13 @@ public class MainActivity extends AppCompatActivity
     public void openTeamView() {
         runOnUiThread(() -> {
             Intent intent = new Intent(this, TeamActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    public void openGameView() {
+        runOnUiThread(() -> {
+            Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
         });
     }

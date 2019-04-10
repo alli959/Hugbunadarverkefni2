@@ -96,6 +96,7 @@ public class GameActivity extends AppCompatActivity {
 
         bindTimerButtons();
         bindAwayTeamButtons();
+        bindEndGameButton();
         bindOnCourtClick();
         gameClock = 10 * SEC_IN_MIN * MS_IN_SEC;
         updateClockView();
@@ -112,6 +113,10 @@ public class GameActivity extends AppCompatActivity {
         gameEventLog = findViewById(R.id.gameEventLog);
         homeScore = findViewById(R.id.homeScore);
         awayScore = findViewById(R.id.awayScore);
+    }
+
+    public void bindEndGameButton(){
+        findViewById(R.id.endGame).setOnClickListener(endGameListener);
     }
 
     public void bindTimerButtons(){
@@ -566,6 +571,13 @@ public class GameActivity extends AppCompatActivity {
         Toast.makeText(this, "Setting gameClock to " + min + ": " + sec, Toast.LENGTH_LONG).show();
         updateClockView();
     }
+
+    private View.OnClickListener endGameListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            endGame();
+        }
+    };
 
     public void endGame() {
         new EndGameTask().execute((Void) null);
