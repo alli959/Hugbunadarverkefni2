@@ -77,9 +77,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            if ()
-                goToLoginForm();
-            return null;
+            return isLoggedIn();
         }
 
         private boolean isLoggedIn() {
