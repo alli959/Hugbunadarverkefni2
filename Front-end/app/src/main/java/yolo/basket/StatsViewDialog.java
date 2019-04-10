@@ -51,7 +51,6 @@ public class StatsViewDialog {
         Dialog dialog = new Dialog(context);
         dialog.setTitle("Statistics");
 
-
         ScrollView mainLayout = new ScrollView(context);
         LinearLayout content = new LinearLayout(context);
 

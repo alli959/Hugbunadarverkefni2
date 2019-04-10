@@ -1,5 +1,6 @@
 package yolo.basket.db.user;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,5 +38,11 @@ public class UserController extends EntityController {
     @Override
     protected User jsonToEntity(JSONObject json) throws JSONException {
         throw new JSONException("Not implemented");
+    }
+
+    public boolean hasActiveGame() throws Exception {
+        String method = "user/hasActiveGame";
+        Request request = new Request(method);
+        return request.resolve().getBoolean(0);
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import yolo.basket.R;
 import yolo.basket.db.Database;
@@ -40,7 +42,7 @@ public class EditTeamPlayersFragment extends Fragment {
     private Button createPlayerButton;
     private EditText playerName;
     private EditText playerPosition;
-    private View playerJerseyNumber;
+    private EditText playerJerseyNumber;
     private TextView teamNameTextView;
     private Team team;
 
@@ -83,42 +85,41 @@ public class EditTeamPlayersFragment extends Fragment {
     public void displayPlayers() {
 
         ArrayList<String> names = new ArrayList<>();
-        ArrayList<String> posititons = new ArrayList<>();
+        ArrayList<String> positions = new ArrayList<>();
         ArrayList<String> jerseyNumbers = new ArrayList<>();
 
         for (Player player : players) {
             names.add(player.getName());
-            posititons.add(player.getPlayerPos());
+            positions.add(player.getPlayerPos());
             jerseyNumbers.add(player.getPlayerNr().toString());
         }
 
         this.playerNames = names;
         this.playerJerseyNumbers = jerseyNumbers;
-        this.playerPositions = posititons;
+        this.playerPositions = positions;
 
-        nameViewAdapter = new ArrayAdapter<String>(
+        nameViewAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
-                playerNames
+                players.stream().map(Player::getName).toArray(String[]::new)
         );
 
-        numberViewAdapter = new ArrayAdapter<String>(
+        numberViewAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
-                playerJerseyNumbers
+                players.stream().map(Player::getPlayerNr).map(l -> String.valueOf(l)).toArray(String[]::new)
         );
 
-        positionViewAdapter = new ArrayAdapter<String>(
+        positionViewAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
-                playerPositions
+                players.stream().map(Player::getPlayerPos).toArray(String[]::new)
         );
 
         teamNameTextView.setText(teamName);
 
-        listView = (ListView) view.findViewById(R.id.startingPlayers);
+        listView = view.findViewById(R.id.startingPlayers);
         listView.setAdapter(nameViewAdapter);
-
     }
 
     @Nullable
@@ -132,7 +133,7 @@ public class EditTeamPlayersFragment extends Fragment {
         playerName = view.findViewById(R.id.playerName);
         playerJerseyNumber = view.findViewById(R.id.playerJerseyNumber);
         playerPosition = view.findViewById(R.id.playerPosition);
-        teamNameTextView = (TextView) view.findViewById(R.id.rightPlayerHeader);
+        teamNameTextView = view.findViewById(R.id.rightPlayerHeader);
 
         teamId = -1L;
         teamName = "";
@@ -140,21 +141,24 @@ public class EditTeamPlayersFragment extends Fragment {
             teamId = bundle.getLong("teamId");
             teamName = bundle.getString("teamName");
         }
-        createPlayerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CharSequence name = playerName.getText();
-                // TODO: get the rest of the player d
-                Long playerNumber = 69L;
-                String playerPos = "Doggy style";
-                Player player = new Player();
-                player.setName(name.toString());
-                player.setPlayerNr(playerNumber);
-                player.setPlayerPos(playerPos);
-                player.setTeamId(teamId);
-                CreatePlayerTask createPlayerTask = new CreatePlayerTask(player);
-                createPlayerTask.execute((Void) null);
+        createPlayerButton.setOnClickListener(v -> {
+            CharSequence name = playerName.getText();
+            Long playerNumber;
+            String playerPos = playerPosition.getText().toString();
+            String playerNumberString = playerJerseyNumber.getText().toString();
+            try {
+                playerNumber = Long.parseLong(playerNumberString);
+            } catch(Exception e) {
+                playerNumber = 0L;
             }
+
+            Player player = new Player();
+            player.setName(name.toString());
+            player.setPlayerNr(playerNumber);
+            player.setPlayerPos(playerPos);
+            player.setTeamId(teamId);
+            CreatePlayerTask createPlayerTask = new CreatePlayerTask(player);
+            createPlayerTask.execute((Void) null);
         });
 
         displayPlayers();
@@ -167,9 +171,6 @@ public class EditTeamPlayersFragment extends Fragment {
                 Log.d("name", name);
             }
         });
-
-
-
         return view;
     }
 

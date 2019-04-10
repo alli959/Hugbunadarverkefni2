@@ -34,9 +34,7 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.start_teamActivity_button).setOnClickListener(v -> openTeamView());
         findViewById(R.id.start_statsActivity_button).setOnClickListener(v -> openStatsView());
         findViewById(R.id.start_gameActivity_button).setOnClickListener(v -> openGameView());
-
-        
-
+        new CheckActiveGameTask().execute((Void) null);
     }
 
     private void openStatsView() {
@@ -61,6 +59,31 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    public class CheckActiveGameTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return isLoggedIn();
+        }
+
+        private boolean isLoggedIn() {
+            try {
+                return Database.user.hasActiveGame();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean hasActiveGame) {
+            if (hasActiveGame)
+                System.out.println("Display button");
+        }
+    }
+
+
 
     public void goToLoginForm() {
         runOnUiThread(() -> {
