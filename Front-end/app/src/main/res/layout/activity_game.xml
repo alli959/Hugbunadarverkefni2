@@ -15,18 +15,46 @@
         android:layout_margin="25dp"
         android:orientation="vertical" />
 
-    <LinearLayout
-        android:id="@+id/AwayButtonLayout"
+
+    <Button
+        android:id="@+id/madeShotAway"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@id/basketBallCourt"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="25dp"
         android:layout_centerVertical="true"
-        android:layout_marginRight="-163dp"
-        android:orientation="vertical"
-        tools:ignore="DuplicateIds" />
+        android:layout_marginTop="248dp"
+        android:layout_marginEnd="39dp"
+        android:text="Made shot" />
 
+    <Button
+        android:id="@+id/missedShotAway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/madeShotAway"
+        android:layout_alignStart="@+id/madeShotAway"
+        android:layout_marginTop="6dp"
+        android:text="Missed shot"/>
+
+    <Button
+        android:id="@+id/foulAway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/madeShotAway"
+        android:layout_alignStart="@+id/madeShotAway"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="60dp"
+        android:text="Foul"/>
+
+    <Button
+        android:id="@+id/turnoverAway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/madeShotAway"
+        android:layout_alignStart="@+id/madeShotAway"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="114dp"
+        android:text="Turnover" />
 
     <TextView
         android:id="@+id/Timer"
@@ -39,6 +67,52 @@
         android:padding="5dp"
         android:text="00:00"
         android:textColor="@android:color/holo_red_dark"
+        android:textSize="60sp" />
+
+    <TextView
+        android:id="@+id/homeScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="30dp"
+        android:layout_toLeftOf="@+id/Timer"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="@font/erbos_draco_1st_open_nbp"
+        android:padding="5dp"
+        android:text="0"
+        android:textColor="@color/orange"
+        android:textSize="60sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/homeScore"
+        android:layout_alignStart="@+id/homeScore"
+        android:layout_marginTop="5dp"
+        android:text="Home"
+        android:textSize="30sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/awayScore"
+        android:layout_alignStart="@+id/awayScore"
+        android:layout_marginTop="5dp"
+        android:text="Away"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/awayScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@+id/Timer"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="@font/erbos_draco_1st_open_nbp"
+        android:padding="5dp"
+        android:text="0"
+        android:textColor="@color/orange"
         android:textSize="60sp" />
 
     <Button
@@ -67,11 +141,21 @@
         android:id="@+id/basketBallCourt"
         android:layout_width="900dp"
         android:layout_height="500dp"
+        android:layout_below="@+id/Timer"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="103dp"
         android:scaleType="fitXY"
-        android:src="@drawable/bballcourt"
-        android:layout_below="@+id/Timer" />
+        android:src="@drawable/bballcourt" />
+
+    <Button
+        android:id="@+id/endGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/basketBallCourt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@color/red"
+        android:text="End game" />
 
 
 </RelativeLayout>
