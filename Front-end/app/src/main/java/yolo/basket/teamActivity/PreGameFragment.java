@@ -186,7 +186,8 @@ public class PreGameFragment extends Fragment {
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                availablePlayers = team.getPlayers();
+                availablePlayers.clear();
+                availablePlayers.addAll(team.getPlayers());
                 updateLists();
             }
         }
