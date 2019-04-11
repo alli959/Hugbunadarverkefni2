@@ -164,12 +164,9 @@ public class EditTeamPlayersFragment extends Fragment {
         displayPlayers();
         GetOneTeamTask getOneTeamTask = new GetOneTeamTask();
         getOneTeamTask.execute((Void) null);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = (String) parent.getItemAtPosition(position);
-                Log.d("name", name);
-            }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String name = (String) parent.getItemAtPosition(position);
+            Log.d("name", name);
         });
         return view;
     }
