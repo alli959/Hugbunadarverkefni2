@@ -81,7 +81,7 @@ public class StatsFormatter {
     private double[] ratioOf(int[] a, int[] b) {
         double[] ratios = new double[a.length];
         for (int i = 0; i < ratios.length; i++)
-            ratios[i] = ratioOf(a[i], b[i] + a[i]);
+            ratios[i] = ratioOf(a[i], b[i]);
         return ratios;
     }
 
