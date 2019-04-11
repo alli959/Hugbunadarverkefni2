@@ -222,6 +222,10 @@ public class EditTeamPlayersFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            clearErrors();
+            if (!validatePlayer(newPlayer))
+                return null;
+
             try {
                 newPlayer = (Player) Database.player.save(newPlayer);
             } catch (IOException e) {
@@ -235,7 +239,49 @@ public class EditTeamPlayersFragment extends Fragment {
                 getOneTeamTask.execute((Void) null);
             });
 
-            return (Void) null;
+            return null;
+        }
+
+        private void clearErrors() {
+            getActivity().runOnUiThread(() -> {
+                playerName.setError(null);
+                playerPosition.setError(null);
+                playerJerseyNumber.setError(null);
+            });
+        }
+
+        private boolean validatePlayer(Player player) {
+            boolean a = checkPlayerName(player);
+            boolean b = checkPlayerPos(player);
+            boolean c = checkPlayerNr(player);
+            return a && b && c;
+        }
+
+        private boolean checkPlayerNr(Player player) {
+            if (player.getPlayerNr().equals(0L)) {
+                getActivity().runOnUiThread(() -> playerJerseyNumber.setError("Not a valid jersey number"));
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        private boolean checkPlayerPos(Player player) {
+            if (player.getPlayerPos().length() < 4) {
+                getActivity().runOnUiThread(() -> playerPosition.setError("Not a valid position"));
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        private boolean checkPlayerName(Player player) {
+            if (player.getName().length() < 4) {
+                getActivity().runOnUiThread(() -> playerName.setError("Not a valid name"));
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

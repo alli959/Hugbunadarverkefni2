@@ -12,10 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-
 import yolo.basket.R;
 import yolo.basket.db.Database;
 import yolo.basket.db.team.Team;
@@ -72,6 +68,9 @@ public class CreateTeamFragment extends Fragment {
         }
 
         private boolean trySaveTeam() {
+            getActivity().runOnUiThread(() -> teamName.setError(null));
+            if (!validateTeamName(createTeam()))
+                return false;
             try {
                 newTeam = (Team) Database.team.save(createTeam());
             } catch (Exception e) {
@@ -79,6 +78,16 @@ public class CreateTeamFragment extends Fragment {
                 return false;
             }
             return true;
+        }
+
+        private boolean validateTeamName(Team team) {
+            String message = "Not a valid team name";
+            if (team.getName().length() < 1) {
+                getActivity().runOnUiThread(() -> teamName.setError(message));
+                return false;
+            } else {
+                return true;
+            }
         }
 
         @Override
