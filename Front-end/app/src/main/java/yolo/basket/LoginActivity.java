@@ -1,44 +1,21 @@
 package yolo.basket;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import yolo.basket.db.Database;
 import yolo.basket.db.user.User;
 import yolo.basket.teamActivity.TeamActivity;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -148,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             Database.useAnonymousCredentials();
             User user = createUserFromInput();
+            runOnUiThread(() -> clearErrors());
 
             if (currentForm == LOGIN)
                 return tryLogin(user);
@@ -155,6 +133,36 @@ public class LoginActivity extends AppCompatActivity {
                 return tryRegister(user);
         }
 
+        private boolean tryRegister(User user) {
+            if (!checkAll(user))
+                return false;
+            try {
+                message = Database.register(user);
+                if (message.equals(user.getUserName()))
+                    return true;
+                else {
+                    message = "Username taken";
+                    return false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                message = "Undefined error";
+                return false;
+            }
+        }
+
+        private boolean tryLogin(User user) {
+            if (!checkUserAndPassword(user))
+                return false;
+            try {
+                Database.login(user);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                message = "Wrong username / password";
+                return false;
+            }
+        }
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success && currentForm == LOGIN)
@@ -163,32 +171,76 @@ public class LoginActivity extends AppCompatActivity {
                 currentForm = LOGIN;
                 new UserLoginTask().execute((Void) null);
             } else
-                showError();
+                runOnUiThread(() -> mUserNameView.setError(message));
+
         }
 
-        private void showError() {
-            mPasswordView.setError(message);
+        public final Pattern VALID_EMAIL_ADDRESS_REGEX =
+                Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+        private void clearErrors () {
+            mNameView.setError(null);
+            mPasswordView.setError(null);
+            mUserNameView.setError(null);
+            mEmailView.setError(null);
         }
 
-        private boolean tryRegister(User user) {
-            try {
-                message = Database.register(user);
-                return message.equals(user.getUserName());
-            } catch (Exception e) {
-                e.printStackTrace();
+        private boolean checkAll (User user) {
+            boolean a = checkNameAndEmail(user);
+            boolean b = checkUserAndPassword(user);
+            return a && b;
+        }
+
+        private boolean checkNameAndEmail (User user) {
+            boolean a = checkName(user.getName());
+            boolean b = checkEmail(user.getEmail());
+            return a && b;
+        }
+
+        private boolean checkUserAndPassword (User user) {
+            boolean a = checkUserName(user.getUserName());
+            boolean b = checkPassword(user.getPassword());
+            return a && b;
+        }
+
+        private boolean checkName(String name) {
+            if (name.length() < 4) {
+                runOnUiThread(() -> mNameView.setError("Name must be at least 4 characters long"));
                 return false;
-            }
-        }
-
-        private boolean tryLogin(User user) {
-            try {
-                Database.login(user);
+            } else {
                 return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
             }
         }
+
+        private boolean checkUserName(String username) {
+            if (username.length() < 4) {
+                message = "Username must be at least 4 characters long";
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        private boolean checkPassword(String password) {
+            if (password.length() < 8) {
+                runOnUiThread(() -> mPasswordView.setError("Password must be at least 8 characters long"));
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        private boolean checkEmail(String email) {
+            Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
+            if (!matcher.find()) {
+                runOnUiThread(() -> mEmailView.setError("Not valid email"));
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+
     }
 }
 

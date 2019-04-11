@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
-        resumeGame = (Button) findViewById(R.id.start_gameActivity_button);
+        resumeGame = findViewById(R.id.start_gameActivity_button);
         findViewById(R.id.start_teamActivity_button).setOnClickListener(v -> openTeamView());
         findViewById(R.id.start_statsActivity_button).setOnClickListener(v -> openStatsView());
         findViewById(R.id.start_gameActivity_button).setOnClickListener(v -> openGameView());
