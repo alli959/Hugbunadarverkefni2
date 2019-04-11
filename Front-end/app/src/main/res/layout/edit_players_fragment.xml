@@ -107,6 +107,7 @@
             style="@style/Base.Widget.MaterialComponents.TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:background="@android:color/background_light"
             android:textColor="@android:color/background_dark" />
     </LinearLayout>
@@ -116,7 +117,7 @@
         android:id="@+id/button_addPlayer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Team" />
+        android:text="Add player" />
 
 
 
