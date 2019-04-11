@@ -57,10 +57,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setDefaultValues() {
-        mEmailView.setText("olitest");
+        mEmailView.setText("olitest@default.is");
         mNameView.setText("olitest");
-        mUserNameView.setText("aaa");
-        mPasswordView.setText("aaa");
+        mUserNameView.setText("aaaa");
+        mPasswordView.setText("aaaaaaaa");
     }
 
     private void bindSwitchFormsButton() {
