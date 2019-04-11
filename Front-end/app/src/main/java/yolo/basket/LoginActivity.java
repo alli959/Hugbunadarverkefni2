@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         retrieveFormFields();
-        setDefaultValues();
+        //setDefaultValues();
         mSwitchFormButton = findViewById(R.id.switchFormsButton);
         bindSwitchFormsButton();
         mLoginButton = findViewById(R.id.email_sign_in_button);
